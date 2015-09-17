@@ -1,0 +1,4 @@
+let b:syntastic_cpp_cflags='-Wno-deprecated'
+let b:syntastic_c_cflags='-Wno-deprecated'
+
+imap fj <esc>

@@ -1,0 +1,13 @@
+my name: Jordan Dick
+
+my studies: BS in comp sci, focus in software engineering
+
+my platforms:
+   macbook pro, OSX, Nvidia GTX 750M
+   desktop PC, Ubuntu(kde), Nvidia GTX 650ti boost
+
+my graphics background: experimentation with vector drawing in SFML, visualising audio data, sorting algorithms, fractals
+
+my interest in graphics: Game development, dynamic data processing/visualization
+
+my ideas for a final project: planetary physics simulation, 3D zero-gravity billiards game, planetary billiards, 3D remake of Asteroids, Conway's Game of Life in a 3D fishtank environment, flocking birds, tower defense game
