@@ -22,6 +22,13 @@ double s  = 10;
 double b  = 2.6666;
 double r  = 28;
 
+double mx = 1;
+double my = 1;
+double mz = 1;
+
+int w = 300;
+int h = 300;
+
 // convenience function for scaling values to within 0.0 - 1.0
 double scale(double dx)
 {
@@ -33,9 +40,9 @@ void display()
 {
    int i;
    /*  Coordinates  */
-   double x = 1;
-   double y = 1;
-   double z = 1;
+   double x = mx;
+   double y = my;
+   double z = mz;
    /*  Time step  */
    double dt = 0.001;
 
@@ -44,7 +51,7 @@ void display()
 
    glRotated(ph,1,0,0);
    glRotated(th,0,1,0);
-   glScalef(0.035,0.035,0.035);
+   glScalef(0.04,0.04,0.04);
    
    // Axes
    glColor3f(1,1,1);
@@ -58,7 +65,7 @@ void display()
    glEnd();
 
    glBegin(GL_LINE_STRIP);
-   glVertex3f(1, 1, 1);
+   glVertex3f(x, y, z);
    //printf("%5d %8.3f %8.3f %8.3f\n",0,x,y,z);
    /*
     *  Integrate 50,000 steps (50 time units with dt = 0.001)
@@ -87,6 +94,8 @@ void display()
 //Reshape function from example 6 code
 void reshape(int width, int height)
 {
+   w = width;
+   h = height;
    //new aspect ratio
    double w2h = (height > 0) ? (double)width/height : 1;
    //set viewport to the whole new window
@@ -110,24 +119,33 @@ void special(int key, int x, int y)
       // use the arrow keys to rotate the view
       case GLUT_KEY_RIGHT:
          th += 5;
-         printf("th: %d\n", th);
+         //printf("th: %d\n", th);
          break;
       case GLUT_KEY_LEFT:
          th -= 5;
-         printf("th: %d\n", th);
+         //printf("th: %d\n", th);
          break;
       case GLUT_KEY_UP:
          ph -= 5;
-         printf("ph: %d\n", ph);
+         //printf("ph: %d\n", ph);
          break;
       case GLUT_KEY_DOWN:
          ph += 5;
-         printf("ph: %d\n", ph);
+         //printf("ph: %d\n", ph);
          break;
    }
 
    th %= 360;
    ph %= 360;
+
+   glutPostRedisplay();
+}
+
+void motion(int mousex, int mousey)
+{
+   mz = (mousex - w/2)*100/w;
+   my = (mousey - h/2)*-100/h;
+   mx = 0;
 
    glutPostRedisplay();
 }
@@ -145,6 +163,7 @@ int main(int argc, char *argv[])
    glutDisplayFunc(display);
    glutReshapeFunc(reshape);
    glutSpecialFunc(special);
+   glutPassiveMotionFunc(motion);
 
    glutMainLoop();
 
