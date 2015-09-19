@@ -1,0 +1,24 @@
+ex22: Transparency
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+Demonstrates transpareny using a single transparent object.
+
+Key bindings
+  l/L        Toggles lighting on/off
+  m/M        Toggle texture mode modulate/replace
+  c/C        Toggle white/colored faces
+  F1         Toggle depth test
+  +/-        Increase/decrease alpha
+  a/A        Decrease/increase ambient light
+  d/D        Decrease/increase diffuse light
+  s/S        Decrease/increase specular light
+  e/E        Decrease/increase emitted light
+  n/N        Decrease/increase shininess
+  []         Lower/rise light
+  x          Toggle axes
+  arrows     Change view angle
+  PgDn/PgUp  Zoom in and out
+  0          Reset view angle
+  ESC        Exit

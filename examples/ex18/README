@@ -1,0 +1,22 @@
+ex18: Solar System
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+Shows celestial bodies in from the local solar system.
+Also shows the solar system to scale.
+
+Key bindings
+  m          Cycle through celectial bodies
+  t          Toggle ring transparency
+  v          View solar system
+  o          Toggle orbits in solar system mode
+  l          Toggle lighting in solar system mode
+  +/-        Change magnification of planets in solar system mode
+  []         Adjust time scale in solar system mode
+  s          Start/stop motion in solar system mode
+  a          Toggle axes
+  arrows     Change view angle
+  PgDn/PgUp  Zoom in and out
+  0          Reset view angle
+  ESC        Exit

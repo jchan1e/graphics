@@ -1,0 +1,17 @@
+ex23: Mixed transparent and opaque objects
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+Demonstrates how to draw transparent and opaque objects in the same scene
+
+Key bindings
+  m/M        Toggle oredered/unordered drawing
+  l/L        Toggle lighting on/off
+  1          Toggle blend function destination GL_ONE_MINUS_SRC_ALPHA/GL_ONE
+  +/-        Increase/decrease alpha
+  a          Toggle axes
+  arrows     Change view angle
+  PgDn/PgUp  Zoom in and out
+  0          Reset view angle
+  ESC        Exit

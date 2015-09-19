@@ -1,0 +1,17 @@
+ex17: Draped Textures
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+Combines a large texture with a quadrangles to make a simple terrain viewer.
+
+Key bindings
+  m           Cycle display modes
+  +/-         Increase/decrease vertical exaggeration
+  a           Toggle axes
+  arrows      Change view angle
+  PgDn/PgUp   Zoom in and out
+  LeftMouse   Pan horizontally
+  RightMouse  Pan vertically
+  0           Reset view angle
+  ESC         Exit

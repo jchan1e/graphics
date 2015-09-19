@@ -1,0 +1,23 @@
+ex24: FEM viewer
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+Demonstrates display lists using a viewer for a finite element model.
+
+Key bindings
+  d/D        Toggle display lists on/off
+  +/-        Cycle through compartments
+  p/P        Toggle projection mode
+  l/L        Toggle lighting
+  k/K        Toggle marked cells
+  o/O        Toggle offset
+  k/K        Toggle marked cells
+  a/A        Toggle axes
+  z/Z        Decrease/increase Z exaggeration
+  RightMouse Selection menu
+  a          Toggle axes
+  arrows     Change view angle
+  PgDn/PgUp  Zoom in and out
+  0          Reset view angle
+  ESC        Exit

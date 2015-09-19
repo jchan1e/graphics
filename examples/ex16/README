@@ -1,0 +1,21 @@
+ex16: Lego
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+Draw a  Lego brick to demonstrate lighting.
+Lego is a trademark of the Lego Group.
+
+Key bindings
+  l          Cycles between wirefame, and lighting modes
+  c          Cycles through colors
+  s/S        Toggle light movement
+  b/B        Toggle blank/studded
+  m/M        Increase/decrease studs in the X-direction
+  n/N        Increase/decrease studs in the Y-direction
+  t/T        Toggle between thin/thick bricks
+  []         Lower/rise light
+  arrows     Change view angle
+  PgDn/PgUp  Zoom in and out
+  0          Reset view angle
+  ESC        Exit
