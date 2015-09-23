@@ -14,20 +14,20 @@ CFLG=-O3 -Wall
 LIBS=-lglut -lGLU -lGL -lm
 endif
 #  OSX/Linux/Unix/Solaris
-CLEAN=rm -f scene *.o *.a
+CLEAN=rm -f scene *.o *.a HW3
 endif
 
 all:scene
 
 #  Compile
 .c.o:
-	gcc -c $(CFLG) $<
+	gcc -std=c99  -c $(CFLG) $<
 .cpp.o:
 	g++ -c $(CFLG) $<
 
 #  link
-scene:scene.o objects.o
-	gcc -O3 -o $@ $^   $(LIBS)
+scene:scene.o 
+	gcc -O3 -o HW2 $^   $(LIBS)
 
 #  Clean
 clean:
