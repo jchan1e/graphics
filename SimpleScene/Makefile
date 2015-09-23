@@ -27,7 +27,7 @@ all:scene
 
 #  link
 scene:scene.o 
-	gcc -O3 -o HW2 $^   $(LIBS)
+	gcc -O3 -o HW3 $^   $(LIBS)
 
 #  Clean
 clean:
