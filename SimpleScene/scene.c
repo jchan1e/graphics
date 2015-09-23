@@ -132,8 +132,8 @@ int main(int argc, char *argv[])
    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 
    glutInitWindowPosition(0,0);
-   glutInitWindowSize(500,500);
-   glutCreateWindow("4229 - Jordan Dick: Simple Scene");
+   glutInitWindowSize(w,h);
+   glutCreateWindow("4229 - Jordan Dick: HW3");
 
    glutDisplayFunc(display);
    glutReshapeFunc(reshape);
