@@ -14,7 +14,7 @@ CFLG=-O3 -Wall
 LIBS=-lglut -lGLU -lGL -lm
 endif
 #  OSX/Linux/Unix/Solaris
-CLEAN=rm -f scene *.o *.a HW3
+CLEAN=rm -f scene *.o *.a hw3
 endif
 
 all:scene
@@ -27,7 +27,7 @@ all:scene
 
 #  link
 scene:scene.o 
-	gcc -O3 -o HW3 $^   $(LIBS)
+	gcc -O3 -o hw3 $^   $(LIBS)
 
 #  Clean
 clean:

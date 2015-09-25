@@ -76,12 +76,347 @@ void sphere(double x, double y, double z,
    glPopMatrix();
 }
 
+void cube(double x, double y, double z,
+          double r,
+          double s)
+{
+   glPushMatrix();
+   glTranslated(x,y,z);
+   glRotated(r, 0,1,0);
+   glScaled(s/sqrt(2), s/sqrt(2), s/sqrt(2));
+
+   glColor3f(0.8,0.2,0.2);
+
+   glBegin(GL_QUADS);
+   glVertex3d(1,1,1);
+   glVertex3d(1,1,-1);
+   glVertex3d(-1,1,-1);
+   glVertex3d(-1,1,1);
+
+   glVertex3d(1,1,1);
+   glVertex3d(-1,1,1);
+   glVertex3d(-1,-1,1);
+   glVertex3d(1,-1,1);
+
+   glVertex3d(1,1,1);
+   glVertex3d(1,-1,1);
+   glVertex3d(1,-1,-1);
+   glVertex3d(1,1,-1);
+
+   glVertex3d(-1,-1,-1);
+   glVertex3d(-1,1,-1);
+   glVertex3d(1,1,-1);
+   glVertex3d(1,-1,-1);
+
+   glVertex3d(-1,-1,-1);
+   glVertex3d(-1,-1,1);
+   glVertex3d(-1,1,1);
+   glVertex3d(-1,1,-1);
+
+   glVertex3d(-1,-1,-1);
+   glVertex3d(1,-1,-1);
+   glVertex3d(1,-1,1);
+   glVertex3d(-1,-1,1);
+   glEnd();
+
+   glColor3f(1,1,1);
+
+   glBegin(GL_LINE_STRIP);
+   glVertex3d(1,1,1);
+   glVertex3d(1,1,-1);
+   glVertex3d(-1,1,-1);
+   glVertex3d(-1,1,1);
+   glVertex3d(1,1,1);
+   glVertex3d(1,-1,1);
+   glVertex3d(1,-1,-1);
+   glVertex3d(-1,-1,-1);
+   glVertex3d(-1,-1,1);
+   glVertex3d(1,-1,1);
+   glEnd();
+   glBegin(GL_LINES);
+   glVertex3d(-1,1,1);
+   glVertex3d(-1,-1,1);
+   glVertex3d(-1,1,-1);
+   glVertex3d(-1,-1,-1);
+   glVertex3d(1,1,-1);
+   glVertex3d(1,-1,-1);
+   glEnd();
+
+   glPopMatrix();
+}
+
+void octahedron(double x, double y, double z,
+                 double r,
+                 double s)
+{
+   glPushMatrix();
+   glTranslated(x,y,z);
+   glRotated(r, 0,1,0);
+   glRotated(54.7356, 1,0,1);
+   glScaled(s, s, s);
+
+   glColor3f(0.6,0.4,0.2);
+
+   glBegin(GL_TRIANGLE_STRIP);
+   glVertex3d(1,0,0);
+   glVertex3d(0,1,0);
+   glVertex3d(0,0,1);
+   glVertex3d(-1,0,0);
+   glVertex3d(0,-1,0);
+   glVertex3d(0,0,-1);
+   glVertex3d(1,0,0);
+   glVertex3d(0,1,0);
+   glEnd();
+   glBegin(GL_TRIANGLES);
+   glVertex3d(1,0,0);
+   glVertex3d(0,0,1);
+   glVertex3d(0,-1,0);
+   glVertex3d(-1,0,0);
+   glVertex3d(0,1,0);
+   glVertex3d(0,0,-1);
+   glEnd();
+
+   glColor3f(1,1,1);
+
+   glBegin(GL_LINE_STRIP);
+   glVertex3d(1,0,0);
+   glVertex3d(0,0,1);
+   glVertex3d(0,-1,0);
+   glVertex3d(1,0,0);
+   glVertex3d(0,1,0);
+   glVertex3d(-1,0,0);
+   glVertex3d(0,0,-1);
+   glVertex3d(0,1,0);
+   glVertex3d(0,0,1);
+   glVertex3d(-1,0,0);
+   glVertex3d(0,-1,0);
+   glVertex3d(0,0,-1);
+   glVertex3d(1,0,0);
+   glEnd();
+
+   glPopMatrix();
+}
+
+void dodecahedron(double x, double y, double z,
+                 double r,
+                 double s)
+{
+   //points plotted using cartesian coordinates
+   double phi = 0.5 + sqrt(5.0)/2; //the golden ratio, not the latitude angle
+   double points[20][3];
+   //cube corners
+   points[0][0] = 1;       points[0][1] = 1;       points[0][2] = 1;       
+   points[1][0] = -1;      points[1][1] = 1;       points[1][2] = 1;       
+   points[2][0] = -1;      points[2][1] = 1;       points[2][2] = -1;       
+   points[3][0] = 1;       points[3][1] = 1;       points[3][2] = -1;       
+   points[4][0] = 1;       points[4][1] = -1;      points[4][2] = 1;       
+   points[5][0] = -1;      points[5][1] = -1;      points[5][2] = 1;       
+   points[6][0] = -1;      points[6][1] = -1;      points[6][2] = -1;       
+   points[7][0] = 1;       points[7][1] = -1;      points[7][2] = -1;       
+   //top and bottom
+   points[8][0] = 1/phi;   points[8][1] = phi;     points[8][2] = 0;       
+   points[9][0] = -1/phi;  points[9][1] = phi;     points[9][2] = 0;       
+   points[10][0] = 1/phi;  points[10][1] = -phi;   points[10][2] = 0;      
+   points[11][0] = -1/phi; points[11][1] = -phi;   points[11][2] = 0;      
+   //front and back
+   points[12][0] = 0;      points[12][1] = 1/phi;  points[12][2] = phi;      
+   points[13][0] = 0;      points[13][1] = -1/phi; points[13][2] = phi;      
+   points[14][0] = 0;      points[14][1] = 1/phi;  points[14][2] = -phi;      
+   points[15][0] = 0;      points[15][1] = -1/phi; points[15][2] = -phi;      
+   //left and right
+   points[16][0] = phi;    points[16][1] = 0;      points[16][2] = 1/phi;      
+   points[17][0] = phi;    points[17][1] = 0;      points[17][2] = -1/phi;      
+   points[18][0] = -phi;   points[18][1] = 0;      points[18][2] = 1/phi;      
+   points[19][0] = -phi;   points[19][1] = 0;      points[19][2] = -1/phi;      
+
+   glPushMatrix();
+   glTranslated(x, y, z);
+   glRotated(r, 0,1,0);
+   glRotated(-58.2825, 0,0,1);
+   glScaled(s/sqrt(3), s/sqrt(3), s/sqrt(3)); //vertices are sqrt(3) units from center
+
+   glColor3f(0.6,0.2,0.4);
+
+   // pentagons from the top down
+
+   //top front
+   glBegin(GL_POLYGON);
+   glVertex3d(points[0][0], points[0][1], points[0][2]);
+   glVertex3d(points[8][0], points[8][1], points[8][2]);
+   glVertex3d(points[9][0], points[9][1], points[9][2]);
+   glVertex3d(points[1][0], points[1][1], points[1][2]);
+   glVertex3d(points[12][0], points[12][1], points[12][2]);
+   glEnd();
+
+   //top back
+   glBegin(GL_POLYGON);
+   glVertex3d(points[2][0], points[2][1], points[2][2]);
+   glVertex3d(points[9][0], points[9][1], points[9][2]);
+   glVertex3d(points[8][0], points[8][1], points[8][2]);
+   glVertex3d(points[3][0], points[3][1], points[3][2]);
+   glVertex3d(points[14][0], points[14][1], points[14][2]);
+   glEnd();
+
+   //left top
+   glBegin(GL_POLYGON);
+   glVertex3d(points[2][0], points[2][1], points[2][2]);
+   glVertex3d(points[19][0], points[19][1], points[19][2]);
+   glVertex3d(points[18][0], points[18][1], points[18][2]);
+   glVertex3d(points[1][0], points[1][1], points[1][2]);
+   glVertex3d(points[9][0], points[9][1], points[9][2]);
+   glEnd();
+
+   //right top
+   glBegin(GL_POLYGON);
+   glVertex3d(points[0][0], points[0][1], points[0][2]);
+   glVertex3d(points[16][0], points[16][1], points[16][2]);
+   glVertex3d(points[17][0], points[17][1], points[17][2]);
+   glVertex3d(points[3][0], points[3][1], points[3][2]);
+   glVertex3d(points[8][0], points[8][1], points[8][2]);
+   glEnd();
+
+   //front right
+   glBegin(GL_POLYGON);
+   glVertex3d(points[0][0], points[0][1], points[0][2]);
+   glVertex3d(points[12][0], points[12][1], points[12][2]);
+   glVertex3d(points[13][0], points[13][1], points[13][2]);
+   glVertex3d(points[4][0], points[4][1], points[4][2]);
+   glVertex3d(points[16][0], points[16][1], points[16][2]);
+   glEnd();
+
+   //front left
+   glBegin(GL_POLYGON);
+   glVertex3d(points[5][0], points[5][1], points[5][2]);
+   glVertex3d(points[13][0], points[13][1], points[13][2]);
+   glVertex3d(points[12][0], points[12][1], points[12][2]);
+   glVertex3d(points[1][0], points[1][1], points[1][2]);
+   glVertex3d(points[18][0], points[18][1], points[18][2]);
+   glEnd();
+
+   //back left
+   glBegin(GL_POLYGON);
+   glVertex3d(points[2][0], points[2][1], points[2][2]);
+   glVertex3d(points[14][0], points[14][1], points[14][2]);
+   glVertex3d(points[15][0], points[15][1], points[15][2]);
+   glVertex3d(points[6][0], points[6][1], points[6][2]);
+   glVertex3d(points[19][0], points[19][1], points[19][2]);
+   glEnd();
+
+   //back right
+   glBegin(GL_POLYGON);
+   glVertex3d(points[7][0], points[7][1], points[7][2]);
+   glVertex3d(points[15][0], points[15][1], points[15][2]);
+   glVertex3d(points[14][0], points[14][1], points[14][2]);
+   glVertex3d(points[3][0], points[3][1], points[3][2]);
+   glVertex3d(points[17][0], points[17][1], points[17][2]);
+   glEnd();
+
+   //left bottom
+   glBegin(GL_POLYGON);
+   glVertex3d(points[5][0], points[5][1], points[5][2]);
+   glVertex3d(points[18][0], points[18][1], points[18][2]);
+   glVertex3d(points[19][0], points[19][1], points[19][2]);
+   glVertex3d(points[6][0], points[6][1], points[6][2]);
+   glVertex3d(points[11][0], points[11][1], points[11][2]);
+   glEnd();
+
+   //right bottom
+   glBegin(GL_POLYGON);
+   glVertex3d(points[7][0], points[7][1], points[7][2]);
+   glVertex3d(points[17][0], points[17][1], points[17][2]);
+   glVertex3d(points[16][0], points[16][1], points[16][2]);
+   glVertex3d(points[4][0], points[4][1], points[4][2]);
+   glVertex3d(points[10][0], points[10][1], points[10][2]);
+   glEnd();
+
+   //bottom front
+   glBegin(GL_POLYGON);
+   glVertex3d(points[5][0], points[5][1], points[5][2]);
+   glVertex3d(points[11][0], points[11][1], points[11][2]);
+   glVertex3d(points[10][0], points[10][1], points[10][2]);
+   glVertex3d(points[4][0], points[4][1], points[4][2]);
+   glVertex3d(points[13][0], points[13][1], points[13][2]);
+   glEnd();
+
+   //bottom back
+   glBegin(GL_POLYGON);
+   glVertex3d(points[7][0], points[7][1], points[7][2]);
+   glVertex3d(points[10][0], points[10][1], points[10][2]);
+   glVertex3d(points[11][0], points[11][1], points[11][2]);
+   glVertex3d(points[6][0], points[6][1], points[6][2]);
+   glVertex3d(points[15][0], points[15][1], points[15][2]);
+   glEnd();
+
+   //Edges
+   glColor3f(1,1,1);
+   glBegin(GL_LINE_STRIP);
+   glVertex3d(points[8][0], points[8][1], points[8][2]);
+   glVertex3d(points[0][0], points[0][1], points[0][2]);
+   glVertex3d(points[16][0], points[16][1], points[16][2]);
+   glVertex3d(points[17][0], points[17][1], points[17][2]);
+   glVertex3d(points[3][0], points[3][1], points[3][2]);
+   glVertex3d(points[14][0], points[14][1], points[14][2]);
+   glVertex3d(points[15][0], points[15][1], points[15][2]);
+   glVertex3d(points[7][0], points[7][1], points[7][2]);
+   glVertex3d(points[10][0], points[10][1], points[10][2]);
+   glVertex3d(points[4][0], points[4][1], points[4][2]);
+   glVertex3d(points[13][0], points[13][1], points[13][2]);
+   glVertex3d(points[12][0], points[12][1], points[12][2]);
+   glVertex3d(points[1][0], points[1][1], points[1][2]);
+   glVertex3d(points[18][0], points[18][1], points[18][2]);
+   glVertex3d(points[5][0], points[5][1], points[5][2]);
+   glVertex3d(points[11][0], points[11][1], points[11][2]);
+   glVertex3d(points[6][0], points[6][1], points[6][2]);
+   glVertex3d(points[19][0], points[19][1], points[19][2]);
+   glVertex3d(points[2][0], points[2][1], points[2][2]);
+   glVertex3d(points[9][0], points[9][1], points[9][2]);
+   glVertex3d(points[8][0], points[8][1], points[8][2]);
+   glEnd();
+
+   glBegin(GL_LINES);
+
+   glVertex3d(points[8][0], points[8][1], points[8][2]);
+   glVertex3d(points[3][0], points[3][1], points[3][2]);
+
+   glVertex3d(points[2][0], points[2][1], points[2][2]);
+   glVertex3d(points[14][0], points[14][1], points[14][2]);
+
+   glVertex3d(points[6][0], points[6][1], points[6][2]);
+   glVertex3d(points[15][0], points[15][1], points[15][2]);
+
+   glVertex3d(points[10][0], points[10][1], points[10][2]);
+   glVertex3d(points[11][0], points[11][1], points[11][2]);
+
+   glVertex3d(points[5][0], points[5][1], points[5][2]);
+   glVertex3d(points[13][0], points[13][1], points[13][2]);
+
+   glVertex3d(points[7][0], points[7][1], points[7][2]);
+   glVertex3d(points[17][0], points[17][1], points[17][2]);
+
+   glVertex3d(points[4][0], points[4][1], points[4][2]);
+   glVertex3d(points[16][0], points[16][1], points[16][2]);
+
+   glVertex3d(points[0][0], points[0][1], points[0][2]);
+   glVertex3d(points[12][0], points[12][1], points[12][2]);
+
+   glVertex3d(points[1][0], points[1][1], points[1][2]);
+   glVertex3d(points[9][0], points[9][1], points[9][2]);
+
+   glVertex3d(points[18][0], points[18][1], points[18][2]);
+   glVertex3d(points[19][0], points[19][1], points[19][2]);
+
+   glEnd();
+
+   glPopMatrix();
+}
+
 void icosahedron(double x, double y, double z,
                  double r,
                  double s)
 {
-   double lat = atan(0.5)*180/3.1415927;
    int i = 0;
+   //points plotted using polar coordinates
+   double lat = atan(0.5)*180/3.1415927;
    double points[12][2];
    points[0][0] = 0;       points[0][1] = 90; 
    points[1][0] = 0;       points[1][1] = lat; 
@@ -101,7 +436,7 @@ void icosahedron(double x, double y, double z,
    glRotated(r, 0,1,0);
    glScaled(s, s, s);
 
-   glColor3f(0.1,0.2,0.3);
+   glColor3f(0.2,0.4,0.6);
 
    //top 5 triangles
    glBegin(GL_TRIANGLE_FAN);
@@ -124,7 +459,7 @@ void icosahedron(double x, double y, double z,
    Vertex2(points[11][0], points[11][1]);
    for (i = 10; i > 1; i -= 2)
       Vertex2(points[i][0], points[i][1]);
-   Vertex2(points[11][0], points[11][1]);
+   Vertex2(points[10][0], points[10][1]);
    glEnd();
 
    glColor3f(1,1,1);
