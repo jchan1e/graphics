@@ -63,7 +63,7 @@ void display()
    glPopMatrix();
 
    r += rate;
-   r = fmod(r, 360*24*9.2);
+   r = fmod(r, 360*24*18.4);
    glFlush();
    glutSwapBuffers();
 }
