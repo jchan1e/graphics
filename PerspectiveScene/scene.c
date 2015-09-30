@@ -29,6 +29,17 @@ int h = 800;
 double r = 0;
 double rate = 0.25; //rotation rate
 
+//perspective mode
+int mode = 0;  // 0 = ortho, 1 = perspective, 2 = first person
+
+//eye position and orientation
+double ex = 0;
+double ey = 0;
+double ez = 0;
+
+double vx = 0;
+double vy = 0;
+double vz = 0;
 ////////////////////
 
 
@@ -39,10 +50,38 @@ void display()
    glEnable(GL_CULL_FACE);
 
    glLoadIdentity();
+
+   
    //view angle
-   glRotatef(ph, 1,0,0);
-   glRotatef(th, 0,1,0);
-   glScaled(0.4,0.4,0.4);
+   if (mode == 0)
+   {
+      glRotatef(ph, 1,0,0);
+      glRotatef(th, 0,1,0);
+      glScaled(0.4,0.4,0.4);
+   }
+   else if (mode == 1)
+   {
+      ex = Sin(th)*Cos(ph)*8;
+      ey = Sin(ph)*8;
+      ez = Cos(th)*Cos(ph)*8;
+
+      gluLookAt(ex,ey,ez , 0,0,0 , 0,Cos(ph),0);
+      //glScaled(0.3,0.3,0.3);
+   }
+   else //mode == 2
+   {
+      //ex = -Sin(th)*Cos(ph);
+      //ey = Sin(ph);
+      //ez = Cos(th)*Cos(ph);
+      
+      vx = ex - Sin(th)*Cos(ph);
+      vy = ey - Sin(ph);
+      vz = ez - Cos(th)*Cos(ph);
+
+      gluLookAt(ex,ey,ez , vx,vy,vz , 0,Cos(ph),0);
+      //glScaled(0.3,0.3,0.3);
+   }
+
 
    sphere(0, 0, 0, 1.5*r, 0.5); //Jupiter
    glPushMatrix();
@@ -81,8 +120,10 @@ void reshape(int width, int height)
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
    //adjust projection
-   //glOrtho(-2*w2h, 2*w2h, -2, 2, -2, 2);
-   gluPerspective(60, w2h, 5/4, 5*4);
+   if (mode == 0)
+      glOrtho(-2*w2h, 2*w2h, -2, 2, -2, 2);
+   else //(mode == 1 or 2)
+      gluPerspective(60, w2h, 5/4, 5*4);
 
    //switch back to model matrix
    glMatrixMode(GL_MODELVIEW);
@@ -94,10 +135,16 @@ void special(int key, int mousex, int mousey)
    switch(key)
    {
       case GLUT_KEY_UP:
-         ph += 5;
+         if (mode == 2)
+            ph -= 5;
+         else
+            ph += 5;
          break;
       case GLUT_KEY_DOWN:
-         ph -= 5;
+         if (mode == 2)
+            ph += 5;
+         else
+            ph -= 5;
          break;
       case GLUT_KEY_LEFT:
          th += 5;
@@ -126,6 +173,32 @@ void keyboard(unsigned char key, int mousex, int mousey)
       case ',':
          rate /= 2;
          break;
+      case 'm':
+         mode += 1;
+         mode %= 3;
+         reshape(w, h);
+         break;
+      if(mode == 2)
+      {
+         case 'w':
+            ex -= vx/8;
+            ey -= vy/8;
+            ez -= vz/8;
+            break;
+         case 's':
+            ex += vx/8;
+            ey += vy/8;
+            ez += vz/8;
+            break;
+         case 'a':
+            ex -= vz/8;
+            ez += vx/8;
+            break;
+         case 'd':
+            ex += vz/8;
+            ez -= vx/8;
+            break;
+      }
    }
    glutPostRedisplay();
 }

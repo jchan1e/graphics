@@ -31,3 +31,7 @@
 
 *.zip
 .vimcludes
+
+
+ex*/ex*
+hw*
