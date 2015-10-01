@@ -25,9 +25,9 @@ int ph = 20;
 int w = 800;
 int h = 800;
 
-//sphere rotation
+//orbits & rotation
 double r = 0;
-double rate = 0.25; //rotation rate
+double rate = 1/8.0;
 
 //perspective mode
 int mode = 0;  // 0 = ortho, 1 = perspective, 2 = first person
@@ -101,7 +101,7 @@ void display()
    icosahedron(4, 0, 0, 0.75*r, 0.25); //Callisto
    glPopMatrix();
 
-   r += rate;
+   r = glutGet(GLUT_ELAPSED_TIME)*rate;
    r = fmod(r, 360*24*18.4);
    glFlush();
    glutSwapBuffers();
@@ -168,10 +168,10 @@ void keyboard(unsigned char key, int mousex, int mousey)
          exit(0);
          break;
       case '.':
-         rate *= 2;
+         rate /= 2;
          break;
       case ',':
-         rate /= 2;
+         rate *= 2;
          break;
       case 'm':
          mode += 1;

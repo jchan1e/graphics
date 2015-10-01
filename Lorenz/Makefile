@@ -14,11 +14,11 @@ CFLG=-O3 -Wall
 LIBS=-lglut -lGLU -lGL -lm
 endif
 #  OSX/Linux/Unix/Solaris
-CLEAN=rm -f lorenz *.o *.a
+CLEAN=rm -f hw2 *.o *.a
 endif
 
 #  Compile and link
-lorenz:lorenz.c
+hw2:lorenz.c
 	gcc $(CFLG) -o $@ $^   $(LIBS)
 
 #  Clean

@@ -1,6 +1,13 @@
 #4229 Assignment 3 - Objects in 3D
 ## Jordan Dick
 
-Arrow keys to rotate the scene
-',' and '.' to decrease and increase the simulation speed
+'m' to switch between ortho, perspective,and first person modes
+
+Ortho
+    Arrow keys to rotate the scene
+Perspective
+    Arrow keys to rotate the scene
+First Person
+    WASD to move around, Arrow keys to look around
+
 esc or q to quit
