@@ -1,6 +1,7 @@
-// 
+// hw4 - scene.c
 // manually draws various objects in a simple scene
-//
+// Jordan Dick
+// jordan.dick@colorado.edu
 
 #ifndef STDIncludes
 #define STDIncludes
@@ -53,13 +54,13 @@ void display()
 
    
    //view angle
-   if (mode == 0)
+   if (mode == 0) //rotation for ortho mode
    {
       glRotatef(ph, 1,0,0);
       glRotatef(th, 0,1,0);
       glScaled(0.4,0.4,0.4);
    }
-   else if (mode == 1)
+   else if (mode == 1) //rotation for perspective mode
    {
       ex = Sin(-th)*Cos(ph)*8;
       ey = Sin(ph)*8;
@@ -68,18 +69,13 @@ void display()
       gluLookAt(ex,ey,ez , 0,0,0 , 0,Cos(ph),0);
       //glScaled(0.3,0.3,0.3);
    }
-   else //mode == 2
-   {
-      //ex = -Sin(th)*Cos(ph);
-      //ey = Sin(ph);
-      //ez = Cos(th)*Cos(ph);
-      
-      vx = ex - Sin(th)*Cos(ph);
-      vy = ey - Sin(ph);
+   else //mode == 2              // rotation and movement for FP mode
+   {                             // occur in keyboard & special
+      vx = ex - Sin(th)*Cos(ph); // here we simply update
+      vy = ey - Sin(ph);         // location of view target
       vz = ez - Cos(th)*Cos(ph);
 
       gluLookAt(ex,ey,ez , vx,vy,vz , 0,Cos(ph),0);
-      //glScaled(0.3,0.3,0.3);
    }
 
 
@@ -134,10 +130,10 @@ void special(int key, int mousex, int mousey)
 {
    switch(key)
    {
-      case GLUT_KEY_UP:
-         if (mode == 2)
-            ph -= 5;
-         else
+      case GLUT_KEY_UP:    // in Perspective vs FP mode
+         if (mode == 2)    // up and down intuitively mean
+            ph -= 5;       // opposite directions of rotation
+         else              // in this implementation
             ph += 5;
          break;
       case GLUT_KEY_DOWN:
@@ -180,21 +176,21 @@ void keyboard(unsigned char key, int mousex, int mousey)
          break;
       if(mode == 2)
       {
-         case 'w':
+         case 'w': //move forward
             ex -= (ex-vx)/8;
             ey -= (ey-vy)/8;
             ez -= (ez-vz)/8;
             break;
-         case 's':
+         case 's': //move back
             ex += (ex-vx)/8;
             ey += (ey-vy)/8;
             ez += (ez-vz)/8;
             break;
-         case 'a':
+         case 'a': //strafe right
             ex -= (ez-vz)/8;
             ez += (ex-vx)/8;
             break;
-         case 'd':
+         case 'd': //strafe left
             ex += (ez-vz)/8;
             ez -= (ex-vx)/8;
             break;
