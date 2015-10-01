@@ -19,8 +19,8 @@
 //GLOBAL VARIABLES//
 
 //View Angles
-int th = 30;
-int ph = 20;
+int th = 0;
+int ph = 0;
 //Window Size
 int w = 800;
 int h = 800;
@@ -61,9 +61,9 @@ void display()
    }
    else if (mode == 1)
    {
-      ex = Sin(th)*Cos(ph)*8;
+      ex = Sin(-th)*Cos(ph)*8;
       ey = Sin(ph)*8;
-      ez = Cos(th)*Cos(ph)*8;
+      ez = Cos(-th)*Cos(ph)*8;
 
       gluLookAt(ex,ey,ez , 0,0,0 , 0,Cos(ph),0);
       //glScaled(0.3,0.3,0.3);
@@ -167,12 +167,12 @@ void keyboard(unsigned char key, int mousex, int mousey)
       case 'q':
          exit(0);
          break;
-      case '.':
-         rate /= 2;
-         break;
-      case ',':
-         rate *= 2;
-         break;
+//      case '.':
+//         rate *= 2;
+//         break;
+//      case ',':
+//         rate /= 2;
+//         break;
       case 'm':
          mode += 1;
          mode %= 3;
