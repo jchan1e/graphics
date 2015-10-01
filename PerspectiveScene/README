@@ -8,6 +8,6 @@ Ortho
 Perspective
     Arrow keys to rotate the scene
 First Person
-    WASD to move around, Arrow keys to look around
+    WASD to move forward/backward & strafe, Arrow Keys to look up/down and rotate left/right
 
 esc or q to quit
