@@ -181,22 +181,22 @@ void keyboard(unsigned char key, int mousex, int mousey)
       if(mode == 2)
       {
          case 'w':
-            ex -= vx/8;
-            ey -= vy/8;
-            ez -= vz/8;
+            ex -= (ex-vx)/8;
+            ey -= (ey-vy)/8;
+            ez -= (ez-vz)/8;
             break;
          case 's':
-            ex += vx/8;
-            ey += vy/8;
-            ez += vz/8;
+            ex += (ex-vx)/8;
+            ey += (ey-vy)/8;
+            ez += (ez-vz)/8;
             break;
          case 'a':
-            ex -= vz/8;
-            ez += vx/8;
+            ex -= (ez-vz)/8;
+            ez += (ex-vx)/8;
             break;
          case 'd':
-            ex += vz/8;
-            ez -= vx/8;
+            ex += (ez-vz)/8;
+            ez -= (ex-vx)/8;
             break;
       }
    }
