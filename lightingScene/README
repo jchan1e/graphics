@@ -1,0 +1,13 @@
+#4229 Assignment 3 - Objects in 3D
+## Jordan Dick
+
+'m' to switch between ortho, perspective,and first person modes
+
+Ortho
+    Arrow keys to rotate the scene
+Perspective
+    Arrow keys to rotate the scene
+First Person
+    WASD to move forward/backward & strafe, Arrow Keys to look up/down and rotate left/right
+
+esc or q to quit
