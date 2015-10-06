@@ -23,7 +23,6 @@
 void Vertex(double th, double ph)
 {
    glColor3f(fabs(Cos(th)*Cos(ph)), fabs(Sin(th)*Cos(ph)), fabs(Sin(ph)));
-   glNormal3d(Sin(th)*Cos(ph), Sin(ph), Cos(th)*Cos(ph));
    glVertex3d(Sin(th)*Cos(ph), Sin(ph), Cos(th)*Cos(ph));
 }
 
@@ -89,96 +88,59 @@ void cube(double x, double y, double z,
    glColor3f(0.8,0.2,0.2);
 
    glBegin(GL_QUADS);
-   glNormal3d(0,1,0);
    glVertex3d(1,1,1);
    glVertex3d(1,1,-1);
    glVertex3d(-1,1,-1);
    glVertex3d(-1,1,1);
 
-   glNormal3d(0,0,1);
    glVertex3d(1,1,1);
    glVertex3d(-1,1,1);
    glVertex3d(-1,-1,1);
    glVertex3d(1,-1,1);
 
-   glNormal3d(1,0,0);
    glVertex3d(1,1,1);
    glVertex3d(1,-1,1);
    glVertex3d(1,-1,-1);
    glVertex3d(1,1,-1);
 
-   glNormal3d(0,0,-1);
    glVertex3d(-1,-1,-1);
    glVertex3d(-1,1,-1);
    glVertex3d(1,1,-1);
    glVertex3d(1,-1,-1);
 
-   glNormal3d(-1,0,0);
    glVertex3d(-1,-1,-1);
    glVertex3d(-1,-1,1);
    glVertex3d(-1,1,1);
    glVertex3d(-1,1,-1);
 
-   glNormal3d(0,-1,0);
    glVertex3d(-1,-1,-1);
    glVertex3d(1,-1,-1);
    glVertex3d(1,-1,1);
    glVertex3d(-1,-1,1);
    glEnd();
 
+   glColor3f(1,1,1);
 
-   // WIREFRAME
-   //glColor3f(1,1,1);
-
-   //glBegin(GL_LINES);
-   //glNormal3d(1,1,0);
-   //glVertex3d(1,1,1);
-   //glVertex3d(1,1,-1);
-
-   //glNormal3d(0,1,-1);
-   //glVertex3d(1,1,-1);
-   //glVertex3d(-1,1,-1);
-
-   //glNormal3d(-1,1,0);
-   //glVertex3d(-1,1,-1);
-   //glVertex3d(-1,1,1);
-
-   //glNormal3d(0,1,1);
-   //glVertex3d(-1,1,1);
-   //glVertex3d(1,1,1);
-
-   //glNormal3d(1,0,1);
-   //glVertex3d(1,1,1);
-   //glVertex3d(1,-1,1);
-
-   //glNormal3d(1,-1,0);
-   //glVertex3d(1,-1,1);
-   //glVertex3d(1,-1,-1);
-
-   //glNormal3d(0,-1,-1);
-   //glVertex3d(1,-1,-1);
-   //glVertex3d(-1,-1,-1);
-
-   //glNormal3d(-1,-1,0);
-   //glVertex3d(-1,-1,-1);
-   //glVertex3d(-1,-1,1);
-
-   //glNormal3d(0,-1,1);
-   //glVertex3d(-1,-1,1);
-   //glVertex3d(1,-1,1);
-
-   //glNormal3d(-1,0,1);
-   //glVertex3d(-1,1,1);
-   //glVertex3d(-1,-1,1);
-
-   //glNormal3d(-1,0,-1);
-   //glVertex3d(-1,1,-1);
-   //glVertex3d(-1,-1,-1);
-
-   //glNormal3d(1,0,-1);
-   //glVertex3d(1,1,-1);
-   //glVertex3d(1,-1,-1);
-   //glEnd();
+   glBegin(GL_LINE_STRIP);
+   glVertex3d(1,1,1);
+   glVertex3d(1,1,-1);
+   glVertex3d(-1,1,-1);
+   glVertex3d(-1,1,1);
+   glVertex3d(1,1,1);
+   glVertex3d(1,-1,1);
+   glVertex3d(1,-1,-1);
+   glVertex3d(-1,-1,-1);
+   glVertex3d(-1,-1,1);
+   glVertex3d(1,-1,1);
+   glEnd();
+   glBegin(GL_LINES);
+   glVertex3d(-1,1,1);
+   glVertex3d(-1,-1,1);
+   glVertex3d(-1,1,-1);
+   glVertex3d(-1,-1,-1);
+   glVertex3d(1,1,-1);
+   glVertex3d(1,-1,-1);
+   glEnd();
 
    glPopMatrix();
 }
@@ -214,25 +176,23 @@ void octahedron(double x, double y, double z,
    glVertex3d(0,0,-1);
    glEnd();
 
+   glColor3f(1,1,1);
 
-   //WIREFRAME
-   //glColor3f(1,1,1);
-
-   //glBegin(GL_LINE_STRIP);
-   //glVertex3d(1,0,0);
-   //glVertex3d(0,0,1);
-   //glVertex3d(0,-1,0);
-   //glVertex3d(1,0,0);
-   //glVertex3d(0,1,0);
-   //glVertex3d(-1,0,0);
-   //glVertex3d(0,0,-1);
-   //glVertex3d(0,1,0);
-   //glVertex3d(0,0,1);
-   //glVertex3d(-1,0,0);
-   //glVertex3d(0,-1,0);
-   //glVertex3d(0,0,-1);
-   //glVertex3d(1,0,0);
-   //glEnd();
+   glBegin(GL_LINE_STRIP);
+   glVertex3d(1,0,0);
+   glVertex3d(0,0,1);
+   glVertex3d(0,-1,0);
+   glVertex3d(1,0,0);
+   glVertex3d(0,1,0);
+   glVertex3d(-1,0,0);
+   glVertex3d(0,0,-1);
+   glVertex3d(0,1,0);
+   glVertex3d(0,0,1);
+   glVertex3d(-1,0,0);
+   glVertex3d(0,-1,0);
+   glVertex3d(0,0,-1);
+   glVertex3d(1,0,0);
+   glEnd();
 
    glPopMatrix();
 }
@@ -387,66 +347,65 @@ void dodecahedron(double x, double y, double z,
    glVertex3d(points[15][0], points[15][1], points[15][2]);
    glEnd();
 
+   //Edges
+   glColor3f(1,1,1);
+   glBegin(GL_LINE_STRIP);
+   glVertex3d(points[8][0], points[8][1], points[8][2]);
+   glVertex3d(points[0][0], points[0][1], points[0][2]);
+   glVertex3d(points[16][0], points[16][1], points[16][2]);
+   glVertex3d(points[17][0], points[17][1], points[17][2]);
+   glVertex3d(points[3][0], points[3][1], points[3][2]);
+   glVertex3d(points[14][0], points[14][1], points[14][2]);
+   glVertex3d(points[15][0], points[15][1], points[15][2]);
+   glVertex3d(points[7][0], points[7][1], points[7][2]);
+   glVertex3d(points[10][0], points[10][1], points[10][2]);
+   glVertex3d(points[4][0], points[4][1], points[4][2]);
+   glVertex3d(points[13][0], points[13][1], points[13][2]);
+   glVertex3d(points[12][0], points[12][1], points[12][2]);
+   glVertex3d(points[1][0], points[1][1], points[1][2]);
+   glVertex3d(points[18][0], points[18][1], points[18][2]);
+   glVertex3d(points[5][0], points[5][1], points[5][2]);
+   glVertex3d(points[11][0], points[11][1], points[11][2]);
+   glVertex3d(points[6][0], points[6][1], points[6][2]);
+   glVertex3d(points[19][0], points[19][1], points[19][2]);
+   glVertex3d(points[2][0], points[2][1], points[2][2]);
+   glVertex3d(points[9][0], points[9][1], points[9][2]);
+   glVertex3d(points[8][0], points[8][1], points[8][2]);
+   glEnd();
 
-   //WIREFRAME
-   //glColor3f(1,1,1);
-   //glBegin(GL_LINE_STRIP);
-   //glVertex3d(points[8][0], points[8][1], points[8][2]);
-   //glVertex3d(points[0][0], points[0][1], points[0][2]);
-   //glVertex3d(points[16][0], points[16][1], points[16][2]);
-   //glVertex3d(points[17][0], points[17][1], points[17][2]);
-   //glVertex3d(points[3][0], points[3][1], points[3][2]);
-   //glVertex3d(points[14][0], points[14][1], points[14][2]);
-   //glVertex3d(points[15][0], points[15][1], points[15][2]);
-   //glVertex3d(points[7][0], points[7][1], points[7][2]);
-   //glVertex3d(points[10][0], points[10][1], points[10][2]);
-   //glVertex3d(points[4][0], points[4][1], points[4][2]);
-   //glVertex3d(points[13][0], points[13][1], points[13][2]);
-   //glVertex3d(points[12][0], points[12][1], points[12][2]);
-   //glVertex3d(points[1][0], points[1][1], points[1][2]);
-   //glVertex3d(points[18][0], points[18][1], points[18][2]);
-   //glVertex3d(points[5][0], points[5][1], points[5][2]);
-   //glVertex3d(points[11][0], points[11][1], points[11][2]);
-   //glVertex3d(points[6][0], points[6][1], points[6][2]);
-   //glVertex3d(points[19][0], points[19][1], points[19][2]);
-   //glVertex3d(points[2][0], points[2][1], points[2][2]);
-   //glVertex3d(points[9][0], points[9][1], points[9][2]);
-   //glVertex3d(points[8][0], points[8][1], points[8][2]);
-   //glEnd();
+   glBegin(GL_LINES);
 
-   //glBegin(GL_LINES);
+   glVertex3d(points[8][0], points[8][1], points[8][2]);
+   glVertex3d(points[3][0], points[3][1], points[3][2]);
 
-   //glVertex3d(points[8][0], points[8][1], points[8][2]);
-   //glVertex3d(points[3][0], points[3][1], points[3][2]);
+   glVertex3d(points[2][0], points[2][1], points[2][2]);
+   glVertex3d(points[14][0], points[14][1], points[14][2]);
 
-   //glVertex3d(points[2][0], points[2][1], points[2][2]);
-   //glVertex3d(points[14][0], points[14][1], points[14][2]);
+   glVertex3d(points[6][0], points[6][1], points[6][2]);
+   glVertex3d(points[15][0], points[15][1], points[15][2]);
 
-   //glVertex3d(points[6][0], points[6][1], points[6][2]);
-   //glVertex3d(points[15][0], points[15][1], points[15][2]);
+   glVertex3d(points[10][0], points[10][1], points[10][2]);
+   glVertex3d(points[11][0], points[11][1], points[11][2]);
 
-   //glVertex3d(points[10][0], points[10][1], points[10][2]);
-   //glVertex3d(points[11][0], points[11][1], points[11][2]);
+   glVertex3d(points[5][0], points[5][1], points[5][2]);
+   glVertex3d(points[13][0], points[13][1], points[13][2]);
 
-   //glVertex3d(points[5][0], points[5][1], points[5][2]);
-   //glVertex3d(points[13][0], points[13][1], points[13][2]);
+   glVertex3d(points[7][0], points[7][1], points[7][2]);
+   glVertex3d(points[17][0], points[17][1], points[17][2]);
 
-   //glVertex3d(points[7][0], points[7][1], points[7][2]);
-   //glVertex3d(points[17][0], points[17][1], points[17][2]);
+   glVertex3d(points[4][0], points[4][1], points[4][2]);
+   glVertex3d(points[16][0], points[16][1], points[16][2]);
 
-   //glVertex3d(points[4][0], points[4][1], points[4][2]);
-   //glVertex3d(points[16][0], points[16][1], points[16][2]);
+   glVertex3d(points[0][0], points[0][1], points[0][2]);
+   glVertex3d(points[12][0], points[12][1], points[12][2]);
 
-   //glVertex3d(points[0][0], points[0][1], points[0][2]);
-   //glVertex3d(points[12][0], points[12][1], points[12][2]);
+   glVertex3d(points[1][0], points[1][1], points[1][2]);
+   glVertex3d(points[9][0], points[9][1], points[9][2]);
 
-   //glVertex3d(points[1][0], points[1][1], points[1][2]);
-   //glVertex3d(points[9][0], points[9][1], points[9][2]);
+   glVertex3d(points[18][0], points[18][1], points[18][2]);
+   glVertex3d(points[19][0], points[19][1], points[19][2]);
 
-   //glVertex3d(points[18][0], points[18][1], points[18][2]);
-   //glVertex3d(points[19][0], points[19][1], points[19][2]);
-
-   //glEnd();
+   glEnd();
 
    glPopMatrix();
 }
@@ -503,41 +462,40 @@ void icosahedron(double x, double y, double z,
    Vertex2(points[10][0], points[10][1]);
    glEnd();
 
+   glColor3f(1,1,1);
+   glLineWidth(1.5);
 
-   //WIREFRAME
-   //glColor3f(1,1,1);
-
-   ////top fan of edges
-   //glBegin(GL_LINES);
-   //for (i = 1; i <= 9; i += 2)
-   //{
-   //   Vertex2(points[0][0], points[0][1]);
-   //   Vertex2(points[i][0], points[i][1]);
-   //}
-   //glEnd();
-   ////top ring of edges
-   //glBegin(GL_LINE_STRIP);
-   //for (i = 1; i <= 9; i += 2)
-   //   Vertex2(points[i][0], points[i][1]);
-   ////middle zigzag edges
-   //for (i = 1; i <= 10; ++i)
-   //   Vertex2(points[i][0], points[i][1]);
-   //Vertex2(points[1][0], points[1][1]);
-   //glEnd();
-   ////bottom ring of edges
-   //glBegin(GL_LINE_STRIP);
-   //for (i = 2; i <= 10; i += 2)
-   //   Vertex2(points[i][0], points[i][1]);
-   //Vertex2(points[2][0], points[2][1]);
-   //glEnd();
-   ////bottom fan of edges
-   //glBegin(GL_LINES);
-   //for (i = 2; i <= 10; i += 2)
-   //{
-   //   Vertex2(points[11][0], points[11][1]);
-   //   Vertex2(points[i][0], points[i][1]);
-   //}
-   //glEnd();
+   //top fan of edges
+   glBegin(GL_LINES);
+   for (i = 1; i <= 9; i += 2)
+   {
+      Vertex2(points[0][0], points[0][1]);
+      Vertex2(points[i][0], points[i][1]);
+   }
+   glEnd();
+   //top ring of edges
+   glBegin(GL_LINE_STRIP);
+   for (i = 1; i <= 9; i += 2)
+      Vertex2(points[i][0], points[i][1]);
+   //middle zigzag edges
+   for (i = 1; i <= 10; ++i)
+      Vertex2(points[i][0], points[i][1]);
+   Vertex2(points[1][0], points[1][1]);
+   glEnd();
+   //bottom ring of edges
+   glBegin(GL_LINE_STRIP);
+   for (i = 2; i <= 10; i += 2)
+      Vertex2(points[i][0], points[i][1]);
+   Vertex2(points[2][0], points[2][1]);
+   glEnd();
+   //bottom fan of edges
+   glBegin(GL_LINES);
+   for (i = 2; i <= 10; i += 2)
+   {
+      Vertex2(points[11][0], points[11][1]);
+      Vertex2(points[i][0], points[i][1]);
+   }
+   glEnd();
 
    glPopMatrix();
 }

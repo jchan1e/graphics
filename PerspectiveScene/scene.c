@@ -31,7 +31,7 @@ double r = 0;
 double rate = 1/8.0;
 
 //perspective mode
-int mode = 1;  // 0 = ortho, 1 = perspective, 2 = first person
+int mode = 0;  // 0 = ortho, 1 = perspective, 2 = first person
 
 //eye position and orientation
 double ex = 0;
@@ -52,6 +52,7 @@ void display()
 
    glLoadIdentity();
 
+   
    //view angle
    if (mode == 0) //rotation for ortho mode
    {
@@ -77,48 +78,6 @@ void display()
       gluLookAt(ex,ey,ez , vx,vy,vz , 0,Cos(ph),0);
    }
 
-   
-   //////////Lighting//////////
-
-   // Light position and rendered marker (unlit)
-   //glDisable(GL_LIGHTING);
-   float Position[] = {4*Cos(r/3.0), 3.0, 4*Sin(r/3.0)};
-
-   // lighting colors/types
-   float Ambient[]  = {0.1, 0.12, 0.15, 1.0};
-   float Diffuse[]  = {0.75, 0.75, 0.6, 1.0};
-   float Specular[] = {0.7, 0.7, 1.0, 1.0};
-   float shininess[1];
-   shininess[0] = 64;
-
-   // normally normalize normals
-   glEnable(GL_NORMALIZE);
-
-   // enable lighting
-   glEnable(GL_LIGHTING);
-
-   // set light model with ciewer location for specular lights
-   glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, 1);
-
-   glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-   glEnable(GL_COLOR_MATERIAL);
-
-   // enable the light and position it
-   glEnable(GL_LIGHT0);
-   glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
-   glLightfv(GL_LIGHT0, GL_DIFFUSE, Diffuse);
-   glLightfv(GL_LIGHT0, GL_SPECULAR, Specular);
-   glLightfv(GL_LIGHT0, GL_POSITION, Position);
-
-
-   ///////////////////////////
-
-   float white[] = {1.0, 1.0, 1.0, 1.0};
-   //float emission[] = {0.0, 0.4, 0.9, 1.0};
-
-   glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
-   glMaterialfv(GL_FRONT, GL_SPECULAR, white);
-   //glMaterialfv(GL_FRONT, GL_EMISSION, emission);
 
    sphere(0, 0, 0, 1.5*r, 0.5); //Jupiter
    glPushMatrix();
@@ -137,9 +96,6 @@ void display()
    glRotated(r/18.4, 0,1,0);
    icosahedron(4, 0, 0, 0.75*r, 0.25); //Callisto
    glPopMatrix();
-
-   glDisable(GL_LIGHTING);
-   sphere(Position[0], Position[1], Position[2], 0, 0.125);
 
    r = glutGet(GLUT_ELAPSED_TIME)*rate;
    r = fmod(r, 360*24*18.4);
@@ -216,8 +172,6 @@ void keyboard(unsigned char key, int mousex, int mousey)
       case 'm':
          mode += 1;
          mode %= 3;
-         if (mode == 0)
-            mode = 1;
          reshape(w, h);
          break;
       if(mode == 2)
