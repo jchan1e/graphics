@@ -146,7 +146,8 @@ void display()
    glPopMatrix();
 
    glDisable(GL_LIGHTING);
-   sphere(Position[0], Position[1], Position[2], 0, 0.125);
+   glColor3f(1.0,1.0,1.0);
+   ball(Position[0], Position[1], Position[2], 0.125);
 
    r = glutGet(GLUT_ELAPSED_TIME)*rate;
    r = fmod(r, 360*24*18.4);

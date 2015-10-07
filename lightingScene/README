@@ -11,3 +11,8 @@ First Person
     WASD to move forward/backward & strafe, Arrow Keys to look up/down and rotate left/right
 
 esc or q to quit
+
+
+Interesting note about normals:
+   for any regular polyhedron or similar that has faces with a line that passes through the origin and the centroid of the face and is orthogonal to the face, the normal for the surface (assuming it is to be rendered flat) can be calculated as the sum of the vector locations of the vertices. Enabling GL_NORMALIZE removes the necessity of dividing the resulting vector down to unit length.
+   This made calculating the normals for the dodecahedron and icosahedron a simple matter of addition rather than the mess of inverse trigonometry it would have been otherwise

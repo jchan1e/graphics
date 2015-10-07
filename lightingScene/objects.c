@@ -19,8 +19,8 @@
 #define Sin(x) (sin((x) * 3.1415927/180))
 #define Cos(x) (cos((x) * 3.1415927/180))
 
-//Vertex Polar-Cartesian tranformation function also pilfered from ex8 
-void Vertex(double th, double ph)
+//Vertex Polar-Cartesian tranformation function
+void VertexC(double th, double ph)
 {
    glColor3f(fabs(Cos(th)*Cos(ph)), fabs(Sin(th)*Cos(ph)), fabs(Sin(ph)));
    glNormal3d(Sin(th)*Cos(ph), Sin(ph), Cos(th)*Cos(ph));
@@ -28,9 +28,65 @@ void Vertex(double th, double ph)
 }
 
 //without the coloration
-void Vertex2(double th, double ph)
+void VertexS(double th, double ph)
+{
+   glNormal3d(Sin(th)*Cos(ph), Sin(ph), Cos(th)*Cos(ph));
+   glVertex3d(Sin(th)*Cos(ph), Sin(ph), Cos(th)*Cos(ph));
+}
+
+//without the spherical normal
+void Vertex(double th, double ph)
 {
    glVertex3d(Sin(th)*Cos(ph), Sin(ph), Cos(th)*Cos(ph));
+}
+
+//Normal Polar-Cartesian transformation and summation function
+void pNormal(double th1, double ph1, double th2, double ph2, double th3, double ph3)
+{
+   glNormal3d(Sin(th1)*Cos(ph1) + Sin(th2)*Cos(th2) + Sin(th3)*Cos(ph3),
+              Sin(ph1) + Sin(ph2) + Sin(ph3),
+              Cos(th1)*Cos(ph1) + Cos(th2)*Cos(ph2) + Cos(th3)*Cos(ph3));
+}
+//Sphere function nabbed from ex8 and slightly modified
+void ball(double x, double y, double z,
+          double s)
+{
+   glPushMatrix();
+
+   glTranslated(x, y, z);
+   glScaled(s, s, s);
+
+   //top fan
+   glBegin(GL_TRIANGLE_FAN);
+   VertexS(0,90);
+   for(int th = 0; th <= 360; th += 5)
+   {
+      VertexS(th, 85);
+   }
+   glEnd();
+
+   //latitude rings
+   for (int ph = 85; ph >= -80; ph -= 5)
+   {
+      glBegin(GL_QUAD_STRIP);
+      for (int th = 0; th <= 360; th += 5)
+      {
+         VertexS(th, ph);
+         VertexS(th, ph-5);
+      }
+      glEnd();
+   }
+   
+   //bottom fan
+   glBegin(GL_TRIANGLE_FAN);
+   VertexS(0,-90);
+   for(int th = 360; th >= 0; th -= 5)
+   {
+      VertexS(th, -85);
+   }
+   glEnd();
+
+   glPopMatrix();
 }
 
 //Sphere function nabbed from ex8 and slightly modified
@@ -46,10 +102,10 @@ void sphere(double x, double y, double z,
 
    //top fan
    glBegin(GL_TRIANGLE_FAN);
-   Vertex(0,90);
+   VertexC(0,90);
    for(int th = 0; th <= 360; th += 5)
    {
-      Vertex(th, 85);
+      VertexC(th, 85);
    }
    glEnd();
 
@@ -59,18 +115,18 @@ void sphere(double x, double y, double z,
       glBegin(GL_QUAD_STRIP);
       for (int th = 0; th <= 360; th += 5)
       {
-         Vertex(th, ph);
-         Vertex(th, ph-5);
+         VertexC(th, ph);
+         VertexC(th, ph-5);
       }
       glEnd();
    }
    
    //bottom fan
    glBegin(GL_TRIANGLE_FAN);
-   Vertex(0,-90);
+   VertexC(0,-90);
    for(int th = 360; th >= 0; th -= 5)
    {
-      Vertex(th, -85);
+      VertexC(th, -85);
    }
    glEnd();
 
@@ -195,20 +251,43 @@ void octahedron(double x, double y, double z,
 
    glColor3f(0.6,0.4,0.2);
 
-   glBegin(GL_TRIANGLE_STRIP);
+   glBegin(GL_TRIANGLES);
+   glNormal3d(1,1,1);
    glVertex3d(1,0,0);
    glVertex3d(0,1,0);
+   glVertex3d(0,0,1);
+
+   glNormal3d(-1,1,1);
+   glVertex3d(0,0,1);
+   glVertex3d(0,1,0);
+   glVertex3d(-1,0,0);
+
+   glNormal3d(-1,-1,1);
    glVertex3d(0,0,1);
    glVertex3d(-1,0,0);
    glVertex3d(0,-1,0);
+
+   glNormal3d(-1,-1,-1);
+   glVertex3d(0,-1,0);
+   glVertex3d(-1,0,0);
+   glVertex3d(0,0,-1);
+
+   glNormal3d(1,-1,-1);
+   glVertex3d(0,-1,0);
    glVertex3d(0,0,-1);
    glVertex3d(1,0,0);
+
+   glNormal3d(1,1,-1);
+   glVertex3d(1,0,0);
+   glVertex3d(0,0,-1);
    glVertex3d(0,1,0);
-   glEnd();
-   glBegin(GL_TRIANGLES);
+
+   glNormal3d(1,-1,1);
    glVertex3d(1,0,0);
    glVertex3d(0,0,1);
    glVertex3d(0,-1,0);
+
+   glNormal3d(-1,1,-1);
    glVertex3d(-1,0,0);
    glVertex3d(0,1,0);
    glVertex3d(0,0,-1);
@@ -281,6 +360,9 @@ void dodecahedron(double x, double y, double z,
 
    //top front
    glBegin(GL_POLYGON);
+   glNormal3d(points[0][0]+points[8][0]+points[9][0]+points[1][0]+points[12][0],
+              points[0][1]+points[8][1]+points[9][1]+points[1][1]+points[12][1],
+              points[0][2]+points[8][2]+points[9][2]+points[1][2]+points[12][2]);
    glVertex3d(points[0][0], points[0][1], points[0][2]);
    glVertex3d(points[8][0], points[8][1], points[8][2]);
    glVertex3d(points[9][0], points[9][1], points[9][2]);
@@ -290,6 +372,9 @@ void dodecahedron(double x, double y, double z,
 
    //top back
    glBegin(GL_POLYGON);
+   glNormal3d(points[2][0]+points[9][0]+points[8][0]+points[3][0]+points[14][0],
+              points[2][1]+points[9][1]+points[8][1]+points[3][1]+points[14][1],
+              points[2][2]+points[9][2]+points[8][2]+points[3][2]+points[14][2]);
    glVertex3d(points[2][0], points[2][1], points[2][2]);
    glVertex3d(points[9][0], points[9][1], points[9][2]);
    glVertex3d(points[8][0], points[8][1], points[8][2]);
@@ -299,6 +384,9 @@ void dodecahedron(double x, double y, double z,
 
    //left top
    glBegin(GL_POLYGON);
+   glNormal3d(points[2][0]+points[19][0]+points[18][0]+points[1][0]+points[9][0],
+              points[2][1]+points[19][1]+points[18][1]+points[1][1]+points[9][1],
+              points[2][2]+points[19][2]+points[18][2]+points[1][2]+points[9][2]);
    glVertex3d(points[2][0], points[2][1], points[2][2]);
    glVertex3d(points[19][0], points[19][1], points[19][2]);
    glVertex3d(points[18][0], points[18][1], points[18][2]);
@@ -308,6 +396,9 @@ void dodecahedron(double x, double y, double z,
 
    //right top
    glBegin(GL_POLYGON);
+   glNormal3d(points[0][0]+points[16][0]+points[17][0]+points[3][0]+points[8][0],
+              points[0][1]+points[16][1]+points[17][1]+points[3][1]+points[8][1],
+              points[0][2]+points[16][2]+points[17][2]+points[3][2]+points[8][2]);
    glVertex3d(points[0][0], points[0][1], points[0][2]);
    glVertex3d(points[16][0], points[16][1], points[16][2]);
    glVertex3d(points[17][0], points[17][1], points[17][2]);
@@ -317,6 +408,9 @@ void dodecahedron(double x, double y, double z,
 
    //front right
    glBegin(GL_POLYGON);
+   glNormal3d(points[0][0]+points[12][0]+points[13][0]+points[4][0]+points[16][0],
+              points[0][1]+points[12][1]+points[13][1]+points[4][1]+points[16][1],
+              points[0][2]+points[12][2]+points[13][2]+points[4][2]+points[16][2]);
    glVertex3d(points[0][0], points[0][1], points[0][2]);
    glVertex3d(points[12][0], points[12][1], points[12][2]);
    glVertex3d(points[13][0], points[13][1], points[13][2]);
@@ -326,6 +420,9 @@ void dodecahedron(double x, double y, double z,
 
    //front left
    glBegin(GL_POLYGON);
+   glNormal3d(points[5][0]+points[13][0]+points[12][0]+points[1][0]+points[18][0],
+              points[5][1]+points[13][1]+points[12][1]+points[1][1]+points[18][1],
+              points[5][2]+points[13][2]+points[12][2]+points[1][2]+points[18][2]);
    glVertex3d(points[5][0], points[5][1], points[5][2]);
    glVertex3d(points[13][0], points[13][1], points[13][2]);
    glVertex3d(points[12][0], points[12][1], points[12][2]);
@@ -335,6 +432,9 @@ void dodecahedron(double x, double y, double z,
 
    //back left
    glBegin(GL_POLYGON);
+   glNormal3d(points[2][0]+points[14][0]+points[15][0]+points[6][0]+points[19][0],
+              points[2][1]+points[14][1]+points[15][1]+points[6][1]+points[19][1],
+              points[2][2]+points[14][2]+points[15][2]+points[6][2]+points[19][2]);
    glVertex3d(points[2][0], points[2][1], points[2][2]);
    glVertex3d(points[14][0], points[14][1], points[14][2]);
    glVertex3d(points[15][0], points[15][1], points[15][2]);
@@ -344,6 +444,9 @@ void dodecahedron(double x, double y, double z,
 
    //back right
    glBegin(GL_POLYGON);
+   glNormal3d(points[7][0]+points[15][0]+points[14][0]+points[3][0]+points[17][0],
+              points[7][1]+points[15][1]+points[14][1]+points[3][1]+points[17][1],
+              points[7][2]+points[15][2]+points[14][2]+points[3][2]+points[17][2]);
    glVertex3d(points[7][0], points[7][1], points[7][2]);
    glVertex3d(points[15][0], points[15][1], points[15][2]);
    glVertex3d(points[14][0], points[14][1], points[14][2]);
@@ -353,6 +456,9 @@ void dodecahedron(double x, double y, double z,
 
    //left bottom
    glBegin(GL_POLYGON);
+   glNormal3d(points[5][0]+points[18][0]+points[19][0]+points[6][0]+points[11][0],
+              points[5][1]+points[18][1]+points[19][1]+points[6][1]+points[11][1],
+              points[5][2]+points[18][2]+points[19][2]+points[6][2]+points[11][2]);
    glVertex3d(points[5][0], points[5][1], points[5][2]);
    glVertex3d(points[18][0], points[18][1], points[18][2]);
    glVertex3d(points[19][0], points[19][1], points[19][2]);
@@ -362,6 +468,9 @@ void dodecahedron(double x, double y, double z,
 
    //right bottom
    glBegin(GL_POLYGON);
+   glNormal3d(points[7][0]+points[17][0]+points[16][0]+points[4][0]+points[10][0],
+              points[7][1]+points[17][1]+points[16][1]+points[4][1]+points[10][1],
+              points[7][2]+points[17][2]+points[16][2]+points[4][2]+points[10][2]);
    glVertex3d(points[7][0], points[7][1], points[7][2]);
    glVertex3d(points[17][0], points[17][1], points[17][2]);
    glVertex3d(points[16][0], points[16][1], points[16][2]);
@@ -371,6 +480,9 @@ void dodecahedron(double x, double y, double z,
 
    //bottom front
    glBegin(GL_POLYGON);
+   glNormal3d(points[5][0]+points[11][0]+points[10][0]+points[4][0]+points[13][0],
+              points[5][1]+points[11][1]+points[10][1]+points[4][1]+points[13][1],
+              points[5][2]+points[11][2]+points[10][2]+points[4][2]+points[13][2]);
    glVertex3d(points[5][0], points[5][1], points[5][2]);
    glVertex3d(points[11][0], points[11][1], points[11][2]);
    glVertex3d(points[10][0], points[10][1], points[10][2]);
@@ -380,6 +492,9 @@ void dodecahedron(double x, double y, double z,
 
    //bottom back
    glBegin(GL_POLYGON);
+   glNormal3d(points[7][0]+points[10][0]+points[11][0]+points[6][0]+points[15][0],
+              points[7][1]+points[10][1]+points[11][1]+points[6][1]+points[15][1],
+              points[7][2]+points[10][2]+points[11][2]+points[6][2]+points[15][2]);
    glVertex3d(points[7][0], points[7][1], points[7][2]);
    glVertex3d(points[10][0], points[10][1], points[10][2]);
    glVertex3d(points[11][0], points[11][1], points[11][2]);
@@ -455,7 +570,6 @@ void icosahedron(double x, double y, double z,
                  double r,
                  double s)
 {
-   int i = 0;
    //points plotted using polar coordinates
    double lat = atan(0.5)*180/3.1415927;
    double points[12][2];
@@ -479,28 +593,184 @@ void icosahedron(double x, double y, double z,
 
    glColor3f(0.2,0.4,0.6);
 
-   //top 5 triangles
-   glBegin(GL_TRIANGLE_FAN);
-   Vertex2(points[0][0], points[0][1]);
-   for (i = 1; i < 10; i += 2)
-      Vertex2(points[i][0], points[i][1]);
-   Vertex2(points[1][0], points[1][1]);
+   glBegin(GL_TRIANGLES);
+   pNormal(points[3][0], points[3][1],
+           points[0][0], points[0][1],
+           points[1][0], points[1][0]);
+   Vertex(points[3][0], points[3][1]);
+   Vertex(points[0][0], points[0][1]);
+   Vertex(points[1][0], points[1][1]);
    glEnd();
 
-   //middle 10 triangles
-   glBegin(GL_TRIANGLE_STRIP);
-   for (i = 1; i <= 10; ++i)
-      Vertex2(points[i][0], points[i][1]);
-   Vertex2(points[1][0], points[1][1]);
-   Vertex2(points[2][0], points[2][1]);
+   glBegin(GL_TRIANGLES);
+   pNormal(points[5][0], points[5][1],
+           points[0][0], points[0][1],
+           points[3][0], points[3][1]);
+   Vertex(points[5][0], points[5][1]);
+   Vertex(points[0][0], points[0][1]);
+   Vertex(points[3][0], points[3][1]);
    glEnd();
 
-   //bottom 5 triangles
-   glBegin(GL_TRIANGLE_FAN);
-   Vertex2(points[11][0], points[11][1]);
-   for (i = 10; i > 1; i -= 2)
-      Vertex2(points[i][0], points[i][1]);
-   Vertex2(points[10][0], points[10][1]);
+   glBegin(GL_TRIANGLES);
+   pNormal(points[7][0], points[7][1],
+           points[0][0], points[0][1],
+           points[5][0], points[5][1]);
+   Vertex(points[7][0], points[7][1]);
+   Vertex(points[0][0], points[0][1]);
+   Vertex(points[5][0], points[5][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[9][0], points[9][1],
+           points[0][0], points[0][1],
+           points[7][0], points[7][1]);
+   Vertex(points[9][0], points[9][1]);
+   Vertex(points[0][0], points[0][1]);
+   Vertex(points[7][0], points[7][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[1][0], points[1][1],
+           points[0][0], points[0][1],
+           points[9][0], points[9][1]);
+   Vertex(points[1][0], points[1][1]);
+   Vertex(points[0][0], points[0][1]);
+   Vertex(points[9][0], points[9][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[1][0], points[1][1],
+           points[2][0], points[2][1],
+           points[3][0], points[3][1]);
+   Vertex(points[1][0], points[1][1]);
+   Vertex(points[2][0], points[2][1]);
+   Vertex(points[3][0], points[3][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[3][0], points[3][1],
+           points[4][0], points[4][1],
+           points[5][0], points[5][1]);
+   Vertex(points[3][0], points[3][1]);
+   Vertex(points[4][0], points[4][1]);
+   Vertex(points[5][0], points[5][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[5][0], points[5][1],
+           points[6][0], points[6][1],
+           points[7][0], points[7][1]);
+   Vertex(points[5][0], points[5][1]);
+   Vertex(points[6][0], points[6][1]);
+   Vertex(points[7][0], points[7][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[7][0], points[7][1],
+           points[8][0], points[8][1],
+           points[9][0], points[9][1]);
+   Vertex(points[7][0], points[7][1]);
+   Vertex(points[8][0], points[8][1]);
+   Vertex(points[9][0], points[9][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[9][0], points[9][1],
+           points[10][0], points[10][1],
+           points[1][0], points[1][1]);
+   Vertex(points[9][0], points[9][1]);
+   Vertex(points[10][0], points[10][1]);
+   Vertex(points[1][0], points[1][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[10][0], points[10][1],
+           points[9][0], points[9][1],
+           points[8][0], points[8][1]);
+   Vertex(points[10][0], points[10][1]);
+   Vertex(points[9][0], points[9][1]);
+   Vertex(points[8][0], points[8][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[8][0], points[8][1],
+           points[7][0], points[7][1],
+           points[6][0], points[6][1]);
+   Vertex(points[8][0], points[8][1]);
+   Vertex(points[7][0], points[7][1]);
+   Vertex(points[6][0], points[6][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[6][0], points[6][1],
+           points[5][0], points[5][1],
+           points[4][0], points[4][1]);
+   Vertex(points[6][0], points[6][1]);
+   Vertex(points[5][0], points[5][1]);
+   Vertex(points[4][0], points[4][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[4][0], points[4][1],
+           points[3][0], points[3][1],
+           points[2][0], points[2][1]);
+   Vertex(points[4][0], points[4][1]);
+   Vertex(points[3][0], points[3][1]);
+   Vertex(points[2][0], points[2][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[2][0], points[2][1],
+           points[1][0], points[1][1],
+           points[10][0], points[10][1]);
+   Vertex(points[2][0], points[2][1]);
+   Vertex(points[1][0], points[1][1]);
+   Vertex(points[10][0], points[10][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[2][0], points[2][1],
+           points[11][0], points[11][1],
+           points[4][0], points[4][1]);
+   Vertex(points[2][0], points[2][1]);
+   Vertex(points[11][0], points[11][1]);
+   Vertex(points[4][0], points[4][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[4][0], points[4][1],
+           points[11][0], points[11][1],
+           points[6][0], points[6][1]);
+   Vertex(points[4][0], points[4][1]);
+   Vertex(points[11][0], points[11][1]);
+   Vertex(points[6][0], points[6][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[6][0], points[6][1],
+           points[11][0], points[11][1],
+           points[8][0], points[8][1]);
+   Vertex(points[6][0], points[6][1]);
+   Vertex(points[11][0], points[11][1]);
+   Vertex(points[8][0], points[8][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[8][0], points[8][1],
+           points[11][0], points[11][1],
+           points[10][0], points[10][1]);
+   Vertex(points[8][0], points[8][1]);
+   Vertex(points[11][0], points[11][1]);
+   Vertex(points[10][0], points[10][1]);
+   glEnd();
+
+   glBegin(GL_TRIANGLES);
+   pNormal(points[10][0], points[10][1],
+           points[11][0], points[11][1],
+           points[2][0], points[2][1]);
+   Vertex(points[10][0], points[10][1]);
+   Vertex(points[11][0], points[11][1]);
+   Vertex(points[2][0], points[2][1]);
    glEnd();
 
 
@@ -511,31 +781,31 @@ void icosahedron(double x, double y, double z,
    //glBegin(GL_LINES);
    //for (i = 1; i <= 9; i += 2)
    //{
-   //   Vertex2(points[0][0], points[0][1]);
-   //   Vertex2(points[i][0], points[i][1]);
+   //   Vertex(points[0][0], points[0][1]);
+   //   Vertex(points[i][0], points[i][1]);
    //}
    //glEnd();
    ////top ring of edges
    //glBegin(GL_LINE_STRIP);
    //for (i = 1; i <= 9; i += 2)
-   //   Vertex2(points[i][0], points[i][1]);
+   //   Vertex(points[i][0], points[i][1]);
    ////middle zigzag edges
    //for (i = 1; i <= 10; ++i)
-   //   Vertex2(points[i][0], points[i][1]);
-   //Vertex2(points[1][0], points[1][1]);
+   //   Vertex(points[i][0], points[i][1]);
+   //Vertex(points[1][0], points[1][1]);
    //glEnd();
    ////bottom ring of edges
    //glBegin(GL_LINE_STRIP);
    //for (i = 2; i <= 10; i += 2)
-   //   Vertex2(points[i][0], points[i][1]);
-   //Vertex2(points[2][0], points[2][1]);
+   //   Vertex(points[i][0], points[i][1]);
+   //Vertex(points[2][0], points[2][1]);
    //glEnd();
    ////bottom fan of edges
    //glBegin(GL_LINES);
    //for (i = 2; i <= 10; i += 2)
    //{
-   //   Vertex2(points[11][0], points[11][1]);
-   //   Vertex2(points[i][0], points[i][1]);
+   //   Vertex(points[11][0], points[11][1]);
+   //   Vertex(points[i][0], points[i][1]);
    //}
    //glEnd();
 
