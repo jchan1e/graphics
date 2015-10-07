@@ -41,6 +41,14 @@ double ez = 0;
 double vx = 0;
 double vy = 0;
 double vz = 0;
+
+//lighting arrays
+float Ambient[4];
+float Diffuse[4];
+float Specular[4];
+float shininess[1];
+float Position[3]; 
+
 ////////////////////
 
 
@@ -82,13 +90,12 @@ void display()
 
    // Light position and rendered marker (unlit)
    //glDisable(GL_LIGHTING);
-   float Position[] = {4*Cos(r/3.0), 3.0, 4*Sin(r/3.0)};
+   Position[0] = 4*Cos(r/3.0); Position[1] = 3.0; Position[2] = 4*Sin(r/3.0);
 
    // lighting colors/types
-   float Ambient[]  = {0.1, 0.12, 0.15, 1.0};
-   float Diffuse[]  = {0.75, 0.75, 0.6, 1.0};
-   float Specular[] = {0.7, 0.7, 1.0, 1.0};
-   float shininess[1];
+   Ambient[0] = 0.1; Ambient[1] = 0.12; Ambient[2] = 0.15; Ambient[3] = 1.0;
+   Diffuse[0] = 0.75; Diffuse[1] = 0.75; Diffuse[2] = 0.6; Diffuse[3] = 1.0;
+   Specular[0] = 0.7; Specular[1] = 0.7; Specular[2] = 1.0; Specular[3] = 1.0;
    shininess[0] = 64;
 
    // normally normalize normals
