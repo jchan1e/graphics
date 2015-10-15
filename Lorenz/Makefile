@@ -14,7 +14,7 @@ CFLG=-O3 -Wall
 LIBS=-lglut -lGLU -lGL -lm
 endif
 #  OSX/Linux/Unix/Solaris
-CLEAN=rm -f hw2 *.o *.a
+CLEAN=rm -f hw* *.o *.a
 endif
 
 #  Compile and link
