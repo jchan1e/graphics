@@ -3,17 +3,19 @@
 // Jordan Dick
 // jordan.dick@colorado.edu
 
-#ifndef STDIncludes
-#define STDIncludes
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
-#endif
+//#ifndef STDIncludes
+//#define STDIncludes
+//#include <stdlib.h>
+//#include <stdio.h>
+//#include <math.h>
+//#ifdef __APPLE__
+//#include <GLUT/glut.h>
+//#else
+//#include <GL/glut.h>
+//#endif
+//#endif
+
+#include "CSCIx229.h"
 
 #include "objects.c"
 
@@ -48,6 +50,9 @@ float Diffuse[4];
 float Specular[4];
 float shininess[1];
 float Position[3]; 
+
+//Texture
+unsigned int texture[5];
 
 ////////////////////
 
@@ -85,7 +90,9 @@ void display()
       gluLookAt(ex,ey,ez , vx,vy,vz , 0,Cos(ph),0);
    }
 
-   
+   glEnable(GL_TEXTURE_2D);
+   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
    //////////Lighting//////////
 
    // Light position and rendered marker (unlit)
@@ -127,24 +134,35 @@ void display()
    glMaterialfv(GL_FRONT, GL_SPECULAR, white);
    //glMaterialfv(GL_FRONT, GL_EMISSION, emission);
 
+   glColor3f(1.0,1.0,1.0);
+   glBindTexture(GL_TEXTURE_2D, texture[0]);
    sphere(0, 0, 0, 1.5*r, 0.5); //Jupiter
+
    glPushMatrix();
    glRotated(r/2, 0,1,0);
+   //glBindTexture(GL_TEXTURE_2D, texture[1]);
    cube(1, 0, 0, r, 0.25); //IO
    glPopMatrix();
+
    glPushMatrix();
    glRotated(r/4, 0,1,0);
+   //glBindTexture(GL_TEXTURE_2D, texture[2]);
    octahedron(-2, 0, 0, 4.0/3.0*r, 0.25); //Europa
    glPopMatrix();
+
    glPushMatrix();
    glRotated(r/8, 0,1,0);
+   //glBindTexture(GL_TEXTURE_2D, texture[3]);
    dodecahedron(3, 0, 0, -1.125*r, 0.25); //Ganymede
    glPopMatrix();
+
    glPushMatrix();
    glRotated(r/18.4, 0,1,0);
+   //glBindTexture(GL_TEXTURE_2D, texture[4]);
    icosahedron(4, 0, 0, 0.75*r, 0.25); //Callisto
    glPopMatrix();
 
+   glDisable(GL_TEXTURE_2D);
    glDisable(GL_LIGHTING);
    glColor3f(1.0,1.0,1.0);
    ball(Position[0], Position[1], Position[2], 0.125);
@@ -273,6 +291,16 @@ int main(int argc, char *argv[])
    glutKeyboardFunc(keyboard);
    //glutPassiveMotionFunc(motion);
    glutIdleFunc(idle);
+
+   //load texture
+   texture[0] = LoadTexBMP("jupiter.bmp");
+   texture[1] = LoadTexBMP("mercury.bmp");
+   texture[2] = LoadTexBMP("venus.bmp");
+   texture[3] = LoadTexBMP("earth.bmp");
+   texture[4] = LoadTexBMP("mars.bmp");
+
+   //check for errors
+   ErrCheck("init");
 
    glutMainLoop();
 

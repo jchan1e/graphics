@@ -2,27 +2,28 @@
 // functions for drawing various objects
 //
 
-#ifndef STDIncludes
-#define STDIncludes
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
-
-#endif
-
-//Cos and Sin in degrees - stolen from ex8
-#define Sin(x) (sin((x) * 3.1415927/180))
-#define Cos(x) (cos((x) * 3.1415927/180))
+#include "CSCIx229.h"
+//#ifndef STDIncludes
+//#define STDIncludes
+//#include <stdlib.h>
+//#include <stdio.h>
+//#include <math.h>
+//#ifdef __APPLE__
+//#include <GLUT/glut.h>
+//#else
+//#include <GL/glut.h>
+//#endif
+//
+//#endif
+//
+////Cos and Sin in degrees - stolen from ex8
+//#define Sin(x) (sin((x) * 3.1415927/180))
+//#define Cos(x) (cos((x) * 3.1415927/180))
 
 //Vertex Polar-Cartesian tranformation function
 void VertexC(double th, double ph)
 {
-   glColor3f(fabs(Cos(th)*Cos(ph)), fabs(Sin(th)*Cos(ph)), fabs(Sin(ph)));
+   glTexCoord2d(th/360, (ph-90)/180);
    glNormal3d(Sin(th)*Cos(ph), Sin(ph), Cos(th)*Cos(ph));
    glVertex3d(Sin(th)*Cos(ph), Sin(ph), Cos(th)*Cos(ph));
 }
@@ -146,39 +147,63 @@ void cube(double x, double y, double z,
 
    glBegin(GL_QUADS);
    glNormal3d(0,1,0);
+   glTexCoord2d(0.0, 0.2);
    glVertex3d(1,1,1);
+   glTexCoord2d(0.25, 0.2);
    glVertex3d(1,1,-1);
+   glTexCoord2d(0.5, 0.2);
    glVertex3d(-1,1,-1);
+   glTexCoord2d(0.75, 0.2);
    glVertex3d(-1,1,1);
 
    glNormal3d(0,0,1);
+   glTexCoord2d(0.0, 0.2);
    glVertex3d(1,1,1);
+   glTexCoord2d(0.75, 0.2);
    glVertex3d(-1,1,1);
+   glTexCoord2d(0.75, 0.8);
    glVertex3d(-1,-1,1);
+   glTexCoord2d(0.0, 0.8);
    glVertex3d(1,-1,1);
 
    glNormal3d(1,0,0);
+   glTexCoord2d(0.0, 0.2);
    glVertex3d(1,1,1);
+   glTexCoord2d(0.0, 0.8);
    glVertex3d(1,-1,1);
+   glTexCoord2d(0.25, 0.8);
    glVertex3d(1,-1,-1);
+   glTexCoord2d(0.25, 0.2);
    glVertex3d(1,1,-1);
 
    glNormal3d(0,0,-1);
+   glTexCoord2d(0.5, 0.8);
    glVertex3d(-1,-1,-1);
+   glTexCoord2d(0.5, 0.2);
    glVertex3d(-1,1,-1);
+   glTexCoord2d(0.25, 0.2);
    glVertex3d(1,1,-1);
+   glTexCoord2d(0.25, 0.8);
    glVertex3d(1,-1,-1);
 
    glNormal3d(-1,0,0);
+   glTexCoord2d(0.5, 0.8);
    glVertex3d(-1,-1,-1);
+   glTexCoord2d(0.75, 0.8);
    glVertex3d(-1,-1,1);
+   glTexCoord2d(0.75, 0.2);
    glVertex3d(-1,1,1);
+   glTexCoord2d(0.5, 0.2);
    glVertex3d(-1,1,-1);
 
    glNormal3d(0,-1,0);
+   glTexCoord2d(0.5, 0.8);
    glVertex3d(-1,-1,-1);
+   glTexCoord2d(0.25, 0.8);
    glVertex3d(1,-1,-1);
+   glTexCoord2d(0.0, 0.8);
    glVertex3d(1,-1,1);
+   glTexCoord2d(0.75, 0.8);
    glVertex3d(-1,-1,1);
    glEnd();
 

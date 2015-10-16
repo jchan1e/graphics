@@ -19,6 +19,18 @@ endif
 
 all:scene
 
+#  dependencies
+fatal.o: fatal.c CSCIx229.h
+loadtexbmp.o: loadtexbmp.c CSCIx229.h
+print.o: print.c CSCIx229.h
+project.o: project.c CSCIx229.h
+errcheck.o: errcheck.c CSCIx229.h
+object.o: object.c CSCIx229.h
+
+#  x229 Archive
+CSCIx229.a:fatal.o loadtexbmp.o print.o project.o errcheck.o object.o
+	ar -rcs $@ $^
+
 #  Compile
 .c.o:
 	gcc -std=c99  -c $(CFLG) $<
@@ -26,7 +38,7 @@ all:scene
 	g++ -c $(CFLG) $<
 
 #  link
-scene:scene.o 
+scene:scene.o CSCIx229.a
 	gcc -O3 -o hw6 $^   $(LIBS)
 
 #  Clean
