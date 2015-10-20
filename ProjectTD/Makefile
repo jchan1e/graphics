@@ -17,7 +17,7 @@ endif
 CLEAN=rm -f scene *.o *.a hw*
 endif
 
-all:scene
+all:game
 
 #  dependencies
 fatal.o: fatal.c CSCIx229.h
@@ -38,7 +38,7 @@ CSCIx229.a:fatal.o loadtexbmp.o print.o project.o errcheck.o object.o
 	g++ -c $(CFLG) $<
 
 #  link
-scene:scene.o CSCIx229.a
+game:game.o CSCIx229.a
 	gcc -O3 -o Play $^   $(LIBS)
 
 #  Clean

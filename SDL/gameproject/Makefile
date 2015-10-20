@@ -14,10 +14,10 @@ CFLG=-O3 -Wall
 LIBS=-lSDL2 -lGLU -lGL -lm
 endif
 #  OSX/Linux/Unix/Solaris
-CLEAN=rm -f scene *.o *.a hw*
+CLEAN=rm -f game *.o *.a hw*
 endif
 
-all:scene
+all:game
 
 #  Compile
 .c.o:
@@ -26,7 +26,7 @@ all:scene
 	g++ -c $(CFLG) $<
 
 #  link
-scene:scene.o 
+game:game.o 
 	gcc -O3 -o play $^   $(LIBS)
 
 #  Clean
