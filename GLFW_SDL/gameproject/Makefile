@@ -6,15 +6,15 @@ CLEAN=del *.exe *.o *.a
 else
 #  OSX
 ifeq "$(shell uname)" "Darwin"
-CFLG=-O3 -Wall -Wno-deprecated-declarations
-LIBS=-framework GLUT -framework OpenGL
+CFLG=-O3 -Wall -Wno-deprecated-declarations $(shell sdl2-config --cflags)
+LIBS=-framework OpenGL $(shell sdl2-config --libs)
 #  Linux/Unix/Solaris
 else
-CFLG=-O3 -Wall
-LIBS=-lSDL2 -lGLU -lGL -lm
+CFLG=-O3 -Wall $(shell sdl2-config --cflags)
+LIBS=-lGLU -lGL -lm $(shell sdl2-config --libs)
 endif
 #  OSX/Linux/Unix/Solaris
-CLEAN=rm -f game *.o *.a hw*
+CLEAN=rm -f play *.o *.a
 endif
 
 all:game

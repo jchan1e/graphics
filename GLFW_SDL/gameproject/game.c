@@ -9,14 +9,15 @@
 #include <stdio.h>
 #include <math.h>
 #ifdef __APPLE__
-#include <GLUT/glut.h>
+#include <OpenGL/glu.h>
 #else
-#include <GL/glut.h>
+#include <GL/GLU.h>
 #endif
 #endif
 
 //#include "CSCIx229.h"
-
+#include <SDL.h>
+#include <SDL_opengl.h>
 #include "objects.c"
 
 //GLOBAL VARIABLES//
@@ -127,50 +128,50 @@ void display()
 
    ///////////////////////////
 
-   float white[] = {1.0, 1.0, 1.0, 1.0};
-   //float emission[] = {0.0, 0.4, 0.9, 1.0};
-
-   glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
-   glMaterialfv(GL_FRONT, GL_SPECULAR, white);
-   //glMaterialfv(GL_FRONT, GL_EMISSION, emission);
-
-   glColor3f(1.0,1.0,1.0);
-   glBindTexture(GL_TEXTURE_2D, texture[0]);
-   sphere(0, 0, 0, 1.5*r, 0.5); //Jupiter
-
-   glPushMatrix();
-   glRotated(r/2, 0,1,0);
-   //glBindTexture(GL_TEXTURE_2D, texture[1]);
-   cube(1, 0, 0, r, 0.25); //IO
-   glPopMatrix();
-
-   glPushMatrix();
-   glRotated(r/4, 0,1,0);
-   //glBindTexture(GL_TEXTURE_2D, texture[2]);
-   octahedron(-2, 0, 0, 4.0/3.0*r, 0.25); //Europa
-   glPopMatrix();
-
-   glPushMatrix();
-   glRotated(r/8, 0,1,0);
-   //glBindTexture(GL_TEXTURE_2D, texture[3]);
-   dodecahedron(3, 0, 0, -1.125*r, 0.25); //Ganymede
-   glPopMatrix();
-
-   glPushMatrix();
-   glRotated(r/18.4, 0,1,0);
-   //glBindTexture(GL_TEXTURE_2D, texture[4]);
-   icosahedron(4, 0, 0, 0.75*r, 0.25); //Callisto
-   glPopMatrix();
-
-   glDisable(GL_TEXTURE_2D);
-   glDisable(GL_LIGHTING);
+//   float white[] = {1.0, 1.0, 1.0, 1.0};
+//   //float emission[] = {0.0, 0.4, 0.9, 1.0};
+//
+//   glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
+//   glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+//   //glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+//
+//   glColor3f(1.0,1.0,1.0);
+//   glBindTexture(GL_TEXTURE_2D, texture[0]);
+//   sphere(0, 0, 0, 1.5*r, 0.5); //Jupiter
+//
+//   glPushMatrix();
+//   glRotated(r/2, 0,1,0);
+//   //glBindTexture(GL_TEXTURE_2D, texture[1]);
+//   cube(1, 0, 0, r, 0.25); //IO
+//   glPopMatrix();
+//
+//   glPushMatrix();
+//   glRotated(r/4, 0,1,0);
+//   //glBindTexture(GL_TEXTURE_2D, texture[2]);
+//   octahedron(-2, 0, 0, 4.0/3.0*r, 0.25); //Europa
+//   glPopMatrix();
+//
+//   glPushMatrix();
+//   glRotated(r/8, 0,1,0);
+//   //glBindTexture(GL_TEXTURE_2D, texture[3]);
+//   dodecahedron(3, 0, 0, -1.125*r, 0.25); //Ganymede
+//   glPopMatrix();
+//
+//   glPushMatrix();
+//   glRotated(r/18.4, 0,1,0);
+//   //glBindTexture(GL_TEXTURE_2D, texture[4]);
+//   icosahedron(4, 0, 0, 0.75*r, 0.25); //Callisto
+//   glPopMatrix();
+//
+//   glDisable(GL_TEXTURE_2D);
+//   glDisable(GL_LIGHTING);
    glColor3f(1.0,1.0,1.0);
    ball(Position[0], Position[1], Position[2], 0.125);
 
-   r = glutGet(GLUT_ELAPSED_TIME)*rate;
-   r = fmod(r, 360*24*18.4);
+//   r = glutGet(GLUT_ELAPSED_TIME)*rate;
+//   r = fmod(r, 360*24*18.4);
    glFlush();
-   glutSwapBuffers();
+//   glutSwapBuffers();
 }
 
 void reshape(int width, int height)
@@ -198,111 +199,111 @@ void reshape(int width, int height)
 
 void special(int key, int mousex, int mousey)
 {
-   switch(key)
-   {
-      case GLUT_KEY_UP:    // in Perspective vs FP mode
-         if (mode == 2)    // up and down intuitively mean
-            ph -= 5;       // opposite directions of rotation
-         else              // in this implementation
-            ph += 5;
-         break;
-      case GLUT_KEY_DOWN:
-         if (mode == 2)
-            ph += 5;
-         else
-            ph -= 5;
-         break;
-      case GLUT_KEY_LEFT:
-         th += 5;
-         break;
-      case GLUT_KEY_RIGHT:
-         th -= 5;
-         break;
-   }
+//   switch(key)
+//   {
+//      case GLUT_KEY_UP:    // in Perspective vs FP mode
+//         if (mode == 2)    // up and down intuitively mean
+//            ph -= 5;       // opposite directions of rotation
+//         else              // in this implementation
+//            ph += 5;
+//         break;
+//      case GLUT_KEY_DOWN:
+//         if (mode == 2)
+//            ph += 5;
+//         else
+//            ph -= 5;
+//         break;
+//      case GLUT_KEY_LEFT:
+//         th += 5;
+//         break;
+//      case GLUT_KEY_RIGHT:
+//         th -= 5;
+//         break;
+//   }
    ph %= 360;
    th %= 360;
 }
 
 void keyboard(unsigned char key, int mousex, int mousey)
 {
-   switch(key)
-   {
-      case 27: //escape
-         exit(0);
-         break;
-      case 'q':
-         exit(0);
-         break;
-//      case '.':
-//         rate *= 2;
+//   switch(key)
+//   {
+//      case 27: //escape
+//         exit(0);
 //         break;
-//      case ',':
-//         rate /= 2;
+//      case 'q':
+//         exit(0);
 //         break;
-      case 'm':
-         mode += 1;
-         mode %= 3;
-         if (mode == 0)
-            mode = 1;
-         reshape(w, h);
-         break;
-      if(mode == 2)
-      {
-         case 'w': //move forward
-            ex -= (ex-vx)/8;
-            ey -= (ey-vy)/8;
-            ez -= (ez-vz)/8;
-            break;
-         case 's': //move back
-            ex += (ex-vx)/8;
-            ey += (ey-vy)/8;
-            ez += (ez-vz)/8;
-            break;
-         case 'a': //strafe right
-            ex -= (ez-vz)/8;
-            ez += (ex-vx)/8;
-            break;
-         case 'd': //strafe left
-            ex += (ez-vz)/8;
-            ez -= (ex-vx)/8;
-            break;
-      }
-   }
-   glutPostRedisplay();
+////      case '.':
+////         rate *= 2;
+////         break;
+////      case ',':
+////         rate /= 2;
+////         break;
+//      case 'm':
+//         mode += 1;
+//         mode %= 3;
+//         if (mode == 0)
+//            mode = 1;
+//         reshape(w, h);
+//         break;
+//      if(mode == 2)
+//      {
+//         case 'w': //move forward
+//            ex -= (ex-vx)/8;
+//            ey -= (ey-vy)/8;
+//            ez -= (ez-vz)/8;
+//            break;
+//         case 's': //move back
+//            ex += (ex-vx)/8;
+//            ey += (ey-vy)/8;
+//            ez += (ez-vz)/8;
+//            break;
+//         case 'a': //strafe right
+//            ex -= (ez-vz)/8;
+//            ez += (ex-vx)/8;
+//            break;
+//         case 'd': //strafe left
+//            ex += (ez-vz)/8;
+//            ez -= (ex-vx)/8;
+//            break;
+//      }
+//   }
+//   glutPostRedisplay();
 }
 
 void idle()
 {
-   glutPostRedisplay();
+//   glutPostRedisplay();
 }
 
 int main(int argc, char *argv[])
 {
-   glutInit(&argc, argv);
-   glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-
-   glutInitWindowPosition(0,0);
-   glutInitWindowSize(w,h);
-   glutCreateWindow("Jordan Dick: HW3 - Galilean Moons");
-
-   glutDisplayFunc(display);
-   glutReshapeFunc(reshape);
-   glutSpecialFunc(special);
-   glutKeyboardFunc(keyboard);
-   //glutPassiveMotionFunc(motion);
-   glutIdleFunc(idle);
-
-   //load texture
-//   texture[0] = LoadTexBMP("jupiter.bmp");
-//   texture[1] = LoadTexBMP("mercury.bmp");
-//   texture[2] = LoadTexBMP("venus.bmp");
-//   texture[3] = LoadTexBMP("earth.bmp");
-//   texture[4] = LoadTexBMP("mars.bmp");
-
-   //check for errors
-//   ErrCheck("init");
-
-   glutMainLoop();
+//   glutInit(&argc, argv);
+//   glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
+//
+//   glutInitWindowPosition(0,0);
+//   glutInitWindowSize(w,h);
+//   glutCreateWindow("Jordan Dick: HW3 - Galilean Moons");
+//
+//   glutDisplayFunc(display);
+//   glutReshapeFunc(reshape);
+//   glutSpecialFunc(special);
+//   glutKeyboardFunc(keyboard);
+//   //glutPassiveMotionFunc(motion);
+//   glutIdleFunc(idle);
+//
+//   //load texture
+////   texture[0] = LoadTexBMP("jupiter.bmp");
+////   texture[1] = LoadTexBMP("mercury.bmp");
+////   texture[2] = LoadTexBMP("venus.bmp");
+////   texture[3] = LoadTexBMP("earth.bmp");
+////   texture[4] = LoadTexBMP("mars.bmp");
+//
+//   //check for errors
+////   ErrCheck("init");
+//
+//   glutMainLoop();
 
    return EXIT_SUCCESS;
 }
