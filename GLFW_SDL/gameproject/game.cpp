@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <iostream>
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
 #else
@@ -20,18 +21,18 @@
 #include <SDL_opengl.h>
 #include "objects.c"
 
+using namespace std;
+
 //GLOBAL VARIABLES//
+//running or not
+bool quit = false;
 
 //View Angles
-int th = 0;
-int ph = 0;
+double th = 0;
+double ph = 0;
 //Window Size
-int w = 800;
+int w = 600;
 int h = 800;
-
-//orbits & rotation
-double r = 0;
-double rate = 1/8.0;
 
 //perspective mode
 int mode = 1;  // 0 = ortho, 1 = perspective, 2 = first person
@@ -52,11 +53,60 @@ float Specular[4];
 float shininess[1];
 float Position[3]; 
 
-//Texture
-unsigned int texture[5];
+//Textures
+//unsigned int texture[5];
+
+
+//SDL Window/OpenGL Context
+SDL_Window* window = NULL;
+SDL_GLContext context;
+
+//Timing
+double r = 0;
+double dr = 0;
 
 ////////////////////
 
+//////// SDL Init Function ////////
+
+bool init()
+{
+   bool success = true;
+
+   if (SDL_Init(SDL_INIT_VIDEO) != 0)
+   {
+      cerr << "SDL failed to initialize: " << SDL_GetError() << endl;
+      success = false;
+   }
+
+   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+
+   window = SDL_CreateWindow("Jordan Dick - FinalTD", 0,0 , w,h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+   if (window == NULL)
+   {
+      cerr << "SDL failed to create a window: " << SDL_GetError() << endl;
+      success = false;
+   }
+
+   context = SDL_GL_CreateContext(window);
+   if (context == NULL)
+   {
+      cerr << "SDL failed to create OpenGL context: " << SDL_GetError() << endl;
+      success = false;
+   }
+   
+   //Vsync
+   if (SDL_GL_SetSwapInterval(1) < 0)
+   {
+      cerr << "SDL could not set Vsync: " << SDL_GetError() << endl;
+      success = false;
+   }
+
+   return success;
+}
+
+///////////////////////////////////
 
 void display()
 {
@@ -98,7 +148,7 @@ void display()
 
    // Light position and rendered marker (unlit)
    //glDisable(GL_LIGHTING);
-   Position[0] = 4*Cos(r/3.0); Position[1] = 3.0; Position[2] = 4*Sin(r/3.0);
+//   Position[0] = 4*Cos(r/3.0); Position[1] = 3.0; Position[2] = 4*Sin(r/3.0);
 
    // lighting colors/types
    Ambient[0] = 0.1; Ambient[1] = 0.12; Ambient[2] = 0.15; Ambient[3] = 1.0;
@@ -128,16 +178,16 @@ void display()
 
    ///////////////////////////
 
-//   float white[] = {1.0, 1.0, 1.0, 1.0};
+   float white[] = {1.0, 1.0, 1.0, 1.0};
 //   //float emission[] = {0.0, 0.4, 0.9, 1.0};
 //
-//   glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
-//   glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+   glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
+   glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 //   //glMaterialfv(GL_FRONT, GL_EMISSION, emission);
 //
-//   glColor3f(1.0,1.0,1.0);
+   glColor3f(1.0,1.0,1.0);
 //   glBindTexture(GL_TEXTURE_2D, texture[0]);
-//   sphere(0, 0, 0, 1.5*r, 0.5); //Jupiter
+   sphere(0, 0, 0, 1.5*r, 0.5); //Jupiter
 //
 //   glPushMatrix();
 //   glRotated(r/2, 0,1,0);
@@ -186,95 +236,19 @@ void reshape(int width, int height)
    //switch to projection matrix
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
+   
    //adjust projection
-   if (mode == 0)
-      glOrtho(-2*w2h, 2*w2h, -2, 2, -2, 2);
-   else //(mode == 1 or 2)
-      gluPerspective(60, w2h, 5/4, 5*4);
+   gluPerspective(60, w2h, 5/4, 5*4);
 
    //switch back to model matrix
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 }
 
-void special(int key, int mousex, int mousey)
+void keyboard(const Uint8* state)
 {
-//   switch(key)
-//   {
-//      case GLUT_KEY_UP:    // in Perspective vs FP mode
-//         if (mode == 2)    // up and down intuitively mean
-//            ph -= 5;       // opposite directions of rotation
-//         else              // in this implementation
-//            ph += 5;
-//         break;
-//      case GLUT_KEY_DOWN:
-//         if (mode == 2)
-//            ph += 5;
-//         else
-//            ph -= 5;
-//         break;
-//      case GLUT_KEY_LEFT:
-//         th += 5;
-//         break;
-//      case GLUT_KEY_RIGHT:
-//         th -= 5;
-//         break;
-//   }
-   ph %= 360;
-   th %= 360;
-}
-
-void keyboard(unsigned char key, int mousex, int mousey)
-{
-//   switch(key)
-//   {
-//      case 27: //escape
-//         exit(0);
-//         break;
-//      case 'q':
-//         exit(0);
-//         break;
-////      case '.':
-////         rate *= 2;
-////         break;
-////      case ',':
-////         rate /= 2;
-////         break;
-//      case 'm':
-//         mode += 1;
-//         mode %= 3;
-//         if (mode == 0)
-//            mode = 1;
-//         reshape(w, h);
-//         break;
-//      if(mode == 2)
-//      {
-//         case 'w': //move forward
-//            ex -= (ex-vx)/8;
-//            ey -= (ey-vy)/8;
-//            ez -= (ez-vz)/8;
-//            break;
-//         case 's': //move back
-//            ex += (ex-vx)/8;
-//            ey += (ey-vy)/8;
-//            ez += (ez-vz)/8;
-//            break;
-//         case 'a': //strafe right
-//            ex -= (ez-vz)/8;
-//            ez += (ex-vx)/8;
-//            break;
-//         case 'd': //strafe left
-//            ex += (ez-vz)/8;
-//            ez -= (ex-vx)/8;
-//            break;
-//      }
-//   }
-//   glutPostRedisplay();
-}
-
-void idle()
-{
-//   glutPostRedisplay();
+   if (state[SDLK_q])
+      quit = true;
 }
 
 int main(int argc, char *argv[])
@@ -292,7 +266,49 @@ int main(int argc, char *argv[])
 //   glutKeyboardFunc(keyboard);
 //   //glutPassiveMotionFunc(motion);
 //   glutIdleFunc(idle);
-//
+
+//   SDL_StartTextInput();
+
+   if (init() != true)
+   {
+      cerr << "Shutting Down\n";
+      return 1;
+   }
+   
+   reshape(w,h);
+
+   SDL_Event event;
+
+   ////////Main Loop////////
+   while (!quit)
+   {
+      while (SDL_PollEvent(&event))
+      {
+         switch(event.type)
+         {
+            case SDL_QUIT:
+               cout << "x button pressed\n";
+               quit = true;
+               break;
+
+            case SDL_KEYDOWN || SDL_KEYUP:
+               cout << "key pressed\n";
+               if (mode == 1)
+               {
+                  const Uint8* state = SDL_GetKeyboardState(NULL);
+                  keyboard(state);
+               }
+               break;
+         }
+      }
+
+      display();
+   }
+
+   cout << "Shutting Down\n";
+   SDL_Quit();
+   
+
 //   //load texture
 ////   texture[0] = LoadTexBMP("jupiter.bmp");
 ////   texture[1] = LoadTexBMP("mercury.bmp");

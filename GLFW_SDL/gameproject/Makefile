@@ -21,13 +21,13 @@ all:game
 
 #  Compile
 .c.o:
-	gcc -std=c99  -c $(CFLG) $<
+	gcc -std=c99 -c $(CFLG) $<
 .cpp.o:
 	g++ -c $(CFLG) $<
 
 #  link
 game:game.o 
-	gcc -O3 -o play $^   $(LIBS)
+	g++ -O3 -o play $^ $(LIBS)
 
 #  Clean
 clean:
