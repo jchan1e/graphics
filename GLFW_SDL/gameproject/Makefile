@@ -24,9 +24,11 @@ all:game
 	gcc -std=c99 -c $(CFLG) $<
 .cpp.o:
 	g++ -c $(CFLG) $<
+#structures.o:structure.cpp structures.h
+#	g++ -c $(CFLG) $<
 
 #  link
-game:game.o 
+game:game.o structures.o
 	g++ -O3 -o play $^ $(LIBS)
 
 #  Clean

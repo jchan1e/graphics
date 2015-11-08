@@ -1,20 +1,22 @@
-// 
+// Jordan Dick 2015
 // functions for drawing various objects
 //
 
-//#include "CSCIx229.h"
 #ifndef STDIncludes
 #define STDIncludes
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #ifdef __APPLE__
-#include <GLUT/glut.h>
+#include <OpenGL/glu.h>
 #else
-#include <GL/glut.h>
+#include <GL/glu.h>
+#endif
 #endif
 
-#endif
+#ifndef Jobjects
+#define Jobjects
+
 
 //Cos and Sin in degrees - stolen from ex8
 #define Sin(x) (sin((x) * 3.1415927/180))
@@ -836,3 +838,5 @@ void icosahedron(double x, double y, double z,
 
    glPopMatrix();
 }
+
+#endif
