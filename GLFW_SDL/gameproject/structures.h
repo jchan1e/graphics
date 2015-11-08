@@ -9,8 +9,8 @@ class Floor
 public:
    Floor();
    void render();
-   float startx() {return startx};
-   float starty() {return starty};
+   float startx() {return startx;}
+   float starty() {return starty;}
 }
 
 class Enemy
