@@ -24,14 +24,15 @@ all:game
 #	gcc -std=c99 -c $(CFLG) $<
 #.cpp.o:
 #	g++ -c $(CFLG) $<
-game.o:game.cpp objects.o structures.o structures.h objects.h
+game.o:game.cpp structures.h objects.h
 	g++ -c $(CFLG) $<
 
-structures.o:structures.cpp objects.o structures.h objects.h
+structures.o:structures.cpp structures.h objects.h
 	g++ -c $(CFLG) $<
 
-objects.o: objects.c objects.h
-	gcc -std=c99 -c $(CFLG) $<
+objects.o: objects.cpp objects.h
+	g++ -c $(CFLG) $<
+#	gcc -std=c99 -c $(CFLG) $<
 
 #  link
 game:game.o structures.o objects.o
