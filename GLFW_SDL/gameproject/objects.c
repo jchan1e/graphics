@@ -2,25 +2,27 @@
 // functions for drawing various objects
 //
 
-#ifndef STDIncludes
-#define STDIncludes
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#ifdef __APPLE__
-#include <OpenGL/glu.h>
-#else
-#include <GL/glu.h>
-#endif
-#endif
+//#ifndef STDIncludes
+//#define STDIncludes
+//#include <stdlib.h>
+//#include <stdio.h>
+//#include <math.h>
+//#ifdef __APPLE__
+//#include <OpenGL/glu.h>
+//#else
+//#include <GL/glu.h>
+//#endif
+//#endif
+//
+//#ifndef Jobjects
+//#define Jobjects
+//
+//
+////Cos and Sin in degrees - stolen from ex8
+//#define Sin(x) (sin((x) * 3.1415927/180))
+//#define Cos(x) (cos((x) * 3.1415927/180))
 
-#ifndef Jobjects
-#define Jobjects
-
-
-//Cos and Sin in degrees - stolen from ex8
-#define Sin(x) (sin((x) * 3.1415927/180))
-#define Cos(x) (cos((x) * 3.1415927/180))
+#include "objects.h"
 
 //Vertex Polar-Cartesian tranformation function
 void VertexC(double th, double ph)
@@ -838,5 +840,3 @@ void icosahedron(double x, double y, double z,
 
    glPopMatrix();
 }
-
-#endif

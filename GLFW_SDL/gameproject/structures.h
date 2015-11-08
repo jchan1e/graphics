@@ -1,4 +1,4 @@
-#include "objects.c"
+#include "objects.h"
 
 class Floor
 {
@@ -9,9 +9,9 @@ class Floor
 public:
    Floor();
    void render();
-   float startx() {return startx;}
-   float starty() {return starty;}
-}
+   float Startx() {return startx;}
+   float Starty() {return starty;}
+};
 
 class Enemy
 {
@@ -24,7 +24,7 @@ public:
    void render();
    void animate();
    void damage(int dmg);
-}
+};
 
 class Tower
 {
@@ -37,7 +37,7 @@ public:
    void render();
    void animate();
    void fire();
-}
+};
 
 class Bullet
 {
@@ -49,4 +49,4 @@ public:
    void render();
    void animate();
    void collide(Enemy* target);
-}
+};

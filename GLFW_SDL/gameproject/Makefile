@@ -20,15 +20,21 @@ endif
 all:game
 
 #  Compile
-.c.o:
-	gcc -std=c99 -c $(CFLG) $<
-.cpp.o:
-	g++ -c $(CFLG) $<
-#structures.o:structure.cpp structures.h
+#.c.o:
+#	gcc -std=c99 -c $(CFLG) $<
+#.cpp.o:
 #	g++ -c $(CFLG) $<
+game.o:game.cpp objects.o structures.o structures.h objects.h
+	g++ -c $(CFLG) $<
+
+structures.o:structures.cpp objects.o structures.h objects.h
+	g++ -c $(CFLG) $<
+
+objects.o: objects.c objects.h
+	gcc -std=c99 -c $(CFLG) $<
 
 #  link
-game:game.o structures.o
+game:game.o structures.o objects.o
 	g++ -O3 -o play $^ $(LIBS)
 
 #  Clean

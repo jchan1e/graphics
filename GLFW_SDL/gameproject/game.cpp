@@ -20,7 +20,8 @@
 //#include "CSCIx229.h"
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include "objects.c"
+#include "structures.h"
+#include "objects.h"
 
 using namespace std;
 
