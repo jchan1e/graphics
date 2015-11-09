@@ -33,7 +33,7 @@ bool quit = false;
 double th = 0;
 double ph = 0;
 //Window Size
-int w = 600;
+int w = 1600;
 int h = 800;
 
 //perspective mode
@@ -47,6 +47,8 @@ double ez = 0;
 double vx = 0;
 double vy = 0;
 double vz = 0;
+
+double zoom = 1;
 
 //lighting arrays
 float Ambient[4];
@@ -66,6 +68,9 @@ SDL_GLContext context;
 //Timing
 double r = 0;
 double dr = 0;
+
+//Game Objects
+Floor F;
 
 ////////////////////
 
@@ -121,9 +126,9 @@ void display()
    //view angle
    if (mode == 1) //rotation for perspective mode
    {
-      ex = Sin(-th)*Cos(ph)*8;
-      ey = Sin(ph)*8;
-      ez = Cos(-th)*Cos(ph)*8;
+      ex = Sin(-th)*Cos(ph)*zoom;
+      ey = Sin(ph)*zoom;
+      ez = Cos(-th)*Cos(ph)*zoom;
 
       gluLookAt(ex,ey,ez , 0,0,0 , 0,Cos(ph),0);
    }
@@ -183,6 +188,9 @@ void display()
 //   glBindTexture(GL_TEXTURE_2D, texture[0]);
    ball(0, 0, 0, 0.5); //Jupiter
 
+   glColor3f(0.25,0.3,0.3);
+   F.render();
+
    //glDisable(GL_TEXTURE_2D);
    glDisable(GL_LIGHTING);
    glColor3f(1.0,1.0,1.0);
@@ -213,7 +221,7 @@ void reshape(int width, int height)
    glLoadIdentity();
    
    //adjust projection
-   gluPerspective(60, w2h, 5/4, 5*4);
+   gluPerspective(60, w2h, 20/4, 20*4);
 
    //switch back to model matrix
    glMatrixMode(GL_MODELVIEW);
@@ -233,6 +241,11 @@ void keyboard(const Uint8* state)
       ph += 5;
    if (state[SDL_SCANCODE_DOWN])
       ph -= 5;
+
+   if (state[SDL_SCANCODE_Z])
+      zoom = max(1.0, zoom-1);
+   if (state[SDL_SCANCODE_X])
+      zoom = zoom+1;
 }
 
 int main(int argc, char *argv[])

@@ -2,12 +2,20 @@
 
 class Floor
 {
-   int arr[32];
    float startx;
    float starty;
-   void tile(float x, float y, int direction);
+   int arr[81] = {0, 0, 0, 0, 0, 0, 0, 0, 0,  // it's a 2nd order Hilbert curve
+                       -1,-1,-1,-1, 0,-1,-1,-1,-1,
+                        0, 0, 0,-1, 0,-1, 0, 0, 0,
+                        0,-1,-1,-1, 0,-1,-1,-1, 0,
+                        0,-1, 0, 0, 0, 0, 0,-1, 0,
+                        0,-1, 0,-1,-1,-1, 0,-1, 0,
+                        0,-1, 0,-1, 0,-1, 0,-1, 0,
+                        0,-1,-1,-1, 0,-1,-1,-1, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0};
 public:
    Floor();
+   void tile(float x, float y, float z, int direction);
    void render();
    float Startx() {return startx;}
    float Starty() {return starty;}
