@@ -67,10 +67,12 @@ void Floor::render()
          switch (i)
          {
          case 0:
+            tile(2*j, 0, 2*i, 4);
             if (arr[9*i+j] == 0 && arr[9*(i+1)+j] == -1)
                tile(2*j, arr[9*i+j], 2*i, 2);
             break;
          case 8:
+            tile(2*j, 0, 2*i, 2);
             if (arr[9*i+j] == 0 && arr[9*(i-1)+j] == -1)
                tile(2*j, arr[9*i+j], 2*i, 4);
             break;
@@ -84,10 +86,12 @@ void Floor::render()
          switch (j)
          {
          case 0:
+            tile(2*j, 0, 2*i, 3);
             if (arr[9*i+j] == 0 && arr[9*i+(j+1)] == -1)
                tile(2*j, arr[9*i+j], 2*i, 5);
             break;
          case 8:
+            tile(2*j, 0, 2*i, 5);
             if (arr[9*i+j] == 0 && arr[9*i+(j-1)] == -1)
                tile(2*j, arr[9*i+j], 2*i, 3);
             break;
@@ -103,7 +107,7 @@ void Floor::render()
    glPopMatrix();
 }
 
-Enemy::Enemy(float x, float y)
+Enemy::Enemy(float x, float y, int health)
 {
 }
 

@@ -28,7 +28,7 @@ public:
    int health;
    float s1, s2;
 
-   Enemy(float x, float y);
+   Enemy(float x, float y, int health);
    void render();
    void animate();
    void damage(int dmg);

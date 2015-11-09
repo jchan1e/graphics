@@ -31,10 +31,10 @@ bool quit = false;
 
 //View Angles
 double th = 0;
-double ph = 0;
+double ph = 40;
 //Window Size
-int w = 1600;
-int h = 800;
+int w = 1920;
+int h = 1080;
 
 //perspective mode
 int mode = 1;  // 0 = ortho, 1 = perspective, 2 = first person
@@ -48,7 +48,7 @@ double vx = 0;
 double vy = 0;
 double vz = 0;
 
-double zoom = 1;
+double zoom = 16;
 
 //lighting arrays
 float Ambient[4];
@@ -56,6 +56,7 @@ float Diffuse[4];
 float Specular[4];
 float shininess[1];
 float Position[4]; 
+float ltheta = 0.0;
 
 //Textures
 //unsigned int texture[5];
@@ -66,11 +67,15 @@ SDL_Window* window = NULL;
 SDL_GLContext context;
 
 //Timing
-double r = 0;
-double dr = 0;
+int r = 0;
+int dr = 0;
+int oldr = 0;
 
 //Game Objects
 Floor F;
+Enemy* enemies[32];
+Tower* towers[32];
+Bullet* bullets[128];
 
 ////////////////////
 
@@ -147,7 +152,6 @@ void display()
    //////////Lighting//////////
 
    // Light position and rendered marker (unlit)
-   Position[0] = 2.0; Position[1] = 2.0; Position[2] = 2.0; Position[3] = 1.0;
 
    // lighting colors/types
    Ambient[0] = 0.1; Ambient[1] = 0.12; Ambient[2] = 0.15; Ambient[3] = 1.0;
@@ -186,9 +190,9 @@ void display()
 
    glColor3f(0.0,1.0,1.0);
 //   glBindTexture(GL_TEXTURE_2D, texture[0]);
-   ball(0, 0, 0, 0.5); //Jupiter
+   ball(0, 2, 0, 0.5); //Jupiter
 
-   glColor3f(0.25,0.3,0.3);
+   glColor3f(0.25,0.25,0.3);
    F.render();
 
    //glDisable(GL_TEXTURE_2D);
@@ -205,6 +209,18 @@ void display()
 
 void physics()
 {
+   while (dr >= 17)
+   {
+      //set timing stuf
+      oldr = r;
+      dr -= 17;
+
+      //actually do all the animation and physics
+      ltheta += M_PI/60;
+      ltheta = fmod(ltheta, 2*M_PI);
+      Position[0] = 3.0*sin(ltheta);
+      Position[2] = 3.0*cos(ltheta);
+   }
 }
 
 void reshape(int width, int height)
@@ -272,9 +288,13 @@ int main(int argc, char *argv[])
       return 1;
    }
    
+   //compile shaders
+
+
    reshape(w,h);
 
-   int temp = 0;
+   Position[0] = 0.0; Position[1] = 5.0; Position[2] = 3.0; Position[3] = 1.0;
+
    SDL_Event event;
 
    ////////Main Loop////////
@@ -299,7 +319,7 @@ int main(int argc, char *argv[])
          }
       }
       r = SDL_GetTicks();
-      dr = r - temp;
+      dr = r - oldr;
       physics();
       display();
    }
