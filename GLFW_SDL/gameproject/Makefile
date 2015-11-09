@@ -25,10 +25,10 @@ all:game
 #.cpp.o:
 #	g++ -c $(CFLG) $<
 game.o:game.cpp structures.h objects.h
-	g++ -c $(CFLG) $<
+	g++ -std=c++11 -c $(CFLG) $<
 
 structures.o:structures.cpp structures.h objects.h
-	g++ -c $(CFLG) $<
+	g++ -std=c++11 -c $(CFLG) $<
 
 objects.o: objects.cpp objects.h
 	g++ -c $(CFLG) $<
