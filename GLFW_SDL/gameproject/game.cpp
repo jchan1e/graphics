@@ -94,7 +94,7 @@ bool init()
    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
-   window = SDL_CreateWindow("Jordan Dick - FinalTD", 0,0 , w,h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+   window = SDL_CreateWindow("Jordan Dick - FinalTD", 0,0 , w,h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
    if (window == NULL)
    {
       cerr << "SDL failed to create a window: " << SDL_GetError() << endl;
@@ -314,6 +314,15 @@ int main(int argc, char *argv[])
                {
                   const Uint8* state = SDL_GetKeyboardState(NULL);
                   keyboard(state);
+               }
+               break;
+            case SDL_WINDOWEVENT:
+               switch(event.window.event)
+               {
+               case SDL_WINDOWEVENT_SIZE_CHANGED:
+                  cerr << event.window.data1 << " " << event.window.data2 << endl;
+                  reshape(event.window.data1, event.window.data2);
+                  break;
                }
                break;
          }
