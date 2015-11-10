@@ -34,19 +34,25 @@ void Floor::tile(float x, float y, float z, int direction)
    else if (direction == 1) //down
       glRotated(180, 1,0,0);
                             //otherwise up
-   glBegin(GL_TRIANGLE_FAN);
+   glBegin(GL_TRIANGLES);
    glNormal3d(0.1,1,0);
    glVertex3d(0,1.1,0);
    glVertex3d(1,1,1);
    glVertex3d(1,1,-1);
 
    glNormal3d(0,1,-0.1);
+   glVertex3d(0,1.1,0);
+   glVertex3d(1,1,-1);
    glVertex3d(-1,1,-1);
 
    glNormal3d(-0.1,1,0);
+   glVertex3d(0,1.1,0);
+   glVertex3d(-1,1,-1);
    glVertex3d(-1,1,1);
 
    glNormal3d(0,1,0.1);
+   glVertex3d(0,1.1,0);
+   glVertex3d(-1,1,1);
    glVertex3d(1,1,1);
    glEnd();
 

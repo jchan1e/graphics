@@ -147,7 +147,7 @@ void cube(double x, double y, double z,
    glRotated(r, 0,1,0);
    glScaled(s/sqrt(2), s/sqrt(2), s/sqrt(2));
 
-   glColor3f(0.8,0.2,0.2);
+   //glColor3f(0.8,0.2,0.2);
 
    glBegin(GL_QUADS);
    glNormal3d(0,1,0);
@@ -278,7 +278,7 @@ void octahedron(double x, double y, double z,
    glRotated(54.7356, 1,0,1);
    glScaled(s, s, s);
 
-   glColor3f(0.6,0.4,0.2);
+   //glColor3f(0.6,0.4,0.2);
 
    glBegin(GL_TRIANGLES);
    glNormal3d(1,1,1);
@@ -383,7 +383,7 @@ void dodecahedron(double x, double y, double z,
    glRotated(-58.2825, 0,0,1);
    glScaled(s/sqrt(3), s/sqrt(3), s/sqrt(3)); //vertices are sqrt(3) units from center
 
-   glColor3f(0.6,0.2,0.4);
+   //glColor3f(0.6,0.2,0.4);
 
    // pentagons from the top down
 
@@ -620,7 +620,7 @@ void icosahedron(double x, double y, double z,
    glRotated(r, 0,1,0);
    glScaled(s, s, s);
 
-   glColor3f(0.2,0.4,0.6);
+   //glColor3f(0.2,0.4,0.6);
 
    glBegin(GL_TRIANGLES);
    pNormal(points[3][0], points[3][1],

@@ -61,6 +61,8 @@ float ltheta = 0.0;
 //Textures
 //unsigned int texture[5];
 
+//Shaders
+int shader = 0;
 
 //SDL Window/OpenGL Context
 SDL_Window* window = NULL;
@@ -154,10 +156,10 @@ void display()
    // Light position and rendered marker (unlit)
 
    // lighting colors/types
-   Ambient[0] = 0.1; Ambient[1] = 0.12; Ambient[2] = 0.15; Ambient[3] = 1.0;
-   Diffuse[0] = 0.75; Diffuse[1] = 0.75; Diffuse[2] = 0.6; Diffuse[3] = 1.0;
+   Ambient[0] = 0.05; Ambient[1] = 0.07; Ambient[2] = 0.08; Ambient[3] = 1.0;
+   Diffuse[0] = 0.25; Diffuse[1] = 0.25; Diffuse[2] = 0.20; Diffuse[3] = 1.0;
    Specular[0] = 0.7; Specular[1] = 0.7; Specular[2] = 1.0; Specular[3] = 1.0;
-   shininess[0] = 64;
+   shininess[0] = 1024;
 
    // normally normalize normals
    glEnable(GL_NORMALIZE);
@@ -182,18 +184,27 @@ void display()
    ///////////////////////////
 
    float white[] = {1.0, 1.0, 1.0, 1.0};
-   //float emission[] = {0.0, 0.4, 0.9, 1.0};
+   float emission[] = {0.0, 0.4, 0.25, 1.0};
 
    glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
    glMaterialfv(GL_FRONT, GL_SPECULAR, white);
-   //glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+   glMaterialfv(GL_FRONT, GL_EMISSION, emission);
 
+   // Use Custom Shader
+   glUseProgram(shader);
+
+   //Draw stuf
    glColor3f(0.0,1.0,1.0);
 //   glBindTexture(GL_TEXTURE_2D, texture[0]);
-   ball(0, 2, 0, 0.5); //Jupiter
+   dodecahedron(0,2,0, Position[1], 0.75);
 
-   glColor3f(0.25,0.25,0.3);
+   glColor3f(0.90,0.90,1.00);
+   emission[0] = 0.0; emission[1] = 0.0; emission[2] = 0.0;
+   glMaterialfv(GL_FRONT, GL_EMISSION, emission);
    F.render();
+
+   //Stop using Custom Shader
+   glUseProgram(0);
 
    //glDisable(GL_TEXTURE_2D);
    glDisable(GL_LIGHTING);
@@ -218,9 +229,61 @@ void physics()
       //actually do all the animation and physics
       ltheta += M_PI/60;
       ltheta = fmod(ltheta, 2*M_PI);
-      Position[0] = 3.0*sin(ltheta);
-      Position[2] = 3.0*cos(ltheta);
+      Position[0] = 4.5*sin(ltheta);
+      Position[2] = 4.5*cos(ltheta);
    }
+}
+
+// this function stolen from ex27
+char* ReadText(char* file)
+{
+   int n;
+   char* buffer;
+   FILE* f = fopen(file,"r");
+   if (!f) {cerr << "Cannot open text file " << file << endl; quit = true;}
+   fseek(f, 0, SEEK_END);
+   n = ftell(f);
+   rewind(f);
+   buffer = (char*) malloc(n+1);
+   if (!buffer) {cerr << "Cannot allocate " << n+1 << " bytes for text file " << file << endl; quit = true;}
+   int h = fread(buffer, n, 1, f);
+   if (h != 1) {cerr << h << " Cannot read " << n << " bytes for text file " << file << endl; quit = true;}
+   buffer[n] = 0;
+   fclose(f);
+   return buffer;
+}
+
+// this function stolen from ex27
+int CreateShader(GLenum type, char* file)
+{
+   // Create the shader
+   int shader = glCreateShader(type);
+   // Load source code from file
+   char* source = ReadText(file);
+   glShaderSource(shader, 1, (const char**) &source, NULL);
+   free(source);
+   // Compile the shader
+   fprintf(stderr, "Compile %s\n", file);
+   glCompileShader(shader);
+   // Return name (int)
+   return shader;
+}
+
+// this function stolen from ex27
+int CreateShaderProg(char* VertFile, char* FragFile)
+{
+   // Create program
+   int prog = glCreateProgram();
+   // Create and compile vertex and fragment shaders
+   int vert = CreateShader(GL_VERTEX_SHADER,  VertFile);
+   int frag = CreateShader(GL_FRAGMENT_SHADER,FragFile);
+   // Attach vertex and fragment shaders
+   glAttachShader(prog,vert);
+   glAttachShader(prog,frag);
+   // Link Program
+   glLinkProgram(prog);
+   // Return name (int)
+   return prog;
 }
 
 void reshape(int width, int height)
@@ -237,7 +300,7 @@ void reshape(int width, int height)
    glLoadIdentity();
    
    //adjust projection
-   gluPerspective(60, w2h, 20/4, 20*4);
+   gluPerspective(60, w2h, 0.5, 20*4);
 
    //switch back to model matrix
    glMatrixMode(GL_MODELVIEW);
@@ -289,11 +352,11 @@ int main(int argc, char *argv[])
    }
    
    //compile shaders
-
+   shader = CreateShaderProg((char*)"pixlight.vert",(char*)"pixlight.frag");
 
    reshape(w,h);
 
-   Position[0] = 0.0; Position[1] = 5.0; Position[2] = 3.0; Position[3] = 1.0;
+   Position[0] = 0.0; Position[1] = 6.0; Position[2] = 4.5; Position[3] = 1.0;
 
    SDL_Event event;
 
@@ -320,7 +383,7 @@ int main(int argc, char *argv[])
                switch(event.window.event)
                {
                case SDL_WINDOWEVENT_SIZE_CHANGED:
-                  cerr << event.window.data1 << " " << event.window.data2 << endl;
+                  //cerr << event.window.data1 << " " << event.window.data2 << endl;
                   reshape(event.window.data1, event.window.data2);
                   break;
                }
