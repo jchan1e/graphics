@@ -10,7 +10,7 @@ CFLG=-O3 -Wall -Wno-deprecated-declarations $(shell sdl2-config --cflags)
 LIBS=-framework OpenGL $(shell sdl2-config --libs)
 #  Linux/Unix/Solaris
 else
-CFLG=-O3 -Wall $(shell sdl2-config --cflags)
+CFLG=-O3 -Wall $(shell sdl2-config --cflags) -DGL_GLEXT_PROTOTYPES
 LIBS=-lGLU -lGL -lm $(shell sdl2-config --libs)
 endif
 #  OSX/Linux/Unix/Solaris
