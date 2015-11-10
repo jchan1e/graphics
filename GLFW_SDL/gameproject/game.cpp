@@ -72,6 +72,7 @@ SDL_GLContext context;
 int r = 0;
 int dr = 0;
 int oldr = 0;
+int pause = 0;
 
 //Game Objects
 Floor F;
@@ -227,10 +228,13 @@ void physics()
       dr -= 17;
 
       //actually do all the animation and physics
-      ltheta += M_PI/60;
-      ltheta = fmod(ltheta, 2*M_PI);
-      Position[0] = 4.5*sin(ltheta);
-      Position[2] = 4.5*cos(ltheta);
+      if (!pause)
+      {
+         ltheta += M_PI/60;
+         ltheta = fmod(ltheta, 2*M_PI);
+         Position[0] = 4.5*sin(ltheta);
+         Position[2] = 4.5*cos(ltheta);
+      }
    }
 }
 
@@ -325,6 +329,9 @@ void keyboard(const Uint8* state)
       zoom = max(1.0, zoom-1);
    if (state[SDL_SCANCODE_X])
       zoom = zoom+1;
+
+   if (state[SDL_SCANCODE_SPACE])
+      pause = 1-pause;
 }
 
 int main(int argc, char *argv[])
