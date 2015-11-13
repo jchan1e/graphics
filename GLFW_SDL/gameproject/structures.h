@@ -27,6 +27,7 @@ public:
    float x, y, z, dx, dy, theta, speed;
    int health, type;
    float s1, s2, ds1, ds2;
+   int movestate;
 
    Enemy(float X, float Y, int Health, int Type);
    void render();
@@ -34,27 +35,31 @@ public:
    void damage(int dmg);
 };
 
-class Tower
-{
-public:
-   float x, y;
-   Enemy* target;
-   float cooldown, maxcooldown;
-
-   Tower(float x, float y);
-   void render();
-   void animate();
-   void fire();
-};
 
 class Bullet
 {
 public:
-   float x, y, z, dx, dy, dz;
+   float x, y, z, dx, dy, dz, speed;
+   int dmg;
    Enemy* target;
 
-   Bullet(float ix, float iy, float iz, Enemy* Target);
+   Bullet(float X, float Y, float Z, Enemy* Target);
    void render();
    void animate();
    void collide(Enemy* target);
+   float distance();
+   void normalizeV();
+};
+
+class Tower
+{
+public:
+   float x, y, z;
+   Enemy* target;
+   int cooldown, maxcooldown;
+
+   Tower(float X, float Y);
+   void render();
+   Bullet* fire();
+   float distance(Enemy* Target);
 };

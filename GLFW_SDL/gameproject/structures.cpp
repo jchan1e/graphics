@@ -35,23 +35,23 @@ void Floor::tile(float x, float y, float z, int direction)
       glRotated(180, 1,0,0);
                             //otherwise up
    glBegin(GL_TRIANGLES);
-   glNormal3d(0.05,1,0);
-   glVertex3d(0,1.05,0);
+   glNormal3d(0.10,1,0);
+   glVertex3d(0,1.10,0);
    glVertex3d(1,1,1);
    glVertex3d(1,1,-1);
 
-   glNormal3d(0,1,-0.05);
-   glVertex3d(0,1.05,0);
+   glNormal3d(0,1,-0.10);
+   glVertex3d(0,1.10,0);
    glVertex3d(1,1,-1);
    glVertex3d(-1,1,-1);
 
-   glNormal3d(-0.05,1,0);
-   glVertex3d(0,1.05,0);
+   glNormal3d(-0.10,1,0);
+   glVertex3d(0,1.10,0);
    glVertex3d(-1,1,-1);
    glVertex3d(-1,1,1);
 
-   glNormal3d(0,1,0.05);
-   glVertex3d(0,1.05,0);
+   glNormal3d(0,1,0.10);
+   glVertex3d(0,1.10,0);
    glVertex3d(-1,1,1);
    glVertex3d(1,1,1);
    glEnd();
@@ -123,6 +123,10 @@ Enemy::Enemy(float X, float Y, int Health, int Type)
    y = Y;
    z = 0;
    theta = 0.0;
+   speed = 0.05;
+   movestate = 0;
+   dx = speed; dy = 0;
+
    if (type == 1)
    {
       s1 = 0.85;  ds1 = 0.02;
@@ -172,7 +176,7 @@ void Enemy::render()
 
 void Enemy::animate()
 {
-   theta += 2; fmod(theta, 360.0);
+   theta += 2; theta = fmod(theta, 360.0);
    if (type == 1)
    {
       if (s1 <= 0.7 || s1 >= 1.0)
@@ -190,41 +194,159 @@ void Enemy::animate()
    s1 += ds1;
    s2 += ds2;
 
-   //if (x
+   x += dx; y += dy;
+
+   switch (movestate)
+   {
+   case 0:
+      if (x >= -2.0)
+      {  movestate = 1; dx = 0; dy = -speed;}
+      break;
+   case 1:
+      if (y <= 2.0)
+      {  movestate = 2; dx = -speed; dy = 0;}
+      break;
+   case 2:
+      if (x <= -6.0)
+      {  movestate = 3; dx = 0; dy = -speed;}
+      break;
+   case 3:
+      if (y <= -6.0)
+      {  movestate = 4; dx = speed; dy = 0;}
+      break;
+   case 4:
+      if (x >= -2.0)
+      {  movestate = 5; dx = 0; dy = speed;}
+      break;
+   case 5:
+      if (y >= -2.0)
+      {  movestate = 6; dx = speed; dy = 0;}
+      break;
+   case 6:
+      if (x >= 2.0)
+      {  movestate = 7; dx = 0; dy = -speed;}
+      break;
+   case 7:
+      if (y <= -6.0)
+      {  movestate = 8; dx = speed; dy = 0;}
+      break;
+   case 8:
+      if (x >= 6.0)
+      {  movestate = 9; dx = 0; dy = speed;}
+      break;
+   case 9:
+      if (y >= 2.0)
+      {  movestate = 10; dx = -speed; dy = 0;}
+      break;
+   case 10:
+      if (x <= 2.0)
+      {  movestate = 11; dx = 0; dy = speed;}
+      break;
+   case 11:
+      if (y >= 6.0)
+      {  movestate = 12; dx = speed; dy = 0;}
+      break;
+   case 12:
+      if (x >= 8.0)
+      {  x = 8.0; y = 6.0; }
+      break;
+   default:
+      movestate = 0;
+      break;
+   }
+   //follow the metal grey road
+   //if      (x < -2.0 && y >= 5.9)   //upper entry
+   //{  dx = speed;    dy = 0;     }
+   //else if (x >= -2.1 && y > 2.0)   //downward
+   //{  dx = 0;        dy = -speed;}
+   //else if (x > -6.0 && y <= 2.1)   //leftward
+   //{  dx = -speed;   dy = 0;     }
+   //else if (x <= -5.9 && y > -6.0)  //left corridor
+   //{  dx = 0;        dy = -speed;}
+   //else if (x < -2.0 && y <= -5.9)  //lower left horizontal
+   //{  dx = speed;    dy = 0;     }
+   //else if (x >= -2.1 && y < -2.0)  //left side upward
+   //{  dx = 0;        dy = speed; }
+   //else if (
 }
 
 void Enemy::damage(int dmg)
 {
+   health -= dmg;
 }
 
-Tower::Tower(float x, float y)
+Tower::Tower(float X, float Y)
 {
+   x = X;
+   y = Y;
+   z = 2.0;
+   maxcooldown = 500;
+   cooldown = 0;
+   target = NULL;
 }
 
 void Tower::render()
 {
 }
 
-void Tower::animate()
+Bullet* Tower::fire()
 {
+   Bullet* bullet = new Bullet(x, y, 3.0, target);
+   return bullet;
 }
 
-void Tower::fire()
+float Tower::distance(Enemy* Target)
 {
+   return sqrt((Target->x - x) * (Target->x - x)
+             + (Target->y - y) * (Target->y - y)
+             + (Target->z - z) * (Target->z - z));
 }
 
-Bullet::Bullet(float ix, float iy, float iz, Enemy* Target)
+Bullet::Bullet(float X, float Y, float Z, Enemy* Target)
 {
+   x = X;
+   y = Y;
+   z = Z;
+   target = Target;
+   dmg = 10;
+   speed = 0.25;
 }
 
 void Bullet::render()
 {
+   float emission[] = {0.0, 0.0, 0.0, 1.0};
+   glColor3f(0.8,0.8,0.0);
+   emission[0] = 0.7; emission[1] = 0.7; emission[2] = 0.0;
+   glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+   ball(x, z, -y, 0.25);
 }
 
 void Bullet::animate()
 {
+   normalizeV();
+   dx *= speed;
+   dy *= speed;
+   dz *= speed;
+   x += dx;
+   y += dy;
+   z += dz;
 }
 
 void Bullet::collide(Enemy* target)
 {
+}
+
+void Bullet::normalizeV()
+{
+   float a = distance();
+   dx = (target->x - x)/a;
+   dy = (target->y - y)/a;
+   dz = (target->z - z)/a;
+}
+
+float Bullet::distance()
+{
+   return sqrt((target->x - x) * (target->x - x)
+             + (target->y - y) * (target->y - y)
+             + (target->z - z) * (target->z - z));
 }
