@@ -203,6 +203,8 @@ void display()
    emission[0] = 0.0; emission[1] = 0.0; emission[2] = 0.0;
    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
    F.render();
+   if (enemies[0] != NULL)
+      enemies[0]->render();
 
    //Stop using Custom Shader
    glUseProgram(0);
@@ -324,7 +326,6 @@ void keyboard(const Uint8* state)
       ph += 5;
    if (state[SDL_SCANCODE_DOWN])
       ph -= 5;
-
    if (state[SDL_SCANCODE_Z])
       zoom = max(1.0, zoom-1);
    if (state[SDL_SCANCODE_X])
@@ -380,7 +381,17 @@ int main(int argc, char *argv[])
                break;
 
             case SDL_KEYDOWN:
-               if (mode == 1)
+               if (event.key.keysym.scancode == SDL_SCANCODE_E)
+               {
+                  if (enemies[0] == NULL)
+                     enemies[0] = new Enemy(2, 2, 100);
+                  else
+                  {
+                     delete enemies[0];
+                     enemies[0] = NULL;
+                  }
+               }
+               else if (mode == 1)
                {
                   const Uint8* state = SDL_GetKeyboardState(NULL);
                   keyboard(state);

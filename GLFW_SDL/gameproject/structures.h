@@ -5,14 +5,14 @@ class Floor
    float startx;
    float starty;
    int arr[81] = {0, 0, 0, 0, 0, 0, 0, 0, 0,  // it's a 2nd order Hilbert curve
-                       -1,-1,-1,-1, 0,-1,-1,-1,-1,
-                        0, 0, 0,-1, 0,-1, 0, 0, 0,
-                        0,-1,-1,-1, 0,-1,-1,-1, 0,
-                        0,-1, 0, 0, 0, 0, 0,-1, 0,
-                        0,-1, 0,-1,-1,-1, 0,-1, 0,
-                        0,-1, 0,-1, 0,-1, 0,-1, 0,
-                        0,-1,-1,-1, 0,-1,-1,-1, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0};
+                 -1,-1,-1,-1, 0,-1,-1,-1,-1,
+                  0, 0, 0,-1, 0,-1, 0, 0, 0,
+                  0,-1,-1,-1, 0,-1,-1,-1, 0,
+                  0,-1, 0, 0, 0, 0, 0,-1, 0,
+                  0,-1, 0,-1,-1,-1, 0,-1, 0,
+                  0,-1, 0,-1, 0,-1, 0,-1, 0,
+                  0,-1,-1,-1, 0,-1,-1,-1, 0,
+                  0, 0, 0, 0, 0, 0, 0, 0, 0};
 public:
    Floor();
    void tile(float x, float y, float z, int direction);
@@ -24,11 +24,11 @@ public:
 class Enemy
 {
 public:
-   float x, y, dx, dy, speed;
+   float x, y, z, dx, dy, theta, speed;
    int health;
    float s1, s2;
 
-   Enemy(float x, float y, int health);
+   Enemy(float ix, float iy, int ihealth);
    void render();
    void animate();
    void damage(int dmg);

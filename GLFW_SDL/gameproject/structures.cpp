@@ -113,12 +113,21 @@ void Floor::render()
    glPopMatrix();
 }
 
-Enemy::Enemy(float x, float y, int health)
+Enemy::Enemy(float ix, float iy, int ihealth)
 {
+   health = ihealth;
+   x = ix;
+   y = iy;
+   z = 0;
+   theta = 0.0;
 }
 
 void Enemy::render()
 {
+   glColor3f(0.8,0.0,0.8);
+   dodecahedron(x, z, -y, theta, 1.0);
+   glColor3f(0.0,0.0,1.0);
+   icosahedron(x, z, -y, theta, 1.0);
 }
 
 void Enemy::animate()
