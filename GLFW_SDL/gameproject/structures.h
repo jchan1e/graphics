@@ -25,10 +25,10 @@ class Enemy
 {
 public:
    float x, y, z, dx, dy, theta, speed;
-   int health;
-   float s1, s2;
+   int health, type;
+   float s1, s2, ds1, ds2;
 
-   Enemy(float ix, float iy, int ihealth);
+   Enemy(float X, float Y, int Health, int Type);
    void render();
    void animate();
    void damage(int dmg);
@@ -53,7 +53,7 @@ public:
    float x, y, z, dx, dy, dz;
    Enemy* target;
 
-   Bullet(float x, float y, float z);
+   Bullet(float ix, float iy, float iz, Enemy* Target);
    void render();
    void animate();
    void collide(Enemy* target);

@@ -275,7 +275,7 @@ void octahedron(double x, double y, double z,
    glPushMatrix();
    glTranslated(x,y,z);
    glRotated(r, 0,1,0);
-   glRotated(54.7356, 1,0,1);
+   //glRotated(54.7356, 1,0,1);
    glScaled(s, s, s);
 
    //glColor3f(0.6,0.4,0.2);

@@ -76,8 +76,8 @@ int pause = 0;
 
 //Game Objects
 Floor F;
-Enemy* enemies[32];
-Tower* towers[32];
+Enemy* enemies[64];
+Tower* towers[64];
 Bullet* bullets[128];
 
 ////////////////////
@@ -146,7 +146,7 @@ void display()
       vy = ey - Sin(ph);         // location of view target
       vz = ez - Cos(th)*Cos(ph);
 
-      gluLookAt(ex,ey,ez , vx,vy,vz , 0,Cos(ph),0);
+      gluLookAt(ex,ey,ez , vx,vy,vz , 0,Cos(ph),0); 
    }
 
 //   glEnable(GL_TEXTURE_2D);
@@ -194,17 +194,31 @@ void display()
    // Use Custom Shader
    glUseProgram(shader);
 
-   //Draw stuf
+   //Draw stuff
    glColor3f(0.0,1.0,1.0);
 //   glBindTexture(GL_TEXTURE_2D, texture[0]);
-   dodecahedron(0,2,0, Position[1], 0.75);
+   octahedron(0,2,0, Position[0], 0.75);
 
    glColor3f(0.90,0.90,1.00);
    emission[0] = 0.0; emission[1] = 0.0; emission[2] = 0.0;
    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
    F.render();
-   if (enemies[0] != NULL)
-      enemies[0]->render();
+
+   for(int i=0; i<64; ++i)
+   {
+      if (enemies[i] != NULL)
+         enemies[i]->render();
+   }
+   for(int i=0; i<64; ++i)
+   {
+      if (towers[i] != NULL)
+         towers[i]->render();
+   }
+   for(int i=0; i<128; ++i)
+   {
+      if (bullets[i] != NULL)
+         bullets[i]->render();
+   }
 
    //Stop using Custom Shader
    glUseProgram(0);
@@ -214,28 +228,44 @@ void display()
    glColor3f(1.0,1.0,1.0);
    ball(Position[0], Position[1], Position[2], 0.125);
 
-//   r = glutGet(GLUT_ELAPSED_TIME)*rate;
-//   r = fmod(r, 360*24*18.4);
+   //swap the buffers
    glFlush();
    SDL_GL_SwapWindow(window);
-//   glutSwapBuffers();
 }
 
 void physics()
 {
-   while (dr >= 17)
+   while (dr >= 20)
    {
       //set timing stuf
       oldr = r;
-      dr -= 17;
+      dr -= 20;
 
       //actually do all the animation and physics
       if (!pause)
       {
+         //move the light
          ltheta += M_PI/60;
          ltheta = fmod(ltheta, 2*M_PI);
          Position[0] = 4.5*sin(ltheta);
          Position[2] = 4.5*cos(ltheta);
+
+         //animate the enemies, towers, and bullets
+         for (int i=0; i<64; ++i)
+         {
+            if (enemies[i] != NULL)
+               enemies[i]->animate();
+         }
+         for (int i=0; i<64; ++i)
+         {
+            if (towers[i] != NULL)
+               towers[i]->animate();
+         }
+         for (int i=0; i<128; ++i)
+         {
+            if (bullets[i] != NULL)
+               bullets[i]->animate();
+         }
       }
    }
 }
@@ -384,11 +414,25 @@ int main(int argc, char *argv[])
                if (event.key.keysym.scancode == SDL_SCANCODE_E)
                {
                   if (enemies[0] == NULL)
-                     enemies[0] = new Enemy(2, 2, 100);
+                  {
+                     cout << "creating enemy 0\n";
+                     enemies[0] = new Enemy(2, 2, 100, 0);
+                  }
                   else
                   {
                      delete enemies[0];
                      enemies[0] = NULL;
+                  }
+
+                  if (enemies[1] == NULL)
+                  {
+                     cout << "creating enemy 1\n";
+                     enemies[1] = new Enemy(-2, 2, 100, 1);
+                  }
+                  else
+                  {
+                     delete enemies[1];
+                     enemies[1] = NULL;
                   }
                }
                else if (mode == 1)

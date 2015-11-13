@@ -92,12 +92,14 @@ void Floor::render()
          switch (j)
          {
          case 0:
-            tile(2*j, 0, 2*i, 3);
+            if (arr[9*i+j] == 0)
+               tile(2*j, 0, 2*i, 3);
             if (arr[9*i+j] == 0 && arr[9*i+(j+1)] == -1)
                tile(2*j, arr[9*i+j], 2*i, 5);
             break;
          case 8:
-            tile(2*j, 0, 2*i, 5);
+            if (arr[9*i+j] == 0)
+               tile(2*j, 0, 2*i, 5);
             if (arr[9*i+j] == 0 && arr[9*i+(j-1)] == -1)
                tile(2*j, arr[9*i+j], 2*i, 3);
             break;
@@ -113,25 +115,82 @@ void Floor::render()
    glPopMatrix();
 }
 
-Enemy::Enemy(float ix, float iy, int ihealth)
+Enemy::Enemy(float X, float Y, int Health, int Type)
 {
-   health = ihealth;
-   x = ix;
-   y = iy;
+   type = Type;
+   health = Health;
+   x = X;
+   y = Y;
    z = 0;
    theta = 0.0;
+   if (type == 1)
+   {
+      s1 = 0.85;  ds1 = 0.02;
+      s2 = 0.85;  ds2 = -0.02;
+   }
+   else
+   {
+      s1 = 0.8;  ds1 = 0.03;
+      s2 = 0.8;  ds2 = -0.03;
+   }
 }
 
 void Enemy::render()
 {
-   glColor3f(0.8,0.0,0.8);
-   dodecahedron(x, z, -y, theta, 1.0);
-   glColor3f(0.0,0.0,1.0);
-   icosahedron(x, z, -y, theta, 1.0);
+   float emission[] = {0.0,0.0,0.0,1.0};
+
+   //glColor3f(1.0,1.0,1.0);
+   if (type == 1)
+   {
+      glColor3f(0.8,0.0,0.8);
+      //glColor3f(0.0,0.8,0.0);
+      emission[0] = 0.4; emission[1] = 0.0; emission[2] = 0.4;
+      glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+      dodecahedron(x, z, -y, theta+16.6666, s1);
+
+      glColor3f(0.0,0.0,1.0);
+      //glColor3f(1.0,1.0,0.0);
+      emission[0] = 0.0; emission[1] = 0.0; emission[2] = 0.6;
+      glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+      icosahedron(x, z, -y, theta, s2);
+   }
+   else //type == 0
+   {
+      glColor3f(0.8,0.0,0.0);
+      //glColor3f(0.0,0.8,0.8);
+      emission[0] = 0.4; emission[1] = 0.0; emission[2] = 0.0;
+      glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+      cube(x, z, -y, theta, s1*0.8);
+
+      glColor3f(0.6,0.4,0.0);
+      //glColor3f(0.4,0.6,1.0);
+      emission[0] = 0.5; emission[1] = 0.3; emission[2] = 0.0;
+      glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+      octahedron(x, z, -y, theta, s2);
+   }
 }
 
 void Enemy::animate()
 {
+   theta += 2; fmod(theta, 360.0);
+   if (type == 1)
+   {
+      if (s1 <= 0.7 || s1 >= 1.0)
+         ds1 = -ds1;
+      if (s2 <= 0.7 || s2 >= 1.0)
+         ds2 = -ds2;
+   }
+   else
+   {
+      if (s1 <= 0.5 || s1 >= 1.1)
+         ds1 = -ds1;
+      if (s2 <= 0.5 || s2 >= 1.1)
+         ds2 = -ds2;
+   }
+   s1 += ds1;
+   s2 += ds2;
+
+   //if (x
 }
 
 void Enemy::damage(int dmg)
@@ -154,7 +213,7 @@ void Tower::fire()
 {
 }
 
-Bullet::Bullet(float x, float y, float z)
+Bullet::Bullet(float ix, float iy, float iz, Enemy* Target)
 {
 }
 
