@@ -41,12 +41,12 @@ class Bullet
 public:
    float x, y, z, dx, dy, dz, speed;
    int dmg;
-   Enemy* target;
+   Enemy** target;
 
-   Bullet(float X, float Y, float Z, Enemy* Target);
+   Bullet(float X, float Y, float Z, Enemy** Target);
    void render();
    void animate();
-   void collide(Enemy* target);
+   void collide(Enemy** target);
    float distance();
    void normalizeV();
 };
@@ -55,11 +55,11 @@ class Tower
 {
 public:
    float x, y, z;
-   Enemy* target;
+   Enemy** target;
    int cooldown, maxcooldown;
 
    Tower(float X, float Y);
    void render();
    Bullet* fire();
-   float distance(Enemy* Target);
+   float distance(Enemy** Target);
 };

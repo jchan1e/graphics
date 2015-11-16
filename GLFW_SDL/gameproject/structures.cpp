@@ -280,7 +280,7 @@ Tower::Tower(float X, float Y)
    x = X;
    y = Y;
    z = 2.0;
-   maxcooldown = 500;
+   maxcooldown = 250;
    cooldown = 0;
    target = NULL;
 }
@@ -295,21 +295,21 @@ Bullet* Tower::fire()
    return bullet;
 }
 
-float Tower::distance(Enemy* Target)
+float Tower::distance(Enemy** Target)
 {
-   return sqrt((Target->x - x) * (Target->x - x)
-             + (Target->y - y) * (Target->y - y)
-             + (Target->z - z) * (Target->z - z));
+   return sqrt(((*Target)->x - x) * ((*Target)->x - x)
+             + ((*Target)->y - y) * ((*Target)->y - y)
+             + ((*Target)->z - z) * ((*Target)->z - z));
 }
 
-Bullet::Bullet(float X, float Y, float Z, Enemy* Target)
+Bullet::Bullet(float X, float Y, float Z, Enemy** Target)
 {
    x = X;
    y = Y;
    z = Z;
    target = Target;
    dmg = 10;
-   speed = 0.25;
+   speed = 0.125;
 }
 
 void Bullet::render()
@@ -332,21 +332,21 @@ void Bullet::animate()
    z += dz;
 }
 
-void Bullet::collide(Enemy* target)
+void Bullet::collide(Enemy** target)
 {
 }
 
 void Bullet::normalizeV()
 {
    float a = distance();
-   dx = (target->x - x)/a;
-   dy = (target->y - y)/a;
-   dz = (target->z - z)/a;
+   dx = ((*target)->x - x)/a;
+   dy = ((*target)->y - y)/a;
+   dz = ((*target)->z - z)/a;
 }
 
 float Bullet::distance()
 {
-   return sqrt((target->x - x) * (target->x - x)
-             + (target->y - y) * (target->y - y)
-             + (target->z - z) * (target->z - z));
+   return sqrt(((*target)->x - x) * ((*target)->x - x)
+             + ((*target)->y - y) * ((*target)->y - y)
+             + ((*target)->z - z) * ((*target)->z - z));
 }

@@ -273,15 +273,16 @@ void physics()
                {
                   if (enemies[j] != NULL)
                   {
-                     if (dist > towers[i]->distance(enemies[j]))
+                     if (dist > towers[i]->distance(&enemies[j]))
                      {
-                        dist = towers[i]->distance(enemies[j]);
-                        towers[i]->target = enemies[j];
+                        dist = towers[i]->distance(&enemies[j]);
+                        towers[i]->target = &enemies[j];
                      }
                   }
                }
                if (dist == INFINITY)
                   towers[i]->target = NULL;
+               //manage firing loop
                if (towers[i]->cooldown < towers[i]->maxcooldown)
                   towers[i]->cooldown += dr;
                if (towers[i]->target != NULL && towers[i]->cooldown >= towers[i]->maxcooldown)
@@ -290,8 +291,15 @@ void physics()
                   int k = 0;
                   while (bullets[k] != NULL)
                      ++k;
-                  bullets[i] = bullet;
+                  bullets[k] = bullet;
                   cout << bullets[i] << " Target acquired: " << bullet->target << endl;
+      cout << "bullets: ";
+      for (int i=0; i < 64; ++i)
+      {
+         if (bullets[i] != NULL)
+            cout << i;
+      }
+      cout << endl;
                   towers[i]->cooldown -= towers[i]->maxcooldown;
                }
             }
@@ -302,16 +310,31 @@ void physics()
             {
                //cout << "animating bullet " << i << " at address " << bullets[i] << endl;
                if (bullets[i]->target == NULL)
-               {  cout << bullets[i] << " Target lost...\n"; delete bullets[i]; bullets[i] = NULL;}
+               {  cout << bullets[i] << " Target lost...\n"; delete bullets[i]; bullets[i] = NULL;
+      cout << "bullets: ";
+      for (int i=0; i < 64; ++i)
+      {
+         if (bullets[i] != NULL)
+            cout << i;
+      }
+      cout << endl;
+               }
                else
                {
                   bullets[i]->animate();
                   if (bullets[i]->distance() <= 0.5)
                   {
                      cout << bullets[i] << " Target hit! " << bullets[i]->target << endl;
-                     bullets[i]->target->damage(bullets[i]->dmg);
+                     (*(bullets[i]->target))->damage(bullets[i]->dmg);
                      delete bullets[i];
                      bullets[i] = NULL;
+      cout << "bullets: ";
+      for (int i=0; i < 64; ++i)
+      {
+         if (bullets[i] != NULL)
+            cout << i;
+      }
+      cout << endl;
                   }
                }
             }
@@ -452,6 +475,11 @@ int main(int argc, char *argv[])
 
    SDL_Event event;
 
+   enemies[0] = new Enemy(-8, 6, 100, 0);
+   enemies[1] = new Enemy(-2, 2, 100, 1);
+   towers[0] = new Tower(0, 4);
+
+
    ////////Main Loop////////
    while (!quit)
    {
@@ -467,32 +495,32 @@ int main(int argc, char *argv[])
             case SDL_KEYDOWN:
                if (event.key.keysym.scancode == SDL_SCANCODE_SPACE)
                   pause = 1 - pause;
-               else if (event.key.keysym.scancode == SDL_SCANCODE_E)
-               {
-                  if (enemies[0] == NULL)
-                     enemies[0] = new Enemy(-8.0, 6.0, 100, 0);
-                  else
-                  {
-                     delete enemies[0];
-                     enemies[0] = NULL;
-                  }
+              // else if (event.key.keysym.scancode == SDL_SCANCODE_E)
+              // {
+              //    if (enemies[0] == NULL)
+              //       enemies[0] = new Enemy(-8.0, 6.0, 100, 0);
+              //    else
+              //    {
+              //       delete enemies[0];
+              //       enemies[0] = NULL;
+              //    }
 
-                  if (enemies[1] == NULL)
-                     enemies[1] = new Enemy(-2, 2, 100, 1);
-                  else
-                  {
-                     delete enemies[1];
-                     enemies[1] = NULL;
-                  }
+              //    if (enemies[1] == NULL)
+              //       enemies[1] = new Enemy(-2, 2, 100, 1);
+              //    else
+              //    {
+              //       delete enemies[1];
+              //       enemies[1] = NULL;
+              //    }
 
-                  if (towers[0] == NULL)
-                     towers[0] = new Tower(0.0, 4.0);
-                  else
-                  {
-                     delete towers[0];
-                     towers[0] = NULL;
-                  }
-               }
+              //    if (towers[0] == NULL)
+              //       towers[0] = new Tower(0.0, 4.0);
+              //    else
+              //    {
+              //       delete towers[0];
+              //       towers[0] = NULL;
+              //    }
+              // }
                else if (mode == 1)
                {
                   const Uint8* state = SDL_GetKeyboardState(NULL);
