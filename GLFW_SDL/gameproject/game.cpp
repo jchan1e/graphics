@@ -118,11 +118,11 @@ bool init()
    }
    
    //Vsync
-//   if (SDL_GL_SetSwapInterval(1) < 0)
-//   {
-//      cerr << "SDL could not set Vsync: " << SDL_GetError() << endl;
-//      success = false;
-//   }
+   if (SDL_GL_SetSwapInterval(1) < 0)
+   {
+      cerr << "SDL could not set Vsync: " << SDL_GetError() << endl;
+      success = false;
+   }
 
    return success;
 }
@@ -166,7 +166,7 @@ void display()
 
    // lighting colors/types
    Ambient[0] = 0.05; Ambient[1] = 0.07; Ambient[2] = 0.08; Ambient[3] = 1.0;
-   Diffuse[0] = 0.25; Diffuse[1] = 0.25; Diffuse[2] = 0.20; Diffuse[3] = 1.0;
+   Diffuse[0] = 0.75; Diffuse[1] = 0.75; Diffuse[2] = 0.70; Diffuse[3] = 1.0;
    Specular[0] = 0.7; Specular[1] = 0.7; Specular[2] = 1.0; Specular[3] = 1.0;
    shininess[0] = 1024;
 
@@ -203,11 +203,13 @@ void display()
    glUseProgram(shader);
 
    //Draw stuff
-   glColor3f(0.0,1.0,1.0);
+   //glColor3f((float)rand()/(float)RAND_MAX,(float)rand()/(float)RAND_MAX,(float)rand()/(float)RAND_MAX);
+   glColor3f(0.0,0.8,0.8);
 //   glBindTexture(GL_TEXTURE_2D, texture[0]);
-   octahedron(0,2,0, Position[0], 0.75);
+   //octahedron(0,2,0, Position[0], 0.75);
+   sphere(0,2,0, Position[0], 0.75);
 
-   glColor3f(0.90,0.90,1.00);
+   glColor3f(0.25,0.25,0.30);
    emission[0] = 0.0; emission[1] = 0.0; emission[2] = 0.0;
    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
    F.render();
@@ -256,7 +258,7 @@ void display()
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 
-   for (int l=0; l<8; ++l)
+   for (int l=0; l<0; ++l)
    {
       glBindTexture(GL_TEXTURE_2D,img);
       glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,0,0,w,h,0);
@@ -285,8 +287,6 @@ void display()
    //swap the buffers
    glFlush();
    SDL_GL_SwapWindow(window);
-   //glMatrixMode(GL_PROJECTION);
-   //glPopMatrix();
 }
 
 void physics()
@@ -300,6 +300,16 @@ void physics()
          ltheta = fmod(ltheta, 2*M_PI);
          Position[0] = 4.5*sin(ltheta);
          Position[2] = 4.5*cos(ltheta);
+
+         //Manage the Spawning of the Waves
+         int newenemy = F.animate();
+         if (newenemy)
+         {
+            int i = 0;
+            while (enemies[i]!=NULL)
+               ++i;
+            enemies[i] = new Enemy(-8,6, F.currentwave==0 ? 25 : 25*F.currentwave, newenemy);
+         }
 
          //animate the enemies
          for (int i=0; i<64; ++i)
@@ -541,6 +551,7 @@ int main(int argc, char *argv[])
 //   enemies[1] = new Enemy(-2, 2, 100, 1);
 //   towers[0] = new Tower(0, 4);
 
+   int startuptime = SDL_GetTicks();
 
    ////////Main Loop////////
    while (!quit)
@@ -559,25 +570,9 @@ int main(int argc, char *argv[])
                   pause = 1 - pause;
                else if (event.key.keysym.scancode == SDL_SCANCODE_E)
                {
-                  if (enemies[0] == NULL)
-                     enemies[0] = new Enemy(-8, 6, 100, 0);
-                  if (enemies[2] == NULL)
-                     enemies[2] = new Enemy(-6, 2, 100, 0);
-                  //else
-                  //{
-                  //   delete enemies[0];
-                  //   enemies[0] = NULL;
-                  //}
-
-                  if (enemies[1] == NULL)
-                     enemies[1] = new Enemy(-2, 2, 100, 1);
-                  if (enemies[3] == NULL)
-                     enemies[3] = new Enemy(-6, -6, 100, 1);
-                  //else
-                  //{
-                  //   delete enemies[1];
-                  //   enemies[1] = NULL;
-                  //}
+                  if (F.currentwave < 6)
+                     F.currentwave = 5;
+                  F.spawnwave();
 
                   if (towers[0] == NULL)
                      towers[0] = new Tower(0.0, 4.0);
@@ -616,7 +611,7 @@ int main(int argc, char *argv[])
    }
 
    cout << "Shutting Down\n";
-   cout << "average framerate: " << 1000*(float)frames/r << endl;
+   cout << "average framerate: " << 1000*(float)frames/(r - startuptime) << endl;
    SDL_Quit();
    
 

@@ -27,9 +27,12 @@
 //Vertex Polar-Cartesian tranformation function
 void VertexC(double th, double ph)
 {
-   glTexCoord2d(th/360, (ph-90)/180);
+   //glTexCoord2d(th/360, (ph-90)/180);
+   //glColor3f ((float)rand()/RAND_MAX,(float)rand()/RAND_MAX,(float)rand()/RAND_MAX);
+   //glColor3f (Sin(th)*Cos(ph), Sin(ph), Cos(th)*Cos(ph));
    glNormal3d(Sin(th)*Cos(ph), Sin(ph), Cos(th)*Cos(ph));
    glVertex3d(Sin(th)*Cos(ph), Sin(ph), Cos(th)*Cos(ph));
+   //printf("%s\n",gluErrorString(glGetError()));
 }
 
 //without the coloration

@@ -117,31 +117,27 @@ void Floor::render()
 
 int Floor::animate()
 {
-   if (currentwave >= 0)
+   if (spawncount >= 0)
    {
-      int enemies = 0;
       currentwavetime += 16;
-      while (currentwavetime >= wavetime)
+      if (currentwavetime >= wavetime)
       {
          currentwavetime -= wavetime;
-         enemies += 1;
-      }
-      return enemies;
-   }
-   else
-   {
-      timetonextwave -= 16;
-      if (timetonextwave <= 0)
-      {
-         timetonextwave = 10000;
-         return -1;
+         spawncount -= 1;
+         return waves[currentwave][9-spawncount];
       }
    }
    return 0;
 }
 
-void Floor::spawnwave(int wave)
+void Floor::spawnwave()
 {
+   if (spawncount < 0)
+   {
+      if (currentwave != 10)
+         currentwave += 1;
+      spawncount = 10;
+   }
 }
 
 Enemy::Enemy(float X, float Y, int Health, int Type)
@@ -161,10 +157,15 @@ Enemy::Enemy(float X, float Y, int Health, int Type)
       s1 = 0.85;  ds1 = 0.02;
       s2 = 0.85;  ds2 = -0.02;
    }
-   else
+   else if (type == 2)
    {
       s1 = 0.8;  ds1 = 0.03;
       s2 = 0.8;  ds2 = -0.03;
+   }
+   else //type == 3
+   {
+      s1 = 0.5;   ds1 = 0.0;
+      s2 = 0.5;   ds2 = 0.0;
    }
 }
 
@@ -187,7 +188,7 @@ void Enemy::render()
       glMaterialfv(GL_FRONT, GL_EMISSION, emission);
       icosahedron(x, z, -y, theta, s2);
    }
-   else //type == 0
+   else if (type == 2)
    {
       glColor3f(0.8,0.0,0.0);
       //glColor3f(0.0,0.8,0.8);
@@ -201,30 +202,55 @@ void Enemy::render()
       glMaterialfv(GL_FRONT, GL_EMISSION, emission);
       octahedron(x, z, -y, theta, s2);
    }
+   else // type == 3
+   {
+      //float a = (float)rand()/RAND_MAX;
+      //float b = (float)rand()/RAND_MAX;
+      //float c = (float)rand()/RAND_MAX;
+      //float w = a + b + c;
+      //glColor3f(a/w, b/w, c/w);
+      //emission[0] = a/w;   emission[1] = b/w;   emission[2] = c/w;
+      glColor3f(0.0,0.8,0.8);
+      emission[0] = 0.0;   emission[1] = 0.4;emission[2] = 0.25;
+      glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+      sphere(x - 0.4*Cos(theta), z, -y + 0.4*Sin(theta), theta, s1);
+      sphere(x + 0.4*Cos(theta), z, -y - 0.4*Sin(theta), theta, s1);
+   }
 }
 
 void Enemy::animate()
 {
-   theta += 2; theta = fmod(theta, 360.0);
    if (type == 1)
    {
       if (s1 <= 0.7 || s1 >= 1.0)
          ds1 = -ds1;
       if (s2 <= 0.7 || s2 >= 1.0)
          ds2 = -ds2;
+      theta += 2; theta = fmod(theta, 360.0);
    }
-   else
+   else if (type == 2)
    {
       if (s1 <= 0.5 || s1 >= 1.1)
          ds1 = -ds1;
       if (s2 <= 0.5 || s2 >= 1.1)
          ds2 = -ds2;
+      theta += 2; theta = fmod(theta, 360.0);
+   }
+   else
+   {
+      theta += 5; theta = fmod(theta, 360.0);
    }
    s1 += ds1;
    s2 += ds2;
 
    x += dx; y += dy;
+   
+   //a = (float)rand()/RAND_MAX;
+   //b = (float)rand()/RAND_MAX;
+   //c = (float)rand()/RAND_MAX;
+   //w = a + b + c;
 
+   //Follow the metal grey road
    switch (movestate)
    {
    case 0:
@@ -283,20 +309,6 @@ void Enemy::animate()
       movestate = 0;
       break;
    }
-   //follow the metal grey road
-   //if      (x < -2.0 && y >= 5.9)   //upper entry
-   //{  dx = speed;    dy = 0;     }
-   //else if (x >= -2.1 && y > 2.0)   //downward
-   //{  dx = 0;        dy = -speed;}
-   //else if (x > -6.0 && y <= 2.1)   //leftward
-   //{  dx = -speed;   dy = 0;     }
-   //else if (x <= -5.9 && y > -6.0)  //left corridor
-   //{  dx = 0;        dy = -speed;}
-   //else if (x < -2.0 && y <= -5.9)  //lower left horizontal
-   //{  dx = speed;    dy = 0;     }
-   //else if (x >= -2.1 && y < -2.0)  //left side upward
-   //{  dx = 0;        dy = speed; }
-   //else if (
 }
 
 void Enemy::damage(int dmg)

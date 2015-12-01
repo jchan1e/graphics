@@ -15,23 +15,23 @@ class Floor
                   0, 0, 0, 0, 0, 0, 0, 0, 0};
    int waves[9][10] = {{1, 1, 1, 1, 1, 0, 0, 0, 0, 0},
                        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                       {2, 2, 2, 2, 2, 0, 0, 0, 0, 0},
+                       {2, 2, 2, 2, 2, 2, 2, 2, 0, 0},
                        {2, 1, 2, 1, 2, 1, 2, 1, 2, 1},
                        {2, 2, 2, 2, 2, 1, 1, 1, 1, 1},
                        {3, 0, 3, 0, 3, 0, 3, 0, 3, 0},
                        {3, 2, 1, 3, 2, 1, 3, 2, 1, 3},
                        {3, 3, 3, 3, 2, 2, 2, 1, 1, 1},
                        {3, 3, 3, 3, 3, 3, 3, 3, 3, 3}};
-   int currentwave = -1;
    int wavetime = 500;
    int currentwavetime = 0;
-   int timetonextwave = 10000;
+   int spawncount = -1;
 public:
+   int currentwave = -1;
    Floor();
    void tile(float x, float y, float z, int direction);
    void render();
    int animate();
-   void spawnwave(int wave);
+   void spawnwave();
    float Startx() {return startx;}
    float Starty() {return starty;}
 };
@@ -40,6 +40,7 @@ class Enemy
 {
 public:
    float x, y, z, dx, dy, theta, speed;
+   //float a, b, c, w;
    int health, type;
    float s1, s2, ds1, ds2;
    int movestate;
