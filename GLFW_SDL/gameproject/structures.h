@@ -13,10 +13,25 @@ class Floor
                   0,-1, 0,-1, 0,-1, 0,-1, 0,
                   0,-1,-1,-1, 0,-1,-1,-1, 0,
                   0, 0, 0, 0, 0, 0, 0, 0, 0};
+   int waves[9][10] = {{1, 1, 1, 1, 1, 0, 0, 0, 0, 0},
+                       {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                       {2, 2, 2, 2, 2, 0, 0, 0, 0, 0},
+                       {2, 1, 2, 1, 2, 1, 2, 1, 2, 1},
+                       {2, 2, 2, 2, 2, 1, 1, 1, 1, 1},
+                       {3, 0, 3, 0, 3, 0, 3, 0, 3, 0},
+                       {3, 2, 1, 3, 2, 1, 3, 2, 1, 3},
+                       {3, 3, 3, 3, 2, 2, 2, 1, 1, 1},
+                       {3, 3, 3, 3, 3, 3, 3, 3, 3, 3}};
+   int currentwave = -1;
+   int wavetime = 500;
+   int currentwavetime = 0;
+   int timetonextwave = 10000;
 public:
    Floor();
    void tile(float x, float y, float z, int direction);
    void render();
+   int animate();
+   void spawnwave(int wave);
    float Startx() {return startx;}
    float Starty() {return starty;}
 };
@@ -46,7 +61,7 @@ public:
    Bullet(float X, float Y, float Z, Enemy** Target);
    void render();
    void animate();
-   void collide(Enemy** target);
+   void collide();
    float distance();
    void normalizeV();
 };
@@ -54,11 +69,12 @@ public:
 class Tower
 {
 public:
-   float x, y, z;
+   float x, y, z, dx, dy, dz, range;
    Enemy** target;
    int cooldown, maxcooldown;
 
    Tower(float X, float Y);
+   void animate();
    void render();
    Bullet* fire();
    float distance(Enemy** Target);

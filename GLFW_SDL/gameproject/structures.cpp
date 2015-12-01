@@ -115,6 +115,35 @@ void Floor::render()
    glPopMatrix();
 }
 
+int Floor::animate()
+{
+   if (currentwave >= 0)
+   {
+      int enemies = 0;
+      currentwavetime += 16;
+      while (currentwavetime >= wavetime)
+      {
+         currentwavetime -= wavetime;
+         enemies += 1;
+      }
+      return enemies;
+   }
+   else
+   {
+      timetonextwave -= 16;
+      if (timetonextwave <= 0)
+      {
+         timetonextwave = 10000;
+         return -1;
+      }
+   }
+   return 0;
+}
+
+void Floor::spawnwave(int wave)
+{
+}
+
 Enemy::Enemy(float X, float Y, int Health, int Type)
 {
    type = Type;
@@ -279,14 +308,110 @@ Tower::Tower(float X, float Y)
 {
    x = X;
    y = Y;
-   z = 2.0;
-   maxcooldown = 250;
+   z = 3.0;
+   dx = 1.0;
+   dy = 0.0;
+   dz = 0.0;
+   maxcooldown = 500;
    cooldown = 0;
    target = NULL;
+   range = 8.0;
+}
+
+void Tower::animate()
+{
+   if (target != NULL)
+   {
+      dx = x - (*target)->x;
+      dy = y - (*target)->y;
+      dz = z - (*target)->z;
+   }
 }
 
 void Tower::render()
 {
+   float emission[] = {0.0,0.0,0.0,1.0};
+   glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+   glColor3f(0.4,0.4,0.5);
+   octahedron(x,1   ,-y, 0, 1);
+   octahedron(x,1.5 ,-y, 0, 0.75);
+   octahedron(x,2.0 ,-y, 0, 0.625);
+   octahedron(x,2.5 ,-y, 0, 0.5);
+
+   float W0 = sqrt(dx*dx + dy*dy + dz*dz);
+   float X0 = dx/W0;
+   float Y0 = dy/W0;
+   float Z0 = dz/W0;
+
+   float W2 = sqrt(Y0*Y0 + X0*X0);
+   float X2 = Y0/W2;
+   float Y2 = -X0/W2;
+   float Z2 = 0;
+
+   //float W1;
+   float X1 = Y2*Z0 - Y0*Z2;
+   float Y1 = Z2*X0 - Z0*X2;
+   float Z1 = X2*Y0 - X0*Y2;
+
+   float mat[16];
+   mat[0] = X0;   mat[4] = X1;    mat[8] = X2;   mat[12] = 0;
+   mat[1] = Z0;   mat[5] = Z1;    mat[9] = Z2;   mat[13] = 0;
+   mat[2] =-Y0;   mat[6] =-Y1;    mat[10]=-Y2;   mat[14] = 0;
+   mat[3] = 0;    mat[7] = 0;     mat[11] = 0;   mat[15] = 1;
+
+   glPushMatrix();
+   glTranslated(x,3.0,-y);
+   glMultMatrixf(mat);
+   glScaled(1/3.0, 1/3.0, 1/3.0);
+
+   emission[0] = 0.35; emission[1] = 0.35; emission[2] = 0.40;
+   glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+   glColor3f(0.8,0.8,0.8);
+   //octahedron(x,3.0 ,-y, 0, 0.4);
+
+   glBegin(GL_TRIANGLES);
+   glNormal3f(1.0, 1.0, 1.0);
+   glVertex3f(1,0,0);
+   glVertex3f(0,1,0);
+   glVertex3f(0,0,1);
+
+   glNormal3f(-1.0/2, 1.0, 1.0);
+   glVertex3f(0,1,0);
+   glVertex3f(-2,0,0);
+   glVertex3f(0,0,1);
+
+   glNormal3f(-1.0/2, -1.0, 1.0);
+   glVertex3f(-2,0,0);
+   glVertex3f(0,-1,0);
+   glVertex3f(0,0,1);
+
+   glNormal3f(1.0, -1.0, 1.0);
+   glVertex3f(0,-1,0);
+   glVertex3f(1,0,0);
+   glVertex3f(0,0,1);
+
+   glNormal3f(1.0, 1.0, -1.0);
+   glVertex3f(0,1,0);
+   glVertex3f(1,0,0);
+   glVertex3f(0,0,-1);
+
+   glNormal3f(-1.0/2, 1.0, -1.0);
+   glVertex3f(-2,0,0);
+   glVertex3f(0,1,0);
+   glVertex3f(0,0,-1);
+
+   glNormal3f(-1.0/2, -1.0, -1.0);
+   glVertex3f(0,-1,0);
+   glVertex3f(-2,0,0);
+   glVertex3f(0,0,-1);
+
+   glNormal3f(1.0, -1.0, -1.0);
+   glVertex3f(1,0,0);
+   glVertex3f(0,-1,0);
+   glVertex3f(0,0,-1);
+   glEnd();
+
+   glPopMatrix();
 }
 
 Bullet* Tower::fire()
@@ -299,7 +424,7 @@ float Tower::distance(Enemy** Target)
 {
    return sqrt(((*Target)->x - x) * ((*Target)->x - x)
              + ((*Target)->y - y) * ((*Target)->y - y)
-             + ((*Target)->z - z) * ((*Target)->z - z));
+             + ((*Target)->z - 0) * ((*Target)->z - 0));
 }
 
 Bullet::Bullet(float X, float Y, float Z, Enemy** Target)
@@ -309,16 +434,109 @@ Bullet::Bullet(float X, float Y, float Z, Enemy** Target)
    z = Z;
    target = Target;
    dmg = 10;
-   speed = 0.125;
+   speed = 0.25;
 }
 
 void Bullet::render()
 {
+   float W0 = sqrt(dx*dx + dy*dy + dz*dz);
+   float X0 = dx/W0;
+   float Y0 = dy/W0;
+   float Z0 = dz/W0;
+
+   float W2 = sqrt(Y0*Y0 + X0*X0);
+   float X2 = Y0/W2;
+   float Y2 = -X0/W2;
+   float Z2 = 0;
+
+   //float W1;
+   float X1 = Y2*Z0 - Y0*Z2;
+   float Y1 = Z2*X0 - Z0*X2;
+   float Z1 = X2*Y0 - X0*Y2;
+
+   float mat[16];
+   mat[0] = X0;   mat[4] = X1;    mat[8] = X2;   mat[12] = 0;
+   mat[1] = Z0;   mat[5] = Z1;    mat[9] = Z2;   mat[13] = 0;
+   mat[2] =-Y0;   mat[6] =-Y1;    mat[10]=-Y2;   mat[14] = 0;
+   mat[3] = 0;    mat[7] = 0;     mat[11] = 0;   mat[15] = 1;
+
    float emission[] = {0.0, 0.0, 0.0, 1.0};
-   glColor3f(0.8,0.8,0.0);
-   emission[0] = 0.7; emission[1] = 0.7; emission[2] = 0.0;
+   glColor3f(0.9,0.9,0.3);
+   emission[0] = 0.6; emission[1] = 0.6; emission[2] = 0.0;
    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
-   ball(x, z, -y, 0.25);
+   //ball(x, z, -y, 0.125);
+   
+   glPushMatrix();
+   glTranslatef(x, z, -y);
+   glMultMatrixf(mat);
+   glScaled(0.25,0.25,0.25);
+
+   glBegin(GL_TRIANGLES);
+   glNormal3f(1.0/2, 1.0, 1.0);
+   glVertex3f(2,0,0);
+   glVertex3f(0,1,0);
+   glVertex3f(0,0,1);
+
+   glNormal3f(-1.0/2, 1.0, 1.0);
+   glVertex3f(0,1,0);
+   glVertex3f(-2,0,0);
+   glVertex3f(0,0,1);
+
+   glNormal3f(-1.0/2, -1.0, 1.0);
+   glVertex3f(-2,0,0);
+   glVertex3f(0,-1,0);
+   glVertex3f(0,0,1);
+
+   glNormal3f(1.0/2, -1.0, 1.0);
+   glVertex3f(0,-1,0);
+   glVertex3f(2,0,0);
+   glVertex3f(0,0,1);
+
+   glNormal3f(1.0/2, 1.0, -1.0);
+   glVertex3f(0,1,0);
+   glVertex3f(2,0,0);
+   glVertex3f(0,0,-1);
+
+   glNormal3f(-1.0/2, 1.0, -1.0);
+   glVertex3f(-2,0,0);
+   glVertex3f(0,1,0);
+   glVertex3f(0,0,-1);
+
+   glNormal3f(-1.0/2, -1.0, -1.0);
+   glVertex3f(0,-1,0);
+   glVertex3f(-2,0,0);
+   glVertex3f(0,0,-1);
+
+   glNormal3f(1.0/2, -1.0, -1.0);
+   glVertex3f(2,0,0);
+   glVertex3f(0,-1,0);
+   glVertex3f(0,0,-1);
+   glEnd();
+
+   ////Axes
+   //glColor3f(1,1,1);
+   //emission[0] = 1.0; emission[1] = 0.0; emission[2] = 1.0;
+   //glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+   //glBegin(GL_LINES);
+   //glVertex3f(0,0,0);
+   //glVertex3f(5,0,0);
+   //glEnd();
+
+   //emission[0] = 1.0; emission[1] = 1.0; emission[2] = 0.0;
+   //glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+   //glBegin(GL_LINES);
+   //glVertex3f(0,0,0);
+   //glVertex3f(0,5,0);
+   //glEnd();
+
+   //emission[0] = 0.0; emission[1] = 1.0; emission[2] = 1.0;
+   //glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+   //glBegin(GL_LINES);
+   //glVertex3f(0,0,0);
+   //glVertex3f(0,0,5);
+   //glEnd();
+
+   glPopMatrix();
 }
 
 void Bullet::animate()
@@ -332,8 +550,9 @@ void Bullet::animate()
    z += dz;
 }
 
-void Bullet::collide(Enemy** target)
+void Bullet::collide()
 {
+   (*target)->damage(dmg);
 }
 
 void Bullet::normalizeV()

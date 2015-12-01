@@ -1,6 +1,6 @@
 #  MinGW
 ifeq "$(OS)" "Windows_NT"
-CFLG=-O3 -Wall
+CFLG= -O3 -Wall
 LIBS=-lglut32cu -lglu32 -lopengl32
 CLEAN=del *.exe *.o *.a
 else
@@ -24,7 +24,7 @@ all:game
 #	gcc -std=c99 -c $(CFLG) $<
 #.cpp.o:
 #	g++ -c $(CFLG) $<
-game.o:game.cpp structures.h objects.h
+game.o:game.cpp structures.h objects.h pixlight.vert pixlight.frag gaussian.frag
 	g++ -std=c++11 -c $(CFLG) $<
 
 structures.o:structures.cpp structures.h objects.h

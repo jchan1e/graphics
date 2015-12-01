@@ -63,6 +63,9 @@ float ltheta = 0.0;
 
 //Shaders
 int shader = 0;
+int filter = 0;
+unsigned int img;
+int id;
 
 //SDL Window/OpenGL Context
 SDL_Window* window = NULL;
@@ -73,6 +76,7 @@ int r = 0;
 int dr = 0;
 int oldr = 0;
 int pause = 0;
+int frames = 0;
 
 //Game Objects
 Floor F;
@@ -81,6 +85,8 @@ Tower* towers[64] = {NULL};
 Bullet* bullets[128] {NULL};
 
 ////////////////////
+
+void reshape(int width, int height);
 
 //////// SDL Init Function ////////
 
@@ -94,8 +100,8 @@ bool init()
       success = false;
    }
 
-   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+//   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+//   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
    window = SDL_CreateWindow("Jordan Dick - FinalTD", 0,0 , w,h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
    if (window == NULL)
@@ -129,6 +135,8 @@ void display()
    glEnable(GL_DEPTH_TEST);
    glEnable(GL_CULL_FACE);
 
+   reshape(w,h);
+   glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 
    //view angle
@@ -228,16 +236,63 @@ void display()
    glColor3f(1.0,1.0,1.0);
    ball(Position[0], Position[1], Position[2], 0.125);
 
+   //Apply Blur Filter
+   glUseProgram(filter);
+
+   //set offsets
+   id = glGetUniformLocation(filter,"dX");
+   if (id >= 0) glUniform1f(id,1.0/w);
+   id = glGetUniformLocation(filter,"dY");
+   if (id >= 0) glUniform1f(id,1.0/h);
+   id = glGetUniformLocation(filter,"img");
+   if (id >= 0) glUniform1i(id,0);
+
+   glDisable(GL_DEPTH_TEST);
+   glDisable(GL_CULL_FACE);
+
+   glMatrixMode(GL_PROJECTION);
+   //glPushMatrix();
+   glLoadIdentity();
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+
+   for (int l=0; l<8; ++l)
+   {
+      glBindTexture(GL_TEXTURE_2D,img);
+      glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,0,0,w,h,0);
+
+      glClear(GL_COLOR_BUFFER_BIT);
+
+      glEnable(GL_TEXTURE_2D);
+      glBegin(GL_QUADS);
+      glTexCoord2f(0,0);
+      glVertex2f(-1,-1);
+
+      glTexCoord2f(1,0);
+      glVertex2f(1,-1);
+
+      glTexCoord2f(1,1);
+      glVertex2f(1,1);
+
+      glTexCoord2f(0,1);
+      glVertex2f(-1,1);
+      glEnd();
+      glDisable(GL_TEXTURE_2D);
+
+   }
+   glUseProgram(0);
+
    //swap the buffers
    glFlush();
    SDL_GL_SwapWindow(window);
+   //glMatrixMode(GL_PROJECTION);
+   //glPopMatrix();
 }
 
 void physics()
 {
    while (dr >= 16)
    {
-      //actually do all the animation and physics
       if (!pause)
       {
          //move the light
@@ -246,7 +301,7 @@ void physics()
          Position[0] = 4.5*sin(ltheta);
          Position[2] = 4.5*cos(ltheta);
 
-         //animate the enemies, towers, and bullets
+         //animate the enemies
          for (int i=0; i<64; ++i)
          {
             if (enemies[i] != NULL)
@@ -262,11 +317,11 @@ void physics()
                }
             }
          }
+         //animate the towers
          for (int i=0; i<64; ++i)
          {
             if (towers[i] != NULL)
             {
-               //cout << "animating tower " << i << " at address " << towers[i] << endl;
                //select closest target
                float dist = INFINITY;
                for (int j=0; j<64; ++j)
@@ -276,7 +331,10 @@ void physics()
                      if (dist > towers[i]->distance(&enemies[j]))
                      {
                         dist = towers[i]->distance(&enemies[j]);
-                        towers[i]->target = &enemies[j];
+                        if (dist <= towers[i]->range)
+                           towers[i]->target = &enemies[j];
+                        else
+                           towers[i]->target = NULL;
                      }
                   }
                }
@@ -292,16 +350,10 @@ void physics()
                   while (bullets[k] != NULL)
                      ++k;
                   bullets[k] = bullet;
-                  cout << bullets[i] << " Target acquired: " << bullet->target << endl;
-      cout << "bullets: ";
-      for (int i=0; i < 64; ++i)
-      {
-         if (bullets[i] != NULL)
-            cout << i;
-      }
-      cout << endl;
+                  //cout << bullets[i] << " Target acquired: " << bullet->target << endl;
                   towers[i]->cooldown -= towers[i]->maxcooldown;
                }
+               towers[i]->animate();
             }
          }
          for (int i=0; i<128; ++i)
@@ -309,32 +361,32 @@ void physics()
             if (bullets[i] != NULL)
             {
                //cout << "animating bullet " << i << " at address " << bullets[i] << endl;
-               if (bullets[i]->target == NULL)
-               {  cout << bullets[i] << " Target lost...\n"; delete bullets[i]; bullets[i] = NULL;
-      cout << "bullets: ";
-      for (int i=0; i < 64; ++i)
-      {
-         if (bullets[i] != NULL)
-            cout << i;
-      }
-      cout << endl;
+               //cout << bullets[i]->target << " " << *(bullets[i]->target) << endl;
+               if (*(bullets[i]->target) == NULL)
+               {
+                  //cout << bullets[i] << " Target lost...\n";
+                  delete bullets[i];
+                  bullets[i] = NULL;
                }
                else
                {
                   bullets[i]->animate();
                   if (bullets[i]->distance() <= 0.5)
                   {
-                     cout << bullets[i] << " Target hit! " << bullets[i]->target << endl;
-                     (*(bullets[i]->target))->damage(bullets[i]->dmg);
+                     //cout << bullets[i] << " Target hit! " << bullets[i]->target << endl;
+                     //(*(bullets[i]->target))->damage(bullets[i]->dmg);
+                     bullets[i]->collide();
+                     //cout << (*bullets[i]->target)->health << endl;;
+                     if ((*bullets[i]->target)->health <= 0)
+                     {
+                        //cout << bullets[i]->target << " " << *(bullets[i]->target) << endl;
+                        //cout << "ded\n";
+                        delete (*bullets[i]->target);
+                        *(bullets[i]->target) = NULL;
+                        //cout << bullets[i]->target << " " << *(bullets[i]->target) << endl;
+                     }
                      delete bullets[i];
                      bullets[i] = NULL;
-      cout << "bullets: ";
-      for (int i=0; i < 64; ++i)
-      {
-         if (bullets[i] != NULL)
-            cout << i;
-      }
-      cout << endl;
                   }
                }
             }
@@ -388,11 +440,12 @@ int CreateShaderProg(char* VertFile, char* FragFile)
    // Create program
    int prog = glCreateProgram();
    // Create and compile vertex and fragment shaders
-   int vert = CreateShader(GL_VERTEX_SHADER,  VertFile);
-   int frag = CreateShader(GL_FRAGMENT_SHADER,FragFile);
+   int vert, frag;
+   if (VertFile) vert = CreateShader(GL_VERTEX_SHADER,  VertFile);
+   if (FragFile) frag = CreateShader(GL_FRAGMENT_SHADER,FragFile);
    // Attach vertex and fragment shaders
-   glAttachShader(prog,vert);
-   glAttachShader(prog,frag);
+   if (VertFile) glAttachShader(prog,vert);
+   if (FragFile) glAttachShader(prog,frag);
    // Link Program
    glLinkProgram(prog);
    // Return name (int)
@@ -468,6 +521,15 @@ int main(int argc, char *argv[])
    
    //compile shaders
    shader = CreateShaderProg((char*)"pixlight.vert",(char*)"pixlight.frag");
+   filter = CreateShaderProg(NULL, (char*)"gaussian.frag");
+   
+   //create and configure  texture for blur filter
+   glGenTextures(1,&img);
+   glBindTexture(GL_TEXTURE_2D,img);
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 
    reshape(w,h);
 
@@ -475,9 +537,9 @@ int main(int argc, char *argv[])
 
    SDL_Event event;
 
-   enemies[0] = new Enemy(-8, 6, 100, 0);
-   enemies[1] = new Enemy(-2, 2, 100, 1);
-   towers[0] = new Tower(0, 4);
+//   enemies[0] = new Enemy(-8, 6, 100, 0);
+//   enemies[1] = new Enemy(-2, 2, 100, 1);
+//   towers[0] = new Tower(0, 4);
 
 
    ////////Main Loop////////
@@ -495,32 +557,40 @@ int main(int argc, char *argv[])
             case SDL_KEYDOWN:
                if (event.key.keysym.scancode == SDL_SCANCODE_SPACE)
                   pause = 1 - pause;
-              // else if (event.key.keysym.scancode == SDL_SCANCODE_E)
-              // {
-              //    if (enemies[0] == NULL)
-              //       enemies[0] = new Enemy(-8.0, 6.0, 100, 0);
-              //    else
-              //    {
-              //       delete enemies[0];
-              //       enemies[0] = NULL;
-              //    }
+               else if (event.key.keysym.scancode == SDL_SCANCODE_E)
+               {
+                  if (enemies[0] == NULL)
+                     enemies[0] = new Enemy(-8, 6, 100, 0);
+                  if (enemies[2] == NULL)
+                     enemies[2] = new Enemy(-6, 2, 100, 0);
+                  //else
+                  //{
+                  //   delete enemies[0];
+                  //   enemies[0] = NULL;
+                  //}
 
-              //    if (enemies[1] == NULL)
-              //       enemies[1] = new Enemy(-2, 2, 100, 1);
-              //    else
-              //    {
-              //       delete enemies[1];
-              //       enemies[1] = NULL;
-              //    }
+                  if (enemies[1] == NULL)
+                     enemies[1] = new Enemy(-2, 2, 100, 1);
+                  if (enemies[3] == NULL)
+                     enemies[3] = new Enemy(-6, -6, 100, 1);
+                  //else
+                  //{
+                  //   delete enemies[1];
+                  //   enemies[1] = NULL;
+                  //}
 
-              //    if (towers[0] == NULL)
-              //       towers[0] = new Tower(0.0, 4.0);
-              //    else
-              //    {
-              //       delete towers[0];
-              //       towers[0] = NULL;
-              //    }
-              // }
+                  if (towers[0] == NULL)
+                     towers[0] = new Tower(0.0, 4.0);
+                  if (towers[1] == NULL)
+                     towers[1] = new Tower(-4.0, -4.0);
+                  if (towers[2] == NULL)
+                     towers[2] = new Tower(4.0, -4.0);
+//                  else
+//                  {
+//                     delete towers[0];
+//                     towers[0] = NULL;
+//                  }
+               }
                else if (mode == 1)
                {
                   const Uint8* state = SDL_GetKeyboardState(NULL);
@@ -542,9 +612,11 @@ int main(int argc, char *argv[])
       dr = r - oldr;
       physics();
       display();
+      frames += 1;
    }
 
    cout << "Shutting Down\n";
+   cout << "average framerate: " << 1000*(float)frames/r << endl;
    SDL_Quit();
    
 
