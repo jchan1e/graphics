@@ -32,6 +32,8 @@ bool quit = false;
 //View Angles
 double th = 0;
 double ph = 40;
+double dth = 0;
+double dph = 0;
 //Window Size
 int w = 1920;
 int h = 1080;
@@ -47,8 +49,8 @@ double ez = 0;
 double vx = 0;
 double vy = 0;
 double vz = 0;
-
 double zoom = 16;
+double dzoom = 0;
 
 //lighting arrays
 float Ambient[4];
@@ -64,7 +66,8 @@ float ltheta = 0.0;
 //Shaders
 int shader = 0;
 int filter = 0;
-unsigned int img;
+int blend  = 0;
+unsigned int img, frame;
 int id;
 
 //SDL Window/OpenGL Context
@@ -85,8 +88,11 @@ Tower* towers[64] = {NULL};
 Bullet* bullets[128] {NULL};
 
 ////////////////////
+//functions that are called ahead of when they're defined
+//because C
 
 void reshape(int width, int height);
+void keyboard(const Uint8* state);
 
 //////// SDL Init Function ////////
 
@@ -129,6 +135,20 @@ bool init()
 
 ///////////////////////////////////
 
+void GameOver()
+{
+   for (int i=0; i < 64; ++i)
+   {
+      if (enemies[i] != NULL)
+         enemies[i]->speed = 0;
+   }
+   for (int i=0; i < 128; ++i)
+   {
+      if (bullets[i] != NULL)
+         bullets[i]->speed = 0;
+   }
+}
+
 void display()
 {
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -165,8 +185,8 @@ void display()
    // Light position and rendered marker (unlit)
 
    // lighting colors/types
-   Ambient[0] = 0.05; Ambient[1] = 0.07; Ambient[2] = 0.08; Ambient[3] = 1.0;
-   Diffuse[0] = 0.75; Diffuse[1] = 0.75; Diffuse[2] = 0.70; Diffuse[3] = 1.0;
+   Ambient[0] = 0.12; Ambient[1] = 0.15; Ambient[2] = 0.16; Ambient[3] = 1.0;
+   Diffuse[0] = 0.65; Diffuse[1] = 0.65; Diffuse[2] = 0.60; Diffuse[3] = 1.0;
    Specular[0] = 0.7; Specular[1] = 0.7; Specular[2] = 1.0; Specular[3] = 1.0;
    shininess[0] = 1024;
 
@@ -210,7 +230,7 @@ void display()
    sphere(0,2,0, Position[0], 0.75);
 
    glColor3f(0.25,0.25,0.30);
-   emission[0] = 0.0; emission[1] = 0.0; emission[2] = 0.0;
+   emission[0] = -0.05; emission[1] = -0.05; emission[2] = -0.05;
    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
    F.render();
 
@@ -242,9 +262,9 @@ void display()
    glUseProgram(filter);
 
    //set offsets
-   id = glGetUniformLocation(filter,"dX");
+   id = glGetUniformLocation(filter,"DX");
    if (id >= 0) glUniform1f(id,1.0/w);
-   id = glGetUniformLocation(filter,"dY");
+   id = glGetUniformLocation(filter,"DY");
    if (id >= 0) glUniform1f(id,1.0/h);
    id = glGetUniformLocation(filter,"img");
    if (id >= 0) glUniform1i(id,0);
@@ -253,12 +273,15 @@ void display()
    glDisable(GL_CULL_FACE);
 
    glMatrixMode(GL_PROJECTION);
-   //glPushMatrix();
    glLoadIdentity();
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 
-   for (int l=0; l<0; ++l)
+   //Preserve original pre-filter image
+   glBindTexture(GL_TEXTURE_2D, frame);
+   glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,0,0,w,h,0);
+
+   for (int l=0; l<8; ++l)
    {
       glBindTexture(GL_TEXTURE_2D,img);
       glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,0,0,w,h,0);
@@ -280,9 +303,64 @@ void display()
       glVertex2f(-1,1);
       glEnd();
       glDisable(GL_TEXTURE_2D);
-
    }
+   //glBindTexture(GL_TEXTURE_2D,frame);
+   //id = glGetUniformLocation(blend,"frame");
+   //if (id >= 0) glUniform1i(id, 0);
+
    glUseProgram(0);
+
+   glEnable(GL_TEXTURE_2D);
+
+   glBindTexture(GL_TEXTURE_2D,img);
+   glClear(GL_COLOR_BUFFER_BIT);
+
+   glBegin(GL_QUADS);
+   glTexCoord2f(0,0);
+   glVertex2f(-1,-1);
+
+   glTexCoord2f(1,0);
+   glVertex2f(1,-1);
+
+   glTexCoord2f(1,1);
+   glVertex2f(1,1);
+
+   glTexCoord2f(0,1);
+   glVertex2f(-1,1);
+   glEnd();
+
+   glBindTexture(GL_TEXTURE_2D,frame);
+
+   glUseProgram(blend);
+   id = glGetUniformLocation(blend,"img");
+   if (id >= 0) glUniform1i(id, 0);
+   id = glGetUniformLocation(blend,"dX");
+   if (id >= 0) glUniform1f(id, 1.0/w);
+   id = glGetUniformLocation(blend,"dY");
+   if (id >= 0) glUniform1f(id, 1.0/h);
+
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE);//_MINUS_SRC_ALPHA);
+   //glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
+   //glClear(GL_COLOR_BUFFER_BIT);
+
+   glBegin(GL_QUADS);
+   glTexCoord2f(0,0);
+   glVertex2f(-1,-1);
+
+   glTexCoord2f(1,0);
+   glVertex2f(1,-1);
+
+   glTexCoord2f(1,1);
+   glVertex2f(1,1);
+
+   glTexCoord2f(0,1);
+   glVertex2f(-1,1);
+   glEnd();
+
+   glDisable(GL_BLEND);
+   glDisable(GL_TEXTURE_2D);
+   //cout << gluErrorString(glGetError()) << endl;
 
    //swap the buffers
    glFlush();
@@ -293,10 +371,18 @@ void physics()
 {
    while (dr >= 16)
    {
+      const Uint8* state = SDL_GetKeyboardState(NULL);
+      keyboard(state);
+
+      //adjust the eye position
+      th += dth;
+      ph += dph;
+      zoom = zoom<2.0?2.0:zoom+dzoom;
+
       if (!pause)
       {
          //move the light
-         ltheta += M_PI/60;
+         ltheta += M_PI/180;
          ltheta = fmod(ltheta, 2*M_PI);
          Position[0] = 4.5*sin(ltheta);
          Position[2] = 4.5*cos(ltheta);
@@ -321,9 +407,11 @@ void physics()
             
                if (enemies[i]->x == 8.0 && enemies[i]->y == 6.0)
                {
-                  // subtract player lives
+                  F.lives -= 1;
                   delete enemies[i];
                   enemies[i] = NULL;
+                  if (F.lives <= 0)
+                     GameOver();
                }
             }
          }
@@ -352,7 +440,7 @@ void physics()
                   towers[i]->target = NULL;
                //manage firing loop
                if (towers[i]->cooldown < towers[i]->maxcooldown)
-                  towers[i]->cooldown += dr;
+                  towers[i]->cooldown += 16;
                if (towers[i]->target != NULL && towers[i]->cooldown >= towers[i]->maxcooldown)
                {
                   Bullet* bullet = towers[i]->fire();
@@ -391,7 +479,7 @@ void physics()
                      {
                         //cout << bullets[i]->target << " " << *(bullets[i]->target) << endl;
                         //cout << "ded\n";
-                        delete (*bullets[i]->target);
+                        delete *(bullets[i]->target);
                         *(bullets[i]->target) = NULL;
                         //cout << bullets[i]->target << " " << *(bullets[i]->target) << endl;
                      }
@@ -403,13 +491,13 @@ void physics()
          }
       }
 
-      //set timing stuf
+      //set timing stuff
       oldr = r;
       dr -= 16;
    }
 }
 
-// this function stolen from ex27
+// this function stolen from class examples
 char* ReadText(char* file)
 {
    int n;
@@ -428,7 +516,7 @@ char* ReadText(char* file)
    return buffer;
 }
 
-// this function stolen from ex27
+// this function stolen from class examples
 int CreateShader(GLenum type, char* file)
 {
    // Create the shader
@@ -444,7 +532,7 @@ int CreateShader(GLenum type, char* file)
    return shader;
 }
 
-// this function stolen from ex27
+// this function stolen from class examples
 int CreateShaderProg(char* VertFile, char* FragFile)
 {
    // Create program
@@ -489,17 +577,23 @@ void keyboard(const Uint8* state)
       quit = true;
    
    if (state[SDL_SCANCODE_LEFT])
-      th += 5;
-   if (state[SDL_SCANCODE_RIGHT])
-      th -= 5;
+      dth = 0.5;
+   else if (state[SDL_SCANCODE_RIGHT])
+      dth = -0.5;
+   else
+      dth = 0;
    if (state[SDL_SCANCODE_UP])
-      ph += 5;
-   if (state[SDL_SCANCODE_DOWN])
-      ph -= 5;
+      dph = 0.5;
+   else if (state[SDL_SCANCODE_DOWN])
+      dph = -0.5;
+   else
+      dph = 0;
    if (state[SDL_SCANCODE_Z])
-      zoom = max(1.0, zoom-1);
-   if (state[SDL_SCANCODE_X])
-      zoom = zoom+1;
+      dzoom = -0.10;
+   else if (state[SDL_SCANCODE_X])
+      dzoom = 0.10;
+   else
+      dzoom = 0;
 
    //if (state[SDL_SCANCODE_SPACE])
    //   pause = 1-pause;
@@ -507,22 +601,7 @@ void keyboard(const Uint8* state)
 
 int main(int argc, char *argv[])
 {
-//   glutInit(&argc, argv);
-//   glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-//
-//   glutInitWindowPosition(0,0);
-//   glutInitWindowSize(w,h);
-//   glutCreateWindow("Jordan Dick: HW3 - Galilean Moons");
-//
-//   glutDisplayFunc(display);
-//   glutReshapeFunc(reshape);
-//   glutSpecialFunc(special);
-//   glutKeyboardFunc(keyboard);
-//   //glutPassiveMotionFunc(motion);
-//   glutIdleFunc(idle);
-
-//   SDL_StartTextInput();
-
+   //Initialize
    if (init() != true)
    {
       cerr << "Shutting Down\n";
@@ -532,8 +611,9 @@ int main(int argc, char *argv[])
    //compile shaders
    shader = CreateShaderProg((char*)"pixlight.vert",(char*)"pixlight.frag");
    filter = CreateShaderProg(NULL, (char*)"gaussian.frag");
+   blend  = CreateShaderProg(NULL, (char*)"blender.frag");
    
-   //create and configure  texture for blur filter
+   //create and configure textures for filters
    glGenTextures(1,&img);
    glBindTexture(GL_TEXTURE_2D,img);
    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
@@ -541,17 +621,20 @@ int main(int argc, char *argv[])
    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 
+   glGenTextures(1,&frame);
+   glBindTexture(GL_TEXTURE_2D,frame);
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+
    reshape(w,h);
 
-   Position[0] = 0.0; Position[1] = 6.0; Position[2] = 4.5; Position[3] = 1.0;
-
-   SDL_Event event;
-
-//   enemies[0] = new Enemy(-8, 6, 100, 0);
-//   enemies[1] = new Enemy(-2, 2, 100, 1);
-//   towers[0] = new Tower(0, 4);
+   Position[0] = 0.0; Position[1] = 8.0; Position[2] = 4.5; Position[3] = 1.0;
 
    int startuptime = SDL_GetTicks();
+
+   SDL_Event event;
 
    ////////Main Loop////////
    while (!quit)
@@ -570,8 +653,8 @@ int main(int argc, char *argv[])
                   pause = 1 - pause;
                else if (event.key.keysym.scancode == SDL_SCANCODE_E)
                {
-                  if (F.currentwave < 6)
-                     F.currentwave = 5;
+                  if (F.currentwave < 3)
+                     F.currentwave = 2;
                   F.spawnwave();
 
                   if (towers[0] == NULL)
@@ -580,6 +663,12 @@ int main(int argc, char *argv[])
                      towers[1] = new Tower(-4.0, -4.0);
                   if (towers[2] == NULL)
                      towers[2] = new Tower(4.0, -4.0);
+                  if (towers[3] == NULL)
+                     towers[3] = new Tower(-4.0, 0.0);
+                  if (towers[4] == NULL)
+                     towers[4] = new Tower(4.0, 0.0);
+                  if (towers[5] == NULL)
+                     towers[5] = new Tower(0.0, -4.0);
 //                  else
 //                  {
 //                     delete towers[0];
@@ -592,19 +681,18 @@ int main(int argc, char *argv[])
                   keyboard(state);
                }
                break;
+
             case SDL_WINDOWEVENT:
-               switch(event.window.event)
+               if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
                {
-               case SDL_WINDOWEVENT_SIZE_CHANGED:
                   //cerr << event.window.data1 << " " << event.window.data2 << endl;
                   reshape(event.window.data1, event.window.data2);
-                  break;
                }
                break;
          }
       }
       r = SDL_GetTicks();
-      dr = r - oldr;
+      dr += r - oldr;
       physics();
       display();
       frames += 1;
@@ -612,6 +700,20 @@ int main(int argc, char *argv[])
 
    cout << "Shutting Down\n";
    cout << "average framerate: " << 1000*(float)frames/(r - startuptime) << endl;
+
+   for (int i=0; i<64; ++i)
+   {
+      if (enemies[i] != NULL)
+         delete enemies[i];
+      if (towers[i] != NULL)
+         delete towers[i];
+   }
+   for (int i=0; i<128; ++i)
+   {
+      if (bullets[i] != NULL)
+         delete bullets[i];
+   }
+
    SDL_Quit();
    
 

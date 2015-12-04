@@ -14,7 +14,7 @@ CFLG=-g -O3 -Wall $(shell sdl2-config --cflags) -DGL_GLEXT_PROTOTYPES
 LIBS=-lGLU -lGL -lm $(shell sdl2-config --libs)
 endif
 #  OSX/Linux/Unix/Solaris
-CLEAN=rm -f play *.o *.a
+CLEAN=rm -rf play *.o *.a *.dSYM
 endif
 
 all:game
@@ -24,7 +24,7 @@ all:game
 #	gcc -std=c99 -c $(CFLG) $<
 #.cpp.o:
 #	g++ -c $(CFLG) $<
-game.o:game.cpp structures.h objects.h pixlight.vert pixlight.frag gaussian.frag
+game.o:game.cpp structures.h objects.h pixlight.vert pixlight.frag gaussian.frag blender.frag
 	g++ -std=c++11 -c $(CFLG) $<
 
 structures.o:structures.cpp structures.h objects.h

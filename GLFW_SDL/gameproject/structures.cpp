@@ -113,11 +113,37 @@ void Floor::render()
       }
    }
    glPopMatrix();
+
+   if (lives <= 0)
+   {
+      bool pixels[7][53] = {{0,1,1,1,0, 0, 0,1,1,1,0, 0, 0,1,0,1,0, 0, 1,1,1,1,1, 0, 0,0,0,0,0, 0, 0,1,1,1,0, 0, 1,0,0,0,1, 0, 1,1,1,1,1, 0, 1,1,1,1,0},
+                            {1,0,0,0,1, 0, 1,0,0,0,1, 0, 1,0,1,0,1, 0, 1,0,0,0,0, 0, 0,0,0,0,0, 0, 1,0,0,0,1, 0, 1,0,0,0,1, 0, 1,0,0,0,0, 0, 1,0,0,0,1},
+                            {1,0,0,0,0, 0, 1,0,0,0,1, 0, 1,0,1,0,1, 0, 1,0,0,0,0, 0, 0,0,0,0,0, 0, 1,0,0,0,1, 0, 1,0,0,0,1, 0, 1,0,0,0,0, 0, 1,0,0,0,1},
+                            {1,0,1,1,1, 0, 1,1,1,1,1, 0, 1,0,1,0,1, 0, 1,1,1,1,0, 0, 0,0,0,0,0, 0, 1,0,0,0,1, 0, 1,0,0,0,1, 0, 1,1,1,1,0, 0, 1,1,1,1,0},
+                            {1,0,0,0,1, 0, 1,0,0,0,1, 0, 1,0,1,0,1, 0, 1,0,0,0,0, 0, 0,0,0,0,0, 0, 1,0,0,0,1, 0, 1,0,0,0,1, 0, 1,0,0,0,0, 0, 1,0,1,0,0},
+                            {1,0,0,0,1, 0, 1,0,0,0,1, 0, 1,0,1,0,1, 0, 1,0,0,0,0, 0, 0,0,0,0,0, 0, 1,0,0,0,1, 0, 0,1,0,1,0, 0, 1,0,0,0,0, 0, 1,0,0,1,0},
+                            {1,1,1,1,1, 0, 1,0,0,0,1, 0, 1,0,1,0,1, 0, 1,1,1,1,1, 0, 0,0,0,0,0, 0, 0,1,1,1,0, 0, 0,0,1,0,0, 0, 1,1,1,1,1, 0, 1,0,0,0,1}};
+      glColor3f(0.9,0.9,0.9);
+      glPushMatrix();
+      for (float th=0.0; th <= 271.0; th += 90)
+      {
+         glRotated(th, 0,1,0);
+         for (int i=0; i<53; ++i)
+         {
+            for (int j=0; j<7;++j)
+            {
+               if (pixels[j][i])
+                  cube(2.5-0.1*i,4-0.1*j,9.0, 0, 0.1/sqrt(2.0));
+            }
+         }
+      }
+      glPopMatrix();
+   }
 }
 
 int Floor::animate()
 {
-   if (spawncount >= 0)
+   if (spawncount > 0)
    {
       currentwavetime += 16;
       if (currentwavetime >= wavetime)
@@ -132,9 +158,9 @@ int Floor::animate()
 
 void Floor::spawnwave()
 {
-   if (spawncount < 0)
+   if (spawncount <= 0)
    {
-      if (currentwave != 10)
+      if (currentwave < 8)
          currentwave += 1;
       spawncount = 10;
    }
@@ -149,15 +175,25 @@ Enemy::Enemy(float X, float Y, int Health, int Type)
    z = 0;
    theta = 0.0;
    speed = 0.05;
+   if (type == 1)
+   {
+      speed = 0.07;
+      health /= 2;
+   }
+   else if (type == 3)
+   {
+      speed = 0.04;
+      health *= 2;
+   }
    movestate = 0;
    dx = speed; dy = 0;
 
-   if (type == 1)
+   if (type == 2)
    {
       s1 = 0.85;  ds1 = 0.02;
       s2 = 0.85;  ds2 = -0.02;
    }
-   else if (type == 2)
+   else if (type == 1)
    {
       s1 = 0.8;  ds1 = 0.03;
       s2 = 0.8;  ds2 = -0.03;
@@ -174,7 +210,7 @@ void Enemy::render()
    float emission[] = {0.0,0.0,0.0,1.0};
 
    //glColor3f(1.0,1.0,1.0);
-   if (type == 1)
+   if (type == 2)
    {
       glColor3f(0.8,0.0,0.8);
       //glColor3f(0.0,0.8,0.0);
@@ -188,11 +224,11 @@ void Enemy::render()
       glMaterialfv(GL_FRONT, GL_EMISSION, emission);
       icosahedron(x, z, -y, theta, s2);
    }
-   else if (type == 2)
+   else if (type == 1)
    {
       glColor3f(0.8,0.0,0.0);
       //glColor3f(0.0,0.8,0.8);
-      emission[0] = 0.4; emission[1] = 0.0; emission[2] = 0.0;
+      emission[0] = 0.5; emission[1] = 0.0; emission[2] = 0.0;
       glMaterialfv(GL_FRONT, GL_EMISSION, emission);
       cube(x, z, -y, theta, s1*0.8);
 
@@ -220,7 +256,7 @@ void Enemy::render()
 
 void Enemy::animate()
 {
-   if (type == 1)
+   if (type == 2)
    {
       if (s1 <= 0.7 || s1 >= 1.0)
          ds1 = -ds1;
@@ -228,7 +264,7 @@ void Enemy::animate()
          ds2 = -ds2;
       theta += 2; theta = fmod(theta, 360.0);
    }
-   else if (type == 2)
+   else if (type == 1)
    {
       if (s1 <= 0.5 || s1 >= 1.1)
          ds1 = -ds1;
@@ -344,7 +380,7 @@ void Tower::render()
 {
    float emission[] = {0.0,0.0,0.0,1.0};
    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
-   glColor3f(0.4,0.4,0.5);
+   glColor3f(0.25,0.25,0.3);
    octahedron(x,1   ,-y, 0, 1);
    octahedron(x,1.5 ,-y, 0, 0.75);
    octahedron(x,2.0 ,-y, 0, 0.625);
@@ -376,9 +412,9 @@ void Tower::render()
    glMultMatrixf(mat);
    glScaled(1/3.0, 1/3.0, 1/3.0);
 
-   emission[0] = 0.35; emission[1] = 0.35; emission[2] = 0.40;
+   emission[0] = 0.5; emission[1] = 0.5; emission[2] = 0.55;
    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
-   glColor3f(0.8,0.8,0.8);
+   glColor3f(0.6,0.6,0.6);
    //octahedron(x,3.0 ,-y, 0, 0.4);
 
    glBegin(GL_TRIANGLES);
