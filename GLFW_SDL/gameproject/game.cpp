@@ -281,7 +281,7 @@ void display()
    glBindTexture(GL_TEXTURE_2D, frame);
    glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,0,0,w,h,0);
 
-   for (int l=0; l<8; ++l)
+   for (int l=0; l<4; ++l)
    {
       glBindTexture(GL_TEXTURE_2D,img);
       glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,0,0,w,h,0);
@@ -729,5 +729,5 @@ int main(int argc, char *argv[])
 //
 //   glutMainLoop();
 
-   return EXIT_SUCCESS;
+   return 0;
 }

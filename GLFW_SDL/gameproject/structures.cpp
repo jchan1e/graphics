@@ -114,7 +114,15 @@ void Floor::render()
    }
    glPopMatrix();
 
-   if (lives <= 0)
+   if (lives > 0)
+   {
+      glColor3f(0.4,0.8,0.4);
+      float emission[4] = {0.0,0.4,0.0,1.0};
+      glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+      for (int i=0; i < lives; ++i)
+         cube(8.0 + 1.5*(i/5), 1.5*(i%5), -6.0, 0, 1.0);
+   }
+   else
    {
       bool pixels[7][53] = {{0,1,1,1,0, 0, 0,1,1,1,0, 0, 0,1,0,1,0, 0, 1,1,1,1,1, 0, 0,0,0,0,0, 0, 0,1,1,1,0, 0, 1,0,0,0,1, 0, 1,1,1,1,1, 0, 1,1,1,1,0},
                             {1,0,0,0,1, 0, 1,0,0,0,1, 0, 1,0,1,0,1, 0, 1,0,0,0,0, 0, 0,0,0,0,0, 0, 1,0,0,0,1, 0, 1,0,0,0,1, 0, 1,0,0,0,0, 0, 1,0,0,0,1},
@@ -240,12 +248,6 @@ void Enemy::render()
    }
    else // type == 3
    {
-      //float a = (float)rand()/RAND_MAX;
-      //float b = (float)rand()/RAND_MAX;
-      //float c = (float)rand()/RAND_MAX;
-      //float w = a + b + c;
-      //glColor3f(a/w, b/w, c/w);
-      //emission[0] = a/w;   emission[1] = b/w;   emission[2] = c/w;
       glColor3f(0.0,0.8,0.8);
       emission[0] = 0.0;   emission[1] = 0.4;emission[2] = 0.25;
       glMaterialfv(GL_FRONT, GL_EMISSION, emission);
@@ -281,11 +283,6 @@ void Enemy::animate()
 
    x += dx; y += dy;
    
-   //a = (float)rand()/RAND_MAX;
-   //b = (float)rand()/RAND_MAX;
-   //c = (float)rand()/RAND_MAX;
-   //w = a + b + c;
-
    //Follow the metal grey road
    switch (movestate)
    {
@@ -560,29 +557,6 @@ void Bullet::render()
    glVertex3f(0,-1,0);
    glVertex3f(0,0,-1);
    glEnd();
-
-   ////Axes
-   //glColor3f(1,1,1);
-   //emission[0] = 1.0; emission[1] = 0.0; emission[2] = 1.0;
-   //glMaterialfv(GL_FRONT, GL_EMISSION, emission);
-   //glBegin(GL_LINES);
-   //glVertex3f(0,0,0);
-   //glVertex3f(5,0,0);
-   //glEnd();
-
-   //emission[0] = 1.0; emission[1] = 1.0; emission[2] = 0.0;
-   //glMaterialfv(GL_FRONT, GL_EMISSION, emission);
-   //glBegin(GL_LINES);
-   //glVertex3f(0,0,0);
-   //glVertex3f(0,5,0);
-   //glEnd();
-
-   //emission[0] = 0.0; emission[1] = 1.0; emission[2] = 1.0;
-   //glMaterialfv(GL_FRONT, GL_EMISSION, emission);
-   //glBegin(GL_LINES);
-   //glVertex3f(0,0,0);
-   //glVertex3f(0,0,5);
-   //glEnd();
 
    glPopMatrix();
 }
