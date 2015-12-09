@@ -38,8 +38,13 @@ double dph = 0;
 int w = 1920;
 int h = 1080;
 
-//perspective mode
-int mode = 1;  // 0 = ortho, 1 = perspective, 2 = first person
+//play mode
+int mode = 1;  // 1 = play, 0 = place
+
+//tower placement cursor position
+float cursorx = 0.0;
+float cursory = 0.0;
+Tower** placement_tower = NULL;
 
 //eye position and orientation
 double ex = 0;
@@ -124,7 +129,7 @@ bool init()
    }
    
    //Vsync
-   if (SDL_GL_SetSwapInterval(1) < 0)
+   if (SDL_GL_SetSwapInterval(0) < 0)
    {
       cerr << "SDL could not set Vsync: " << SDL_GetError() << endl;
       success = false;
@@ -140,12 +145,11 @@ void GameOver()
    for (int i=0; i < 64; ++i)
    {
       if (enemies[i] != NULL)
+      {
+         enemies[i]->dx = 0;
+         enemies[i]->dy = 0;
          enemies[i]->speed = 0;
-   }
-   for (int i=0; i < 128; ++i)
-   {
-      if (bullets[i] != NULL)
-         bullets[i]->speed = 0;
+      }
    }
 }
 
@@ -160,22 +164,19 @@ void display()
    glLoadIdentity();
 
    //view angle
-   if (mode == 1) //rotation for perspective mode
-   {
-      ex = Sin(-th)*Cos(ph)*zoom;
-      ey = Sin(ph)*zoom;
-      ez = Cos(-th)*Cos(ph)*zoom;
+   ex = Sin(-th)*Cos(ph)*zoom;
+   ey = Sin(ph)*zoom;
+   ez = Cos(-th)*Cos(ph)*zoom;
 
-      gluLookAt(ex,ey,ez , 0,0,0 , 0,Cos(ph),0);
-   }
-   else //mode == 2              // rotation and movement for FP mode
-   {                             // occur in keyboard & special
-      vx = ex - Sin(th)*Cos(ph); // here we simply update
-      vy = ey - Sin(ph);         // location of view target
-      vz = ez - Cos(th)*Cos(ph);
+   gluLookAt(ex,ey,ez , 0,0,0 , 0,Cos(ph),0);
+   //else //mode == 2              // rotation and movement for FP mode
+   //{                             // occur in keyboard & special
+   //   vx = ex - Sin(th)*Cos(ph); // here we simply update
+   //   vy = ey - Sin(ph);         // location of view target
+   //   vz = ez - Cos(th)*Cos(ph);
 
-      gluLookAt(ex,ey,ez , vx,vy,vz , 0,Cos(ph),0); 
-   }
+   //   gluLookAt(ex,ey,ez , vx,vy,vz , 0,Cos(ph),0); 
+   //}
 
 //   glEnable(GL_TEXTURE_2D);
 //   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -188,7 +189,7 @@ void display()
    Ambient[0] = 0.12; Ambient[1] = 0.15; Ambient[2] = 0.16; Ambient[3] = 1.0;
    Diffuse[0] = 0.65; Diffuse[1] = 0.65; Diffuse[2] = 0.60; Diffuse[3] = 1.0;
    Specular[0] = 0.7; Specular[1] = 0.7; Specular[2] = 1.0; Specular[3] = 1.0;
-   shininess[0] = 1024;
+   shininess[0] = 512;
 
    // normally normalize normals
    glEnable(GL_NORMALIZE);
@@ -223,12 +224,6 @@ void display()
    glUseProgram(shader);
 
    //Draw stuff
-   //glColor3f((float)rand()/(float)RAND_MAX,(float)rand()/(float)RAND_MAX,(float)rand()/(float)RAND_MAX);
-   glColor3f(0.0,0.8,0.8);
-//   glBindTexture(GL_TEXTURE_2D, texture[0]);
-   //octahedron(0,2,0, Position[0], 0.75);
-   sphere(0,2,0, Position[0], 0.75);
-
    glColor3f(0.25,0.25,0.30);
    emission[0] = -0.05; emission[1] = -0.05; emission[2] = -0.05;
    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
@@ -250,7 +245,7 @@ void display()
          bullets[i]->render();
    }
 
-   //Stop using Custom Shader
+   //Stop Using PerPixel Lighting Shader
    glUseProgram(0);
 
    //glDisable(GL_TEXTURE_2D);
@@ -261,7 +256,7 @@ void display()
    //Apply Blur Filter
    glUseProgram(filter);
 
-   //set offsets
+   //Set Filter Parameters
    id = glGetUniformLocation(filter,"DX");
    if (id >= 0) glUniform1f(id,1.0/w);
    id = glGetUniformLocation(filter,"DY");
@@ -277,10 +272,11 @@ void display()
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 
-   //Preserve original pre-filter image
+   //Preserve Original Pre-Filter Image as Another Texture
    glBindTexture(GL_TEXTURE_2D, frame);
    glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,0,0,w,h,0);
 
+   //Apply Blur Filter A Bunch
    for (int l=0; l<4; ++l)
    {
       glBindTexture(GL_TEXTURE_2D,img);
@@ -304,10 +300,8 @@ void display()
       glEnd();
       glDisable(GL_TEXTURE_2D);
    }
-   //glBindTexture(GL_TEXTURE_2D,frame);
-   //id = glGetUniformLocation(blend,"frame");
-   //if (id >= 0) glUniform1i(id, 0);
 
+   // Draw Blurred Image To Screen
    glUseProgram(0);
 
    glEnable(GL_TEXTURE_2D);
@@ -329,6 +323,7 @@ void display()
    glVertex2f(-1,1);
    glEnd();
 
+   //Apply Edge Detection And Alpha Blending To Sharp Image
    glBindTexture(GL_TEXTURE_2D,frame);
 
    glUseProgram(blend);
@@ -341,8 +336,6 @@ void display()
 
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE);//_MINUS_SRC_ALPHA);
-   //glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
-   //glClear(GL_COLOR_BUFFER_BIT);
 
    glBegin(GL_QUADS);
    glTexCoord2f(0,0);
@@ -360,7 +353,6 @@ void display()
 
    glDisable(GL_BLEND);
    glDisable(GL_TEXTURE_2D);
-   //cout << gluErrorString(glGetError()) << endl;
 
    //swap the buffers
    glFlush();
@@ -402,7 +394,6 @@ void physics()
          {
             if (enemies[i] != NULL)
             {
-               //cout << "animating enemy " << i << " at address " << enemies[i] << endl;
                enemies[i]->animate();
             
                if (enemies[i]->x == 8.0 && enemies[i]->y == 6.0)
@@ -418,7 +409,7 @@ void physics()
          //animate the towers
          for (int i=0; i<64; ++i)
          {
-            if (towers[i] != NULL)
+            if (towers[i] != NULL && !towers[i]->wireframe)
             {
                //select closest target
                float dist = INFINITY;
@@ -448,7 +439,6 @@ void physics()
                   while (bullets[k] != NULL)
                      ++k;
                   bullets[k] = bullet;
-                  //cout << bullets[i] << " Target acquired: " << bullet->target << endl;
                   towers[i]->cooldown -= towers[i]->maxcooldown;
                }
                towers[i]->animate();
@@ -458,11 +448,8 @@ void physics()
          {
             if (bullets[i] != NULL)
             {
-               //cout << "animating bullet " << i << " at address " << bullets[i] << endl;
-               //cout << bullets[i]->target << " " << *(bullets[i]->target) << endl;
                if (*(bullets[i]->target) == NULL)
                {
-                  //cout << bullets[i] << " Target lost...\n";
                   delete bullets[i];
                   bullets[i] = NULL;
                }
@@ -471,17 +458,11 @@ void physics()
                   bullets[i]->animate();
                   if (bullets[i]->distance() <= 0.5)
                   {
-                     //cout << bullets[i] << " Target hit! " << bullets[i]->target << endl;
-                     //(*(bullets[i]->target))->damage(bullets[i]->dmg);
                      bullets[i]->collide();
-                     //cout << (*bullets[i]->target)->health << endl;;
                      if ((*bullets[i]->target)->health <= 0)
                      {
-                        //cout << bullets[i]->target << " " << *(bullets[i]->target) << endl;
-                        //cout << "ded\n";
                         delete *(bullets[i]->target);
                         *(bullets[i]->target) = NULL;
-                        //cout << bullets[i]->target << " " << *(bullets[i]->target) << endl;
                      }
                      delete bullets[i];
                      bullets[i] = NULL;
@@ -492,9 +473,9 @@ void physics()
       }
 
       //set timing stuff
-      oldr = r;
       dr -= 16;
    }
+   oldr = r;
 }
 
 // this function stolen from class examples
@@ -644,38 +625,88 @@ int main(int argc, char *argv[])
          switch(event.type)
          {
             case SDL_QUIT:
-               cout << "quit command\n";
                quit = true;
                break;
 
             case SDL_KEYDOWN:
+               if (mode == 1)
+               {
+                  if (event.key.keysym.scancode == SDL_SCANCODE_Q)
+                  {
+                     // Enter tower placement mode
+                     mode = 0;
+                     cursorx = 0;
+                     cursory = 0;
+                     int i = 0;
+                     while (towers[i] != NULL)
+                        ++i;
+                     towers[i] = new Tower(cursorx, cursory, 1);
+                     placement_tower = &towers[i];
+                  }
+               }
+               else //mode == 0
+               {
+                  switch (event.key.keysym.scancode)
+                  {
+                     case SDL_SCANCODE_W:
+                        cursory += 2.0;
+                        (*placement_tower)->y = cursory;
+                        break;
+                     case SDL_SCANCODE_S:
+                        cursory -= 2.0;
+                        (*placement_tower)->y = cursory;
+                        break;
+                     case SDL_SCANCODE_D:
+                        cursorx += 2.0;
+                        (*placement_tower)->x = cursorx;
+                        break;
+                     case SDL_SCANCODE_A:
+                        cursorx -= 2.0;
+                        (*placement_tower)->x = cursorx;
+                        break;
+                     case SDL_SCANCODE_RETURN:
+                        if (F.getlocation(cursorx, cursory) == 0.0)
+                        {
+                           (*placement_tower)->wireframe = false;
+                           placement_tower = NULL;
+                           mode = 1;
+                        }
+                        break;
+                     default:
+                        break;
+                  }
+               }
                if (event.key.keysym.scancode == SDL_SCANCODE_SPACE)
                   pause = 1 - pause;
-               else if (event.key.keysym.scancode == SDL_SCANCODE_E)
+               else if (event.key.keysym.scancode == SDL_SCANCODE_M || event.key.keysym.scancode == SDL_SCANCODE_N)
                {
-                  if (F.currentwave < 3)
-                     F.currentwave = 2;
-                  F.spawnwave();
+                  if (event.key.keysym.scancode == SDL_SCANCODE_M)
+                  {
+                     // DEMO MODE
+                     if (F.currentwave < 3)
+                        F.currentwave = 3;
 
-                  if (towers[0] == NULL)
-                     towers[0] = new Tower(0.0, 4.0);
-                  if (towers[1] == NULL)
-                     towers[1] = new Tower(-4.0, -4.0);
-                  if (towers[2] == NULL)
-                     towers[2] = new Tower(4.0, -4.0);
-                  if (towers[3] == NULL)
-                     towers[3] = new Tower(-4.0, 0.0);
-                  if (towers[4] == NULL)
-                     towers[4] = new Tower(4.0, 0.0);
-                  if (towers[5] == NULL)
-                     towers[5] = new Tower(0.0, -4.0);
-//                  else
-//                  {
-//                     delete towers[0];
-//                     towers[0] = NULL;
-//                  }
+                     if (towers[0] == NULL)
+                        towers[0] = new Tower(0.0, 4.0, 0);
+                     if (towers[1] == NULL)
+                        towers[1] = new Tower(-4.0, -4.0, 0);
+                     if (towers[2] == NULL)
+                        towers[2] = new Tower(4.0, -4.0, 0);
+                     if (towers[3] == NULL)
+                        towers[3] = new Tower(-4.0, 0.0, 0);
+                     if (towers[4] == NULL)
+                        towers[4] = new Tower(4.0, 0.0, 0);
+                     if (towers[5] == NULL)
+                        towers[5] = new Tower(0.0, -4.0, 0);
+                  }
+                  F.spawnwave();
                }
-               else if (mode == 1)
+               else if (event.key.keysym.scancode == SDL_SCANCODE_0)
+               {
+                  th = 0;
+                  ph = 40;
+               }
+               else
                {
                   const Uint8* state = SDL_GetKeyboardState(NULL);
                   keyboard(state);

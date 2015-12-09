@@ -2,8 +2,6 @@
 
 class Floor
 {
-   float startx;
-   float starty;
    int arr[81] = {0, 0, 0, 0, 0, 0, 0, 0, 0,  // it's a 2nd order Hilbert curve
                  -1,-1,-1,-1, 0,-1,-1,-1,-1,
                   0, 0, 0,-1, 0,-1, 0, 0, 0,
@@ -33,8 +31,7 @@ public:
    void render();
    int animate();
    void spawnwave();
-   float Startx() {return startx;}
-   float Starty() {return starty;}
+   int getlocation(float ex, float ey);
 };
 
 class Enemy
@@ -74,8 +71,9 @@ public:
    float x, y, z, dx, dy, dz, range;
    Enemy** target;
    int cooldown, maxcooldown;
+   bool wireframe;
 
-   Tower(float X, float Y);
+   Tower(float X, float Y, bool mode);
    void animate();
    void render();
    Bullet* fire();

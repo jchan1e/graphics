@@ -59,6 +59,7 @@ void pNormal(double th1, double ph1, double th2, double ph2, double th3, double 
 void ball(double x, double y, double z,
           double s)
 {
+   int d = 10;
    glPushMatrix();
 
    glTranslated(x, y, z);
@@ -67,20 +68,20 @@ void ball(double x, double y, double z,
    //top fan
    glBegin(GL_TRIANGLE_FAN);
    VertexS(0,90);
-   for(int th = 0; th <= 360; th += 5)
+   for(int th = 0; th <= 360; th += d)
    {
-      VertexS(th, 85);
+      VertexS(th, 90-d);
    }
    glEnd();
 
    //latitude rings
-   for (int ph = 85; ph >= -80; ph -= 5)
+   for (int ph = 90-d; ph >= -90+2*d; ph -= d)
    {
       glBegin(GL_QUAD_STRIP);
-      for (int th = 0; th <= 360; th += 5)
+      for (int th = 0; th <= 360; th += d)
       {
          VertexS(th, ph);
-         VertexS(th, ph-5);
+         VertexS(th, ph-d);
       }
       glEnd();
    }
@@ -88,9 +89,9 @@ void ball(double x, double y, double z,
    //bottom fan
    glBegin(GL_TRIANGLE_FAN);
    VertexS(0,-90);
-   for(int th = 360; th >= 0; th -= 5)
+   for(int th = 360; th >= 0; th -= d)
    {
-      VertexS(th, -85);
+      VertexS(th, -90+d);
    }
    glEnd();
 
@@ -102,6 +103,7 @@ void sphere(double x, double y, double z,
             double r,
             double s)
 {
+   int d = 10;
    glPushMatrix();
 
    glTranslated(x, y, z);
@@ -111,20 +113,20 @@ void sphere(double x, double y, double z,
    //top fan
    glBegin(GL_TRIANGLE_FAN);
    VertexC(0,90);
-   for(int th = 0; th <= 360; th += 5)
+   for(int th = 0; th <= 360; th += d)
    {
-      VertexC(th, 85);
+      VertexC(th, 90-d);
    }
    glEnd();
 
    //latitude rings
-   for (int ph = 85; ph >= -80; ph -= 5)
+   for (int ph = 90-d; ph >= -90+2*d; ph -= d)
    {
       glBegin(GL_QUAD_STRIP);
-      for (int th = 0; th <= 360; th += 5)
+      for (int th = 0; th <= 360; th += d)
       {
          VertexC(th, ph);
-         VertexC(th, ph-5);
+         VertexC(th, ph-d);
       }
       glEnd();
    }
@@ -132,12 +134,56 @@ void sphere(double x, double y, double z,
    //bottom fan
    glBegin(GL_TRIANGLE_FAN);
    VertexC(0,-90);
-   for(int th = 360; th >= 0; th -= 5)
+   for(int th = 360; th >= 0; th -= d)
    {
-      VertexC(th, -85);
+      VertexC(th, -90+d);
    }
    glEnd();
 
+   glPopMatrix();
+}
+
+void torus(double x, double y, double z,
+           double r,
+           double s)
+{
+   int d = 10;
+   int dd = 30;
+   int m = 720/dd + 2;
+   double cylinder[m][3];
+   double normals[m][3];
+   for (int i=0; i < m; i += 2)
+   {
+      cylinder[i][0] = s + r*Sin(i/2*dd);
+      cylinder[i][1] = r*Cos(i/2*dd);
+      cylinder[i][2] = 0;
+      cylinder[i+1][0] = cylinder[i][0]*Cos(d);
+      cylinder[i+1][1] = cylinder[i][1];
+      cylinder[i+1][2] = cylinder[i][0]*Sin(d);
+
+      normals[i][0] = Sin(i/2*dd);
+      normals[i][1] = Cos(i/2*dd);
+      normals[i][2] = 0;
+      normals[i+1][0] = normals[i][0] * Cos(d);
+      normals[i+1][1] = normals[i][1];
+      normals[i+1][2] = normals[i][0] * Sin(d);
+   }
+   glPushMatrix();
+
+   glTranslated(x, y, z);
+
+   for (int i=0; i < 360; i += d)
+   {
+      glBegin(GL_QUAD_STRIP);
+      for (int j=0; j < m; ++j)
+      {
+         glNormal3d( normals[j][0],  normals[j][1],  normals[j][2]);
+         glVertex3d(cylinder[j][0], cylinder[j][1], cylinder[j][2]);
+      }
+      glEnd();
+      glRotated(d, 0,-1,0);
+   }
+   
    glPopMatrix();
 }
 

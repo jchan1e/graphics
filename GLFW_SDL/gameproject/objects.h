@@ -13,8 +13,8 @@
 #ifndef Jobjects
 #define Jobjects
 
-#define Sin(x) (sin((x) * 3.1415927/180))
-#define Cos(x) (cos((x) * 3.1415927/180))
+#define Sin(x) (sin(x * 3.1415927/180))
+#define Cos(x) (cos(x * 3.1415927/180))
 
 
 //Vertex Polar-Cartesian tranformation function
@@ -38,6 +38,9 @@ void sphere(double x, double y, double z,
             double r,
             double s);
 
+void torus(double x, double y, double z,
+           double r,
+           double s);
 
 void cube(double x, double y, double z,
           double r,
