@@ -678,171 +678,133 @@ void icosahedron(double x, double y, double z,
    Vertex(points[3][0], points[3][1]);
    Vertex(points[0][0], points[0][1]);
    Vertex(points[1][0], points[1][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[5][0], points[5][1],
            points[0][0], points[0][1],
            points[3][0], points[3][1]);
    Vertex(points[5][0], points[5][1]);
    Vertex(points[0][0], points[0][1]);
    Vertex(points[3][0], points[3][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[7][0], points[7][1],
            points[0][0], points[0][1],
            points[5][0], points[5][1]);
    Vertex(points[7][0], points[7][1]);
    Vertex(points[0][0], points[0][1]);
    Vertex(points[5][0], points[5][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[9][0], points[9][1],
            points[0][0], points[0][1],
            points[7][0], points[7][1]);
    Vertex(points[9][0], points[9][1]);
    Vertex(points[0][0], points[0][1]);
    Vertex(points[7][0], points[7][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[1][0], points[1][1],
            points[0][0], points[0][1],
            points[9][0], points[9][1]);
    Vertex(points[1][0], points[1][1]);
    Vertex(points[0][0], points[0][1]);
    Vertex(points[9][0], points[9][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[1][0], points[1][1],
            points[2][0], points[2][1],
            points[3][0], points[3][1]);
    Vertex(points[1][0], points[1][1]);
    Vertex(points[2][0], points[2][1]);
    Vertex(points[3][0], points[3][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[3][0], points[3][1],
            points[4][0], points[4][1],
            points[5][0], points[5][1]);
    Vertex(points[3][0], points[3][1]);
    Vertex(points[4][0], points[4][1]);
    Vertex(points[5][0], points[5][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[5][0], points[5][1],
            points[6][0], points[6][1],
            points[7][0], points[7][1]);
    Vertex(points[5][0], points[5][1]);
    Vertex(points[6][0], points[6][1]);
    Vertex(points[7][0], points[7][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[7][0], points[7][1],
            points[8][0], points[8][1],
            points[9][0], points[9][1]);
    Vertex(points[7][0], points[7][1]);
    Vertex(points[8][0], points[8][1]);
    Vertex(points[9][0], points[9][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[9][0], points[9][1],
            points[10][0], points[10][1],
            points[1][0], points[1][1]);
    Vertex(points[9][0], points[9][1]);
    Vertex(points[10][0], points[10][1]);
    Vertex(points[1][0], points[1][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[10][0], points[10][1],
            points[9][0], points[9][1],
            points[8][0], points[8][1]);
    Vertex(points[10][0], points[10][1]);
    Vertex(points[9][0], points[9][1]);
    Vertex(points[8][0], points[8][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[8][0], points[8][1],
            points[7][0], points[7][1],
            points[6][0], points[6][1]);
    Vertex(points[8][0], points[8][1]);
    Vertex(points[7][0], points[7][1]);
    Vertex(points[6][0], points[6][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[6][0], points[6][1],
            points[5][0], points[5][1],
            points[4][0], points[4][1]);
    Vertex(points[6][0], points[6][1]);
    Vertex(points[5][0], points[5][1]);
    Vertex(points[4][0], points[4][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[4][0], points[4][1],
            points[3][0], points[3][1],
            points[2][0], points[2][1]);
    Vertex(points[4][0], points[4][1]);
    Vertex(points[3][0], points[3][1]);
    Vertex(points[2][0], points[2][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[2][0], points[2][1],
            points[1][0], points[1][1],
            points[10][0], points[10][1]);
    Vertex(points[2][0], points[2][1]);
    Vertex(points[1][0], points[1][1]);
    Vertex(points[10][0], points[10][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[2][0], points[2][1],
            points[11][0], points[11][1],
            points[4][0], points[4][1]);
    Vertex(points[2][0], points[2][1]);
    Vertex(points[11][0], points[11][1]);
    Vertex(points[4][0], points[4][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[4][0], points[4][1],
            points[11][0], points[11][1],
            points[6][0], points[6][1]);
    Vertex(points[4][0], points[4][1]);
    Vertex(points[11][0], points[11][1]);
    Vertex(points[6][0], points[6][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[6][0], points[6][1],
            points[11][0], points[11][1],
            points[8][0], points[8][1]);
    Vertex(points[6][0], points[6][1]);
    Vertex(points[11][0], points[11][1]);
    Vertex(points[8][0], points[8][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[8][0], points[8][1],
            points[11][0], points[11][1],
            points[10][0], points[10][1]);
    Vertex(points[8][0], points[8][1]);
    Vertex(points[11][0], points[11][1]);
    Vertex(points[10][0], points[10][1]);
-   glEnd();
 
-   glBegin(GL_TRIANGLES);
    pNormal(points[10][0], points[10][1],
            points[11][0], points[11][1],
            points[2][0], points[2][1]);

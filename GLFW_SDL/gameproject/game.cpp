@@ -111,9 +111,6 @@ bool init()
       success = false;
    }
 
-//   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-//   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-
    window = SDL_CreateWindow("Jordan Dick - FinalTD", 0,0 , w,h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
    if (window == NULL)
    {
@@ -151,6 +148,7 @@ void GameOver()
          enemies[i]->speed = 0;
       }
    }
+   F.currentwave = -1;
 }
 
 void display()
@@ -169,17 +167,6 @@ void display()
    ez = Cos(-th)*Cos(ph)*zoom;
 
    gluLookAt(ex,ey,ez , 0,0,0 , 0,Cos(ph),0);
-   //else //mode == 2              // rotation and movement for FP mode
-   //{                             // occur in keyboard & special
-   //   vx = ex - Sin(th)*Cos(ph); // here we simply update
-   //   vy = ey - Sin(ph);         // location of view target
-   //   vz = ez - Cos(th)*Cos(ph);
-
-   //   gluLookAt(ex,ey,ez , vx,vy,vz , 0,Cos(ph),0); 
-   //}
-
-//   glEnable(GL_TEXTURE_2D);
-//   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
    //////////Lighting//////////
 
@@ -220,10 +207,10 @@ void display()
    glMaterialfv(GL_FRONT, GL_SPECULAR, white);
    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
 
-   // Use Custom Shader
+   // Use PerPixel Lighting Shader
    glUseProgram(shader);
 
-   //Draw stuff
+   //Draw All The Stuff
    glColor3f(0.25,0.25,0.30);
    emission[0] = -0.05; emission[1] = -0.05; emission[2] = -0.05;
    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
@@ -253,7 +240,7 @@ void display()
    glColor3f(1.0,1.0,1.0);
    ball(Position[0], Position[1], Position[2], 0.125);
 
-   //Apply Blur Filter
+   //Set Blur Filter
    glUseProgram(filter);
 
    //Set Filter Parameters
@@ -272,12 +259,12 @@ void display()
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 
-   //Preserve Original Pre-Filter Image as Another Texture
+   //Preserve Original Pre-Filter Image In Separate Texture
    glBindTexture(GL_TEXTURE_2D, frame);
    glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,0,0,w,h,0);
 
    //Apply Blur Filter A Bunch
-   for (int l=0; l<4; ++l)
+   for (int l=0; l<16; ++l)
    {
       glBindTexture(GL_TEXTURE_2D,img);
       glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,0,0,w,h,0);
@@ -379,7 +366,7 @@ void physics()
          Position[0] = 4.5*sin(ltheta);
          Position[2] = 4.5*cos(ltheta);
 
-         //Manage the Spawning of the Waves
+         //Manage the Spawning of Waves
          int newenemy = F.animate();
          if (newenemy)
          {
@@ -389,7 +376,7 @@ void physics()
             enemies[i] = new Enemy(-8,6, F.currentwave==0 ? 25 : 25*F.currentwave, newenemy);
          }
 
-         //animate the enemies
+         //animate enemies
          for (int i=0; i<64; ++i)
          {
             if (enemies[i] != NULL)
@@ -406,7 +393,7 @@ void physics()
                }
             }
          }
-         //animate the towers
+         //animate towers
          for (int i=0; i<64; ++i)
          {
             if (towers[i] != NULL && !towers[i]->wireframe)
@@ -444,6 +431,7 @@ void physics()
                towers[i]->animate();
             }
          }
+         //animate bullets
          for (int i=0; i<128; ++i)
          {
             if (bullets[i] != NULL)
@@ -472,7 +460,7 @@ void physics()
          }
       }
 
-      //set timing stuff
+      //Timing Variables
       dr -= 16;
    }
    oldr = r;
@@ -513,7 +501,7 @@ int CreateShader(GLenum type, char* file)
    return shader;
 }
 
-// this function stolen from class examples
+// this function stolen (mostly) from class examples
 int CreateShaderProg(char* VertFile, char* FragFile)
 {
    // Create program
@@ -552,6 +540,7 @@ void reshape(int width, int height)
    glLoadIdentity();
 }
 
+// Per frame keyboard input here, per keypress input in main()
 void keyboard(const Uint8* state)
 {
    if (state[SDL_SCANCODE_ESCAPE])
@@ -575,9 +564,6 @@ void keyboard(const Uint8* state)
       dzoom = 0.10;
    else
       dzoom = 0;
-
-   //if (state[SDL_SCANCODE_SPACE])
-   //   pause = 1-pause;
 }
 
 int main(int argc, char *argv[])
@@ -633,7 +619,7 @@ int main(int argc, char *argv[])
                {
                   if (event.key.keysym.scancode == SDL_SCANCODE_Q)
                   {
-                     // Enter tower placement mode
+                     // Enter Tower Placement Mode
                      mode = 0;
                      cursorx = 0;
                      cursory = 0;
@@ -644,7 +630,7 @@ int main(int argc, char *argv[])
                      placement_tower = &towers[i];
                   }
                }
-               else //mode == 0
+               else //mode == 0 aka Tower Placement Mode
                {
                   switch (event.key.keysym.scancode)
                   {
@@ -665,6 +651,7 @@ int main(int argc, char *argv[])
                         (*placement_tower)->x = cursorx;
                         break;
                      case SDL_SCANCODE_RETURN:
+                        //Activate the Tower and Exit Placement Mode
                         if (F.getlocation(cursorx, cursory) == 0.0)
                         {
                            (*placement_tower)->wireframe = false;
@@ -682,7 +669,7 @@ int main(int argc, char *argv[])
                {
                   if (event.key.keysym.scancode == SDL_SCANCODE_M)
                   {
-                     // DEMO MODE
+                     // DEMO
                      if (F.currentwave < 3)
                         F.currentwave = 3;
 
@@ -722,6 +709,7 @@ int main(int argc, char *argv[])
                break;
          }
       }
+      //// PHYSICS TIMING ////
       r = SDL_GetTicks();
       dr += r - oldr;
       physics();
@@ -746,19 +734,6 @@ int main(int argc, char *argv[])
    }
 
    SDL_Quit();
-   
-
-//   //load texture
-////   texture[0] = LoadTexBMP("jupiter.bmp");
-////   texture[1] = LoadTexBMP("mercury.bmp");
-////   texture[2] = LoadTexBMP("venus.bmp");
-////   texture[3] = LoadTexBMP("earth.bmp");
-////   texture[4] = LoadTexBMP("mars.bmp");
-//
-//   //check for errors
-////   ErrCheck("init");
-//
-//   glutMainLoop();
 
    return 0;
 }

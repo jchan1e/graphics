@@ -154,7 +154,7 @@ void Floor::render()
 
 int Floor::animate()
 {
-   if (spawncount > 0)
+   if (spawncount > 0 && currentwave >= 0)
    {
       currentwavetime += 16;
       if (currentwavetime >= wavetime)
