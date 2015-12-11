@@ -23,5 +23,6 @@ void main()
 + one*sample(-2.0*DX,+DY)+ two*sample(-DX,+DY) + thr*sample(0.0,+DY) + two*sample(+DX,+DY) + one*sample(2.0*DX,+DY)
 + two*sample(-2.0*DX,0.0)+ thr*sample(-DX,0.0) + one*sample(0.0,0.0) + thr*sample(+DX,0.0) + two*sample(2.0*DX,0.0)
 + one*sample(-2.0*DX,-DY)+ two*sample(-DX,-DY) + thr*sample(0.0,-DY) + two*sample(+DX,-DY) + one*sample(2.0*DX,-DY)
-                       + one*sample(-DX,-2.0*DY)+two*sample(0.0,-2.0*DY)+one*sample(+DX,-2.0*DY);
+                         + one*sample(-DX,-2.0*DY)+two*sample(0.0,-2.0*DY)+one*sample(+DX,-2.0*DY);
+   //gl_FragColor = min(thiscolor, vec4(0.10,0.10,0.10,1.0));
 }

@@ -264,7 +264,7 @@ void display()
    glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,0,0,w,h,0);
 
    //Apply Blur Filter A Bunch
-   for (int l=0; l<16; ++l)
+   for (int l=0; l<10; ++l)
    {
       glBindTexture(GL_TEXTURE_2D,img);
       glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,0,0,w,h,0);
