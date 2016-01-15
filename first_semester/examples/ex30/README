@@ -1,0 +1,10 @@
+ex30: Polygons
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+Demontrates drawing non-convex polygons.
+
+Key bindings
+  +/-    Cycle through polygon modes
+  ESC    Exit

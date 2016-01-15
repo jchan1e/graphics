@@ -1,0 +1,23 @@
+ex29: Anti-aliased Lorenz Attractor
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+Draw the Lorenz Attractor with anti-aliasing.
+
+Key bindings
+  m          Switch mode between Jagged/Anti-Aliased
+  d/D        Increase/decrease length of line segments (step)
+  0          Color shows time
+  1          Single (red) trace
+  2          Two (red & green) traces (perturbed origin)
+  3          Three (red, green & blue) traces (perturbed origins)
+  +/-        Change value of r (rho) parameter
+  x/X        View down the X-axis
+  y/Y        View down the Y-axis
+  z/Z        View down the Z-axis
+  a          Toggle axes
+  arrows     Change view angle
+  PgDn/PgUp  Zoom in and out
+  0          Reset view angle
+  ESC        Exit

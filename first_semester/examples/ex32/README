@@ -1,0 +1,20 @@
+ex32: Piecewise Polynomials
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+Demonstarte different methods of interpolation
+Continuous Bezier
+Smooth Bezier
+Interpolated Bezier
+B Spline
+Natural Cubic Spline
+
+Key bindings
+  +/-        Cycle through interpolation methods
+  LeftClick  Add a point
+  RightClick Move a point
+  x          Delete the last point
+  0          Delete all points
+  m/M        Increase/decrease number of evaluations
+  ESC        Exit

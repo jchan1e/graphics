@@ -1,0 +1,15 @@
+ex31: 1D Evaluators
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+Demonstrate the use of Bezier polygons.
+
+Key bindings
+  +/-        Increase/decrease order of polygon
+  LeftClick  Add a point
+  RightClick Move a point
+  x          Delete the last point
+  0          Delete all points
+  m/M        Increase/decrease number of evaluations
+  ESC        Exit

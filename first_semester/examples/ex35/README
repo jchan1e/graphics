@@ -1,0 +1,23 @@
+ex35: Shadow Volumes
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+This code is extremely inefficient in an attempt to make it easier to read
+It also has multiple ways of doing things - real code would do only one.
+Use Transform to get light position in local coordinate system
+
+Key bindings
+  m/M        Cycle through shadow volume steps (mode)
+  o/O        Cycle through objects
+  +/-        Change light elevation
+  []         Change light position
+  s/S        Start/stop light movement
+  l/L        Toggle teapot lid stretch
+  <>         Decrease/increase number of slices in objects
+  b/B        Toggle room box
+  a          Toggle axes
+  arrows     Change view angle
+  PgDn/PgUp  Zoom in and out
+  0          Reset view angle
+  ESC        Exit
