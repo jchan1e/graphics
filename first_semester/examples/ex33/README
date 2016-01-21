@@ -1,0 +1,22 @@
+ex33: Utah Teapot
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+Demonstrates drawing an objects using bezier patches.
+Note:  This is not done efficiently, the
+idea is to make it understandable
+
+Key bindings
+  m/M        Cycle through display modes
+  o/O        Cycle through parts
+  c/C        Toggle control points
+  r/R        Toggle reflections
+  s/S        Toggle lid size
+  +/-        Increase/decrease number of slices
+  []         Decrease/increase light elevation
+  a          Toggle axes
+  arrows     Change view angle
+  PgDn/PgUp  Zoom in and out
+  0          Reset view angle
+  ESC        Exit
