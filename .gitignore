@@ -34,5 +34,5 @@
 
 
 ex*/ex*
-hw*
+hw[0-9]+
 play
