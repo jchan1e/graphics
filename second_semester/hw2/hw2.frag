@@ -42,7 +42,7 @@ void main()
       texturecolor = vec3(0.1, 0.1, 0.1);
    else
    {
-      vec3 colorA = mix(vec3(0.0, 0.0, 0.5), vec3(0.0, 2.0, 0.0), float(i)/100.0);
+      vec3 colorA = mix(vec3(0.0, 0.0,0.75), vec3(0.0, 2.0, 0.0), float(i)/100.0);
       vec3 colorB = mix(vec3(0.0, 2.0, 0.0), vec3(1.0, 0.0, 0.5), float(i)/100.0);
       texturecolor = mix(colorA, colorB, float(i)/100.0);
    }
