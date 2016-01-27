@@ -1,5 +1,3 @@
-// Final project - game.cpp
-// Generates and plays a tower defense game
 // Jordan Dick
 // jordan.dick@colorado.edu
 
@@ -95,7 +93,7 @@ bool init()
       success = false;
    }
 
-   window = SDL_CreateWindow("Jordan Dick - FinalTD", 0,0 , w,h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+   window = SDL_CreateWindow("HW1: Jordan Dick", 0,0 , w,h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
    if (window == NULL)
    {
       cerr << "SDL failed to create a window: " << SDL_GetError() << endl;
