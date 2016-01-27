@@ -74,7 +74,7 @@ int pause = 0;
 int frames = 0;
 
 //Game Objects
-int objects[16] = {0};
+//int objects[16] = {0};
 float t = 0.0;
 
 ////////////////////
@@ -151,9 +151,9 @@ void display()
    // Light position and rendered marker (unlit)
 
    // lighting colors/types
-   Ambient[0] = 0.12; Ambient[1] = 0.15; Ambient[2] = 0.16; Ambient[3] = 1.0;
+   Ambient[0] = 0.25; Ambient[1] = 0.27; Ambient[2] = 0.30; Ambient[3] = 1.0;
    Diffuse[0] = 0.65; Diffuse[1] = 0.65; Diffuse[2] = 0.60; Diffuse[3] = 1.0;
-   Specular[0] = 0.7; Specular[1] = 0.7; Specular[2] = 1.0; Specular[3] = 1.0;
+   Specular[0] = 0.9; Specular[1] = 0.9; Specular[2] = 1.0; Specular[3] = 1.0;
    shininess[0] = 128;
 
    // normally normalize normals
@@ -386,9 +386,6 @@ int main(int argc, char *argv[])
    reshape(w,h);
 
    Position[0] = 0.0; Position[1] = 8.0; Position[2] = 4.5; Position[3] = 1.0;
-
-   for (int i=0; i<16; ++i)
-      objects[i] = i%5+1;
 
    int startuptime = SDL_GetTicks();
 
