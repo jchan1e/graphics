@@ -29,6 +29,7 @@ void main()
    vec2 c = vec2(C, D);
    //vec2 c = vec2(-0.75, 0.11);
    vec2 Z = TexCoord*vec2(8.0,4.0) - vec2(4.0, 2.0);
+   Z.x = mod(Z.x+2.0, 4.0) - 2.0;
    float zz;
    for (i=0; i<100 && zz<4.0; i++)
    {
@@ -38,9 +39,13 @@ void main()
    
    vec3 texturecolor;
    if (zz < 4.0)
-      texturecolor = vec3(0.1,0.1,0.1);
+      texturecolor = vec3(0.1, 0.1, 0.1);
    else
-      texturecolor = mix(vec3(0.0,0.0,1.0),vec3(0.0,1.0,0.0),float(i)/100.0);
+   {
+      vec3 colorA = mix(vec3(0.0, 0.0, 0.5), vec3(0.0, 2.0, 0.0), float(i)/100.0);
+      vec3 colorB = mix(vec3(0.0, 2.0, 0.0), vec3(1.0, 0.0, 0.5), float(i)/100.0);
+      texturecolor = mix(colorA, colorB, float(i)/100.0);
+   }
 
    //  Sum color types
    gl_FragColor = vec4(texturecolor, 1.0)
