@@ -75,7 +75,7 @@ int frames = 0;
 
 //Game Objects
 int objects[16] = {0};
-float t = 0;
+float t = 0.0;
 
 ////////////////////
 //functions that are called ahead of when they're defined
@@ -193,13 +193,13 @@ void display()
    }
    else
    {
-      cout << C << endl;
+      //cout << C << endl;
       // Use hw2 shader
       glUseProgram(shader);
       id = glGetUniformLocation(shader, "C");
-      if (id >= 0) glUniform1i(id, C);
+      if (id >= 0) glUniform1f(id, C);
       id = glGetUniformLocation(shader, "D");
-      if (id >= 0) glUniform1i(id, D);
+      if (id >= 0) glUniform1f(id, D);
    }
 
    //Draw All The Stuff
@@ -252,11 +252,13 @@ void physics()
          Position[0] = 4.5*sin(ltheta);
          Position[2] = 4.5*cos(ltheta);
 
-         t += M_PI/180;
-         t = fmod(t, 720*M_PI);;
+         t += 0.0625;
+         t = fmod(t, 180.0);
 
-         C = Cos((float)r/40.0);
-         D = Sin((float)r/40.0);
+         //C = 0.7*Cos(t) - 0.3;
+         //D = 0.7*Sin(t);
+         C =-0.5*(Sin(t) - Sin(3*t)) + 0.25;
+         D = 0.5*(Cos(t) - Cos(3*t));
       }
 
       //Timing Variables
@@ -409,7 +411,7 @@ int main(int argc, char *argv[])
                else if (event.key.keysym.scancode == SDL_SCANCODE_0)
                {
                   th = 0;
-                  ph = 40;
+                  ph = 0;
                }
                else if (event.key.keysym.scancode == SDL_SCANCODE_M)
                   mode = 1 - mode;
