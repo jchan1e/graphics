@@ -76,6 +76,7 @@ int frames = 0;
 //Game Objects
 //int objects[16] = {0};
 float t = 0.0;
+float dt = 0.0625;
 
 ////////////////////
 //functions that are called ahead of when they're defined
@@ -252,7 +253,7 @@ void physics()
          Position[0] = 4.5*sin(ltheta);
          Position[2] = 4.5*cos(ltheta);
 
-         t += 0.0625;
+         t += dt;
          t = fmod(t, 180.0);
 
          //C = 0.7*Cos(t) - 0.3;
@@ -414,6 +415,10 @@ int main(int argc, char *argv[])
                   mode = 1 - mode;
                else if (event.key.keysym.scancode == SDL_SCANCODE_N)
                   perspective = 1 - perspective;
+               else if (event.key.keysym.scancode == SDL_SCANCODE_PERIOD)
+                  dt *= 2.0;
+               else if (event.key.keysym.scancode == SDL_SCANCODE_COMMA)
+                  dt *= 0.5;
                break;
 
             case SDL_WINDOWEVENT:
