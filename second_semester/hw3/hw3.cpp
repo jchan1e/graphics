@@ -408,8 +408,14 @@ int main(int argc, char *argv[])
    case 'e':
       shader = CreateShaderProg((char*)"hw3e.vert", (char*)"hw3e.frag");
       break;
+   case 'f':
+      shader = CreateShaderProg((char*)"hw3f.vert", (char*)"hw3f.frag");
+      break;
+   case 'g':
+      shader = CreateShaderProg((char*)"hw3g.vert", (char*)"hw3g.frag");
+      break;
    default:
-      cout << "argument must be in [a-e]\n";
+      cout << "argument must be in [a-g]\n";
       return 1;
    }
    
