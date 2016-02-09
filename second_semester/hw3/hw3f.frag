@@ -49,8 +49,8 @@ void main()
 
    //  Sum color types
    gl_FragColor = vec4(texturecolor, 1.0)
-                *(vec4(0.4, 0.4, 0.4, 1.0) //emission
+                *(vec4(0.2, 0.2, 0.2, 1.0) //emission
                 + gl_FrontLightProduct[0].ambient
-                + Id*gl_FrontLightProduct[0].diffuse
-                + Is*gl_FrontLightProduct[0].specular);
+                + Id*gl_FrontLightProduct[0].diffuse)
+                + Is*gl_FrontLightProduct[0].specular;
 }

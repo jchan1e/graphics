@@ -9,7 +9,7 @@ to run the program use
 ```
 ./hw3 <mode>
 ```
-where mode is in [a-e]  
+where mode is in [a-g]  
   
   
 * arrow keys: rotate the camera

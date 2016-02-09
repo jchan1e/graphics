@@ -153,9 +153,9 @@ void display()
    // Light position and rendered marker (unlit)
 
    // lighting colors/types
-   Ambient[0] = 0.25; Ambient[1] = 0.27; Ambient[2] = 0.30; Ambient[3] = 1.0;
+   Ambient[0] = 0.15; Ambient[1] = 0.17; Ambient[2] = 0.20; Ambient[3] = 1.0;
    Diffuse[0] = 0.75; Diffuse[1] = 0.75; Diffuse[2] = 0.70; Diffuse[3] = 1.0;
-   Specular[0] = 0.8; Specular[1] = 0.8; Specular[2] = 0.9; Specular[3] = 1.0;
+   Specular[0] = 0.6; Specular[1] = 0.6; Specular[2] = 0.65; Specular[3] = 1.0;
    shininess[0] = 128;
 
    // normally normalize normals
@@ -250,13 +250,12 @@ void physics()
       if (!pause)
       {
          //move the light
-         ltheta += M_PI/540;
-         ltheta = fmod(ltheta, 2*M_PI);
-         Position[0] = 4.5*sin(ltheta);
-         Position[2] = 4.5*cos(ltheta);
 
          t += dt;
          t = fmod(t, 180.0);
+
+         //Position[0] = 4.5*Sin(4*t);
+         //Position[2] = 4.5*Cos(4*t);
 
          //C = 0.7*Cos(t) - 0.3;
          //D = 0.7*Sin(t);
@@ -421,7 +420,7 @@ int main(int argc, char *argv[])
    
    reshape(w,h);
 
-   Position[0] = 0.0; Position[1] = 8.0; Position[2] = 4.5; Position[3] = 1.0;
+   Position[0] = -4.5; Position[1] = 4.5; Position[2] = 4.5; Position[3] = 1.0;
 
    SDL_Event event;
 
@@ -475,6 +474,7 @@ int main(int argc, char *argv[])
 
    cout << "Shutting Down\n";
    cout << "average framerate: " << 1000*(float)frames/(r - startuptime) << endl;
+   //cout << glGetString(GL_VERSION) << endl;
 
    SDL_Quit();
 
