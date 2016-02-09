@@ -1,0 +1,22 @@
+ex06: OpenGL 3 & 4 Shaders
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+Demonstrates the use of OpenGL 4 style shaders
+Mixes fixed and programmable pipelines
+Uses OpenGL to determine matrices
+Hint:  If you cannot get this program to compile on your machine because
+OpenGL 4.3 is not supported, try changing all the 4.3 references to 3.3 in
+the shaders as well as when starting GLEW
+
+Key bindings
+  m/M        Cycle through shaders
+  p/P        Toggle between orthogonal & perspective projection
+  s/S        Start/stop light
+  -/+        Change light elevation
+  a          Toggle axes
+  arrows     Change view angle
+  PgDn/PgUp  Zoom in and out
+  0          Reset view angle
+  ESC        Exit
