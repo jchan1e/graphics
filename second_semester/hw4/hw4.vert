@@ -1,22 +1,31 @@
 #version 430 core
 
-varying vec3 View;
-varying vec3 Light;
-varying vec3 Normal;
-varying vec2 TexCoord;
+uniform mat4 ModelViewMatrix;
+uniform mat4 ProjectionMatrix;
+layout(location=0) in vec4 Vertex;
+layout(location=1) in vec3 Normal;
+layout(location=2) in vec3 Color;
+layout(location=3) in vec2 Tex;
+
+out vec3 View;
+out vec3 Light;
+out vec3 Normal;
+out vec2 TexCoord;
+out vec4 Front_Color;
 
 void main()
 {
    //  Vertex location in modelview coordinates
-   vec4 P = gl_ModelViewMatrix * gl_Vertex;
+   vec4 P = ModelViewMatrix * Vertex;
    //  Light position
-   Light  = gl_LightSource[0].position.xyz - P.xyz;
+   Light  = .position.xyz - P.xyz;
    //  Normal
-   Normal = gl_NormalMatrix * gl_Normal;
+   NormalMatrix = transpose(inverse(ModelViewMatrix)).xyz
+   Normal = NormalMatrix * Normal;
    //  Eye position
    View  = -P.xyz;
    //  Set vertex position
-   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+   gl_Position = ModelViewMatrix * ProjectionMatrix * Vertex;
    //  Set texture coordinate
-   TexCoord = gl_MultiTexCoord0.xy;
+   TexCoord = Tex;
 }

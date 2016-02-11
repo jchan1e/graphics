@@ -190,27 +190,31 @@ void display()
    glMaterialfv(GL_FRONT, GL_EMISSION, emission);
 
    // Use hw3 shader
-   glUseProgram(0);
+   glUseProgram(shader);
    float ModelView[16];
    float Projection[16];
    glGetFloatv(GL_PROJECTION_MATRIX, Projection);
    glGetFloatv(GL_MODELVIEW_MATRIX, ModelView);
 
-   //int id;
-   //id = glGetUniformLocation(shader, "C");
-   //if (id >= 0) glUniform1f(id, C);
-   //id = glGetUniformLocation(shader, "D");
-   //if (id >= 0) glUniform1f(id, D);
-   //id = glGetUniformLocation(shader, "ModelViewMatrix");
-   //if (id >= 0) glUniformMatrix4fv(id, 1, GL_FALSE, ModelView);
-   //id = glGetUniformLocation(shader, "ProjectionMatrix");
-   //if (id >= 0) glUniformMatrix4fv(id, 1, GL_FALSE, Projection);
+   int id;
+   id = glGetUniformLocation(shader, "C");
+   if (id >= 0) glUniform1f(id, C);
+   id = glGetUniformLocation(shader, "D");
+   if (id >= 0) glUniform1f(id, D);
+   id = glGetUniformLocation(shader, "ModelViewMatrix");
+   if (id >= 0) glUniformMatrix4fv(id, 1, GL_FALSE, ModelView);
+   id = glGetUniformLocation(shader, "ProjectionMatrix");
+   if (id >= 0) glUniformMatrix4fv(id, 1, GL_FALSE, Projection);
 
    glBindBuffer(GL_ARRAY_BUFFER, SphereBuf);
    glEnableVertexAttribArray(0);
    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 12*sizeof(float), (void*)0);
    glEnableVertexAttribArray(1);
-   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 12*sizeof(float), (void*)(7*sizeof(float)));
+   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 12*sizeof(float), (void*)(4*sizeof(float)));
+   glEnableVertexAttribArray(2);
+   glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 12*sizeof(float), (void*)(7*sizeof(float)));
+   glEnableVertexAttribArray(3);
+   glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 12*sizeof(float), (void*)(10*sizeof(float)));
    
    //sphere( 0.0, 0.0, 0.0, 180.0, 2.0);
    glDrawArrays(GL_TRIANGLES, 0, sphere_size);
@@ -226,7 +230,7 @@ void display()
    glColor3f(1.0,1.0,1.0);
    ball(Position[0], Position[1], Position[2], 0.125);
 
-   //cout << gluErrorString(glGetError()) << endl;
+   cout << gluErrorString(glGetError()) << endl;
 
    //swap the buffers
    glFlush();
@@ -380,8 +384,13 @@ int main(int argc, char *argv[])
    }
 
    //initialize sphere vertex array
-   sphere(SpherePoints, 0.35, 0.35, 0.40);
+   sphere(SpherePoints, 0.15, 0.75, 0.90);
    SphereData = &SpherePoints[0][0];
+   
+   glGenBuffers(1,&SphereBuf);
+   glBindBuffer(GL_ARRAY_BUFFER, SphereBuf);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(SphereData), SphereData, GL_STATIC_DRAW);
+   glBindBuffer(GL_ARRAY_BUFFER, 0);
    
    //compile shaders
    //pixlit = CreateShaderProg((char*)"pixlight.vert",(char*)"pixlight.frag");
