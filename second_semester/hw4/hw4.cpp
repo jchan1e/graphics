@@ -174,20 +174,20 @@ void display()
    glEnable(GL_COLOR_MATERIAL);
 
    // enable the light and position it
-   glEnable(GL_LIGHT0);
-   glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
-   glLightfv(GL_LIGHT0, GL_DIFFUSE, Diffuse);
-   glLightfv(GL_LIGHT0, GL_SPECULAR, Specular);
-   glLightfv(GL_LIGHT0, GL_POSITION, Position);
+   //glEnable(GL_LIGHT0);
+   //glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
+   //glLightfv(GL_LIGHT0, GL_DIFFUSE, Diffuse);
+   //glLightfv(GL_LIGHT0, GL_SPECULAR, Specular);
+   //glLightfv(GL_LIGHT0, GL_POSITION, Position);
 
    ///////////////////////////
 
-   float white[] = {1.0, 1.0, 1.0, 1.0};
-   float emission[] = {0.0, 0.2, 0.15, 1.0};
+   //float white[] = {1.0, 1.0, 1.0, 1.0};
+   //float emission[] = {0.0, 0.2, 0.15, 1.0};
 
-   glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
-   glMaterialfv(GL_FRONT, GL_SPECULAR, white);
-   glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+   //glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
+   //glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+   //glMaterialfv(GL_FRONT, GL_EMISSION, emission);
 
    // Use hw3 shader
    glUseProgram(shader);
@@ -205,6 +205,16 @@ void display()
    if (id >= 0) glUniformMatrix4fv(id, 1, GL_FALSE, ModelView);
    id = glGetUniformLocation(shader, "ProjectionMatrix");
    if (id >= 0) glUniformMatrix4fv(id, 1, GL_FALSE, Projection);
+   id = glGetUniformLocation(shader, "LightPos");
+   if (id >= 0) glUniform4fv(id, 4, Position);
+   id = glGetUniformLocation(shader, "Ambient");
+   if (id >= 0) glUniform4fv(id, 4, Ambient);
+   id = glGetUniformLocation(shader, "Diffuse");
+   if (id >= 0) glUniform4fv(id, 4, Diffuse);
+   id = glGetUniformLocation(shader, "Specular");
+   if (id >= 0) glUniform4fv(id, 4, Specular);
+   id = glGetUniformLocation(shader, "shininess");
+   if (id >= 0) glUniform1f(id, shininess[0]);
 
    glBindBuffer(GL_ARRAY_BUFFER, SphereBuf);
    glEnableVertexAttribArray(0);
@@ -230,7 +240,7 @@ void display()
    glColor3f(1.0,1.0,1.0);
    ball(Position[0], Position[1], Position[2], 0.125);
 
-   cout << gluErrorString(glGetError()) << endl;
+   //cout << gluErrorString(glGetError()) << endl;
 
    //swap the buffers
    glFlush();
