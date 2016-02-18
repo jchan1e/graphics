@@ -1,0 +1,276 @@
+<html>
+<head>
+<title>Example 8</title>
+
+<!--
+  CanvasMatrix class
+  (c) Apple Inc
+  -->
+<script src="CanvasMatrix.js" type="text/javascript"></script>
+
+<!--
+  Vertex shader
+  -->
+<script id="shader-vs" type="x-shader/x-vertex"> 
+   precision highp float;
+   attribute vec3 XYZ;
+   attribute vec3 RGB;
+   uniform mat4 ProjectionMatrix;
+   uniform mat4 ModelviewMatrix;
+   varying vec3 col;
+   void main(void)
+   {
+      col = RGB;
+      gl_Position = ProjectionMatrix * ModelviewMatrix * vec4(XYZ,1);
+   }
+</script> 
+ 
+<!--
+  Fragment shader
+  -->
+<script id="shader-fs" type="x-shader/x-fragment"> 
+precision highp float;
+varying vec3 col;
+void main(void)
+{
+   gl_FragColor = vec4(col,1);
+}
+</script> 
+
+<!--
+  WebGL program
+  -->
+<script type="text/javascript"> 
+
+//
+//  Compile a shader
+//
+function CompileShader(gl,id)
+{
+   //  Get shader by id
+   var src = document.getElementById(id);
+   //  Create shader based on type setting
+   var shader;
+   if (src.type == "x-shader/x-fragment")
+      shader = gl.createShader(gl.FRAGMENT_SHADER);
+   else if (src.type == "x-shader/x-vertex")
+      shader = gl.createShader(gl.VERTEX_SHADER);
+   else
+      return null;
+   //  Read source into str
+   var str = "";
+   var k = src.firstChild;
+   while (k)
+   {
+      if (k.nodeType == 3) str += k.textContent;
+      k = k.nextSibling;
+   }
+   gl.shaderSource(shader, str);
+   //  Compile the shader
+   gl.compileShader(shader);
+   //  Check for errors
+   if (gl.getShaderParameter(shader, gl.COMPILE_STATUS) == 0)
+      alert(gl.getShaderInfoLog(shader));
+   //  Return shader
+   return shader;
+}
+
+//
+//  Compile shader program
+//
+function CompileShaderProg(gl,vert,frag)
+{
+   //  Compile the program
+   var prog  = gl.createProgram();
+   gl.attachShader(prog , CompileShader(gl,vert));
+   gl.attachShader(prog , CompileShader(gl,frag));
+   gl.linkProgram(prog);
+   //  Check for errors
+   if (gl.getProgramParameter(prog, gl.LINK_STATUS) == 0)
+      alert(gl.getProgramInfoLog(prog));
+   //  Return program
+   return prog;
+}
+
+var gl,canvas;
+function webGLStart()
+{
+   //  Set canvas
+   canvas = document.getElementById("canvas");
+   //  Select canvas size
+   var size = Math.min(window.innerWidth,window.innerHeight)-10;
+   canvas.width  = size;
+   canvas.height = size;
+   //  Start WebGL
+   if (!window.WebGLRenderingContext)
+   {
+      alert("Your browser does not support WebGL. See http://get.webgl.org");
+      return;
+   }
+   try
+   {
+      gl = canvas.getContext("experimental-webgl");
+   }
+   catch(e)
+   {}
+   if (!gl)
+   {
+      alert("Can't get WebGL");
+      return;
+   }
+
+   //  Set viewport to entire canvas
+   gl.viewport(0,0,size,size);
+
+   //  Load Shader
+   var prog = CompileShaderProg(gl,"shader-vs","shader-fs");
+
+   //  Set program
+   gl.useProgram(prog);
+
+   //  Set projection
+   var ProjectionMatrix = new CanvasMatrix4();
+   ProjectionMatrix.ortho(-2.5,+2.5,-2.5,+2.5,-2.5,+2.5);
+
+   //  Vertex array count
+   var n = 36;
+   //  Cube vertex coordinates
+   var xyz = 
+   [
+      -1,-1, 1, +1,-1, 1, -1,+1, 1,    -1,+1, 1, +1,-1, 1, +1,+1, 1,
+      +1,-1,-1, -1,-1,-1, +1,+1,-1,    +1,+1,-1, -1,-1,-1, -1,+1,-1,
+      +1,-1,+1, +1,-1,-1, +1,+1,+1,    +1,+1,+1, +1,-1,-1, +1,+1,-1,
+      -1,-1,-1, -1,-1,+1, -1,+1,-1,    -1,+1,-1, -1,-1,+1, -1,+1,+1,
+      -1,+1,+1, +1,+1,+1, -1,+1,-1,    -1,+1,-1, +1,+1,+1, +1,+1,-1,
+      -1,-1,-1, +1,-1,-1, -1,-1,+1,    -1,-1,+1, +1,-1,-1, +1,-1,+1,
+   ];
+   var verts = gl.createBuffer();
+   gl.bindBuffer(gl.ARRAY_BUFFER,verts);
+   gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(xyz),gl.STATIC_DRAW);
+
+   //  Cube colors
+   var rgb = 
+   [
+      1,0,0, 1,0,0, 1,0,0,    1,0,0, 1,0,0, 1,0,0,
+      0,0,1, 0,0,1, 0,0,1,    0,0,1, 0,0,1, 0,0,1,
+      1,1,0, 1,1,0, 1,1,0,    1,1,0, 1,1,0, 1,1,0,
+      0,1,0, 0,1,0, 0,1,0,    0,1,0, 0,1,0, 0,1,0,
+      0,1,1, 0,1,1, 0,1,1,    0,1,1, 0,1,1, 0,1,1,
+      1,0,1, 1,0,1, 1,0,1,    1,0,1, 1,0,1, 1,0,1,
+   ];
+   var color = gl.createBuffer();
+   gl.bindBuffer(gl.ARRAY_BUFFER,color);
+   gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(rgb),gl.STATIC_DRAW);
+
+
+   //  Set state to draw scene
+   gl.enable(gl.DEPTH_TEST);
+   gl.clearColor(0.8,0.8,0.8,1);
+   //  Mouse control variables
+   var x0 = y0 = move  = 0;
+   //  Rotation angles
+   var th = ph = 15;
+   //  Draw scene the first time
+   Display();
+
+   //
+   //  Display the scene
+   //
+   function Display()
+   {
+      //  Clear the screen and Z buffer
+      gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+
+      // Compute modelview matrix
+      var ModelviewMatrix = new CanvasMatrix4();
+      ModelviewMatrix.makeIdentity();
+      ModelviewMatrix.rotate(ph,0,1,0);
+      ModelviewMatrix.rotate(th,1,0,0);
+
+      // Set shader
+      gl.useProgram(prog);
+
+      //  Set projection and modelview matrixes
+      gl.uniformMatrix4fv(gl.getUniformLocation(prog,"ProjectionMatrix") , false , new Float32Array(ProjectionMatrix.getAsArray()));
+      gl.uniformMatrix4fv(gl.getUniformLocation(prog,"ModelviewMatrix")  , false , new Float32Array(ModelviewMatrix.getAsArray()));
+
+      //  Set up 3D vertex array
+      gl.bindBuffer(gl.ARRAY_BUFFER,verts);
+      var XYZ = gl.getAttribLocation(prog,"XYZ");
+      gl.enableVertexAttribArray(XYZ);
+      gl.vertexAttribPointer(XYZ,3,gl.FLOAT,false,0,0);
+
+      //  Set up 3D color array
+      gl.bindBuffer(gl.ARRAY_BUFFER,color);
+      var RGB = gl.getAttribLocation(prog,"RGB");
+      gl.enableVertexAttribArray(RGB);
+      gl.vertexAttribPointer(RGB,3,gl.FLOAT,false,0,0);
+
+      //  Draw all vertexes
+      gl.drawArrays(gl.TRIANGLES,0,n);
+
+      //  Disable vertex arrays
+      gl.disableVertexAttribArray(XYZ);
+      gl.disableVertexAttribArray(RGB);
+
+      //  Flush
+      gl.flush ();
+   }
+
+   //
+   //  Resize canvas
+   //
+   canvas.resize = function ()
+   {
+      var size = Math.min(window.innerWidth, window.innerHeight)-10;
+      canvas.width  = size;
+      canvas.height = size;
+      gl.viewport(0,0,size,size);
+      Display();
+   }
+
+   //
+   //  Mouse button pressed
+   //
+   canvas.onmousedown = function (ev)
+   {
+      move  = 1;
+      x0 = ev.clientX;
+      y0 = ev.clientY;
+   }
+
+   //
+   //  Mouse button released
+   //
+   canvas.onmouseup = function (ev)
+   {
+      move  = 0;
+   }
+
+   //
+   //  Mouse movement
+   //
+   canvas.onmousemove = function (ev)
+   {
+      if (move==0) return;
+      //  Update angles
+      ph -= ev.clientX-x0;
+      th += ev.clientY-y0;
+      //  Store location
+      x0 = ev.clientX;
+      y0 = ev.clientY;
+      //  Redisplay
+      Display();
+   }
+}
+</script> 
+
+<!--
+  Web page
+  -->
+</head>
+<body onload="webGLStart();" onresize="canvas.resize();"> 
+<H1>Example 8: WebGL</H1>
+<canvas id="canvas" width="500" height="500"></canvas> 
+</body>
+</html>

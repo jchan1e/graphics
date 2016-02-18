@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>ex07.vert</file>
+    <file>ex07.frag</file>
+    <file>crate.png</file>
+</qresource>
+</RCC>
