@@ -52,10 +52,10 @@
    void main(void)
    {
       float potato = sqrt(tex.x*tex.x + tex.y*tex.y + tex.z*tex.z) - time;
-      potato = mod(potato, 1.0);
+      potato = mod(potato*10.0, 1.0);
       vec3 fred = col;
       if (potato > 0.5)
-         fred = fred/2.0;
+         fred = fred/3.0;
 
       // Remember to normalize your normals
       vec3 N = normalize(Normal);
@@ -261,7 +261,7 @@ function webGLStart()
       gl.useProgram(prog);
 
       //  Set projection and modelview matrixes
-      var time = Date.now()/1000 % 2.0;
+      var time = Date.now()/10000 % 2.0;
       gl.uniformMatrix4fv(gl.getUniformLocation(prog,"ProjectionMatrix") , false , new Float32Array(ProjectionMatrix.getAsArray()));
       gl.uniformMatrix4fv(gl.getUniformLocation(prog,"ModelviewMatrix")  , false , new Float32Array(ModelviewMatrix.getAsArray()));
       gl.uniform1f(gl.getUniformLocation(prog,"time"), time);
