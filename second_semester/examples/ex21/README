@@ -1,0 +1,16 @@
+ex21: nBody Simulator
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+This program requires OpenGL 3.2 or above
+Demonstartes a geometry shader.
+OpenMP is used to accelerate computations.
+
+Key bindings
+  m/M        Cycle through modes
+  a          Toggle axes
+  arrows     Change view angle
+  PgDn/PgUp  Zoom in and out
+  0          Reset view angle
+  ESC        Exit

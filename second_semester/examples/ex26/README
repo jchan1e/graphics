@@ -1,0 +1,16 @@
+ex26: nBody Simulator
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+This program requires OpenGL 3.2 or above
+Demonstrates using OpenMP and OpenCL to accelerate computations and
+displaying the result in OpenGL
+
+Key bindings
+  m/M        Cycle through modes
+  a          Toggle axes
+  arrows     Change view angle
+  PgDn/PgUp  Zoom in and out
+  0          Reset view angle
+  ESC        Exit

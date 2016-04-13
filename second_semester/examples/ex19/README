@@ -1,0 +1,13 @@
+ex19: Conway's Game of Life
+
+Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014
+
+Note that this is a finite, wrapped universe.
+Sometimes you need to hit '0' to reset the simulation if the sceen is blank
+Golly is a great source of RLE files
+
+Key bindings
+  s/s    Start/stop computations
+  0      Restart
+  ESC    Exit
