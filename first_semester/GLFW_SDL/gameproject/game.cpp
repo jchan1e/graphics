@@ -90,7 +90,7 @@ int frames = 0;
 Floor F;
 Enemy* enemies[64] = {NULL};
 Tower* towers[64] = {NULL};
-Bullet* bullets[128] {NULL};
+Bullet* bullets[128] = {NULL};
 
 ////////////////////
 //functions that are called ahead of when they're defined
