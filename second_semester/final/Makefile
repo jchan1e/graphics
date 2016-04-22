@@ -1,7 +1,11 @@
 CFLG=-g -O3 -Wall
-SDLFLG=$(CFLG) $(shell sdl2-config --cflags) -DGL_GLEXT_PROTOTYPES
 LIBS=-lGLU -lGL -lm $(shell sdl2-config --libs)
-CLEAN=rm -f *run* Rnn *.o *.a
+ifeq "$(shell uname)" "Darwin"
+CFLG=-g -O3 -Wall -Wno-deprecated-declarations
+LIBS=-framework OpenGL $(shell sdl2-config --libs)
+endif
+SDLFLG=$(CFLG) $(shell sdl2-config --cflags) -DGL_GLEXT_PROTOTYPES
+CLEAN=rm -rf *run* play *.o *.a
 ARCH=-gencode arch=compute_52,code=sm_52
 
 all:run run_cpu play

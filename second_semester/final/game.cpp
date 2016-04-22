@@ -123,16 +123,16 @@ void display(float* target)
 
    glBegin(GL_QUADS);
    glTexCoord2f(0,0);
-   glVertex2f(-0.5,-0.5);
+   glVertex2f(-1,-1);
 
    glTexCoord2f(1,0);
-   glVertex2f(0.5,-0.5);
+   glVertex2f(1,-1);
 
    glTexCoord2f(1,1);
-   glVertex2f(0.5,0.5);
+   glVertex2f(1,1);
 
    glTexCoord2f(0,1);
-   glVertex2f(-0.5,0.5);
+   glVertex2f(-1,1);
    glEnd();
 
    glDisable(GL_TEXTURE_2D);
@@ -216,7 +216,7 @@ void reshape(int width, int height)
    glLoadIdentity();
 }
 
-void draw_a_dot(float* arr, int x, int y)
+void draw_a_dot(float* arr, float x, float y)
 {
    float radius = 2.0;
    for (int i=0; i < 28; ++i)
@@ -283,12 +283,12 @@ int main(int argc, char *argv[])
 
                case SDL_MOUSEBUTTONDOWN:
                   if (SDL_GetMouseState(&x, &y) & SDL_BUTTON(SDL_BUTTON_LEFT))
-                     draw_a_dot(target, x/w, y/h);
+                     draw_a_dot(target, (w-(float)y)*28/w, (float)x*28/h);
                   break;
 
                case SDL_MOUSEMOTION:
                   if (SDL_GetMouseState(&x, &y) & SDL_BUTTON(SDL_BUTTON_LEFT))
-                     draw_a_dot(target, x/w, y/h);
+                     draw_a_dot(target, (w-(float)y)*28/w, (float)x*28/h);
                   break;
             }
          }
